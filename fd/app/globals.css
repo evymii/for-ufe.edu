@@ -1,0 +1,219 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+/* shadcn theme glue (keyframes + data-state variants) — the tailwindcss
+   resolver does not follow package exports, so this goes by file path. */
+@import "../node_modules/shadcn/dist/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-highlight: var(--brand-highlight);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─── Team site design system (minimal, white, academic) ─────────────────────
+   Semantic tokens consumed by app/(public) via bg-paper / text-ink /
+   border-line / bg-brand etc. Light-first with a .dark counterpart.
+   The admin & user areas keep the shadcn vars further below untouched. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-soft: var(--paper-soft);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-contrast: var(--brand-contrast);
+  --color-gold: var(--gold);
+  --font-display:
+    var(--font-team-display), "Roboto Condensed", "Segoe UI", Arial, sans-serif;
+}
+
+@theme {
+  --shadow-card: 0 4px 16px rgb(20 51 143 / 0.08);
+  --shadow-card-hover: 0 10px 28px rgb(20 51 143 / 0.14);
+}
+
+:root {
+  --paper: #ffffff;
+  --paper-soft: #f5f7fb;
+  --ink: #0f172a;
+  --mute: #5b6478;
+  --line: #e3e8f1;
+  --brand: #14338f;
+  --brand-2: #2e5bd8;
+  --brand-contrast: #ffffff;
+  --gold: #c8962e;
+}
+
+.dark {
+  --paper: #0b1020;
+  --paper-soft: #121933;
+  --ink: #eef2ff;
+  --mute: #9aa4bf;
+  --line: #222c4d;
+  --brand: #8faeff;
+  --brand-2: #a5bcff;
+  --brand-contrast: #0b1020;
+  --gold: #d9a93e;
+}
+
+:root {
+  /* UFE institutional palette */
+  --brand-navy: #0d2857;
+  --brand-deep: #071a3e;
+  --brand-blue: #1d4ed8;
+  --brand-highlight: #93c5fd;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #0d2857;
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: #0d2857;
+  --muted: #ececec;
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: #0d2857;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: #1d4ed8;
+  --chart-1: #0d2857;
+  --chart-2: #1d4ed8;
+  --chart-3: #60a5fa;
+  --chart-4: #93c5fd;
+  --chart-5: #071a3e;
+  --radius: 0.375rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #0d2857;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: #0d2857;
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: #1d4ed8;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: #60a5fa;
+  --primary-foreground: #071a3e;
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: #60a5fa;
+  --chart-1: #60a5fa;
+  --chart-2: #93c5fd;
+  --chart-3: #1d4ed8;
+  --chart-4: #bfdbfe;
+  --chart-5: #0d2857;
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #071a3e;
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: #60a5fa;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ─── Team site utilities ─────────────────────────────────────────────────── */
+
+/* Section eyebrow label: 12px uppercase, wide tracking, brand-2. */
+.eyebrow {
+  color: var(--brand-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Card lift on hover — the one allowed motion, 0.2s ease. */
+.card-lift {
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Hide scrollbars on horizontal card rails. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
