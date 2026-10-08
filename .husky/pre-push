@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+# Type-check + unit tests for both apps before anything leaves the machine.
+echo "husky - pre-push: bd type-check + unit tests"
+(cd bd && npm run type-check && npm run test) || exit 1
+
+echo "husky - pre-push: fd type-check + unit tests"
+(cd fd && npm run type-check && npm run test) || exit 1

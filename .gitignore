@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Env — never commit real secrets
+.env
+.env.*
+!.env.example
+
+# Test / coverage artifacts
+coverage/
+playwright-report/
+test-results/
+playwright/.cache/
+
+# Logs & OS
+*.log
+.DS_Store
+
+# Editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Husky runtime shims (user hooks in .husky/ ARE committed)
+.husky/_/

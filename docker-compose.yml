@@ -1,0 +1,48 @@
+# Local infrastructure: PostgreSQL for development and for tests.
+# Start with:  docker compose up -d
+# Stop with:    docker compose down          (keep data)
+# Wipe data:    docker compose down -v       (destroys volumes)
+#
+# Host ports are 5433 (dev) and 5434 (test) so they never clash with a
+# Postgres already running locally on the default 5432.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ufeedu-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ufeedu
+      POSTGRES_PASSWORD: ufeedu
+      POSTGRES_DB: ufeedu_dev
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ufeedu -d ufeedu_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-test:
+    image: postgres:17-alpine
+    container_name: ufeedu-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ufeedu
+      POSTGRES_PASSWORD: ufeedu
+      POSTGRES_DB: ufeedu_test
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ufeedu -d ufeedu_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata_dev:
+  pgdata_test:

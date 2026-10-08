@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+# lint-staged per app — only for apps with staged changes.
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if echo "$staged" | grep -q '^bd/'; then
+  echo "husky - pre-commit: bd lint-staged"
+  (cd bd && npx lint-staged) || exit 1
+fi
+
+if echo "$staged" | grep -q '^fd/'; then
+  echo "husky - pre-commit: fd lint-staged"
+  (cd fd && npx lint-staged) || exit 1
+fi
