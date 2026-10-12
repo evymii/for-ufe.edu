@@ -4,6 +4,10 @@
    resolver does not follow package exports, so this goes by file path. */
 @import "../node_modules/shadcn/dist/tailwind.css";
 
+/* Light-only site: the class-scoped dark variant keeps the stock shadcn
+   components' `dark:` utilities tied to a `.dark` class that is never set.
+   (Tailwind's default dark: follows the OS — removing this line would
+   re-darken the site for OS-dark users.) */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -56,7 +60,7 @@
 
 /* ─── Team site design system (minimal, white, academic) ─────────────────────
    Semantic tokens consumed by app/(public) via bg-paper / text-ink /
-   border-line / bg-brand etc. Light-first with a .dark counterpart.
+   border-line / bg-brand etc. Light-only — no dark counterpart.
    The admin & user areas keep the shadcn vars further below untouched. */
 @theme inline {
   --color-paper: var(--paper);
@@ -87,18 +91,6 @@
   --brand-2: #2e5bd8;
   --brand-contrast: #ffffff;
   --gold: #c8962e;
-}
-
-.dark {
-  --paper: #0b1020;
-  --paper-soft: #121933;
-  --ink: #eef2ff;
-  --mute: #9aa4bf;
-  --line: #222c4d;
-  --brand: #8faeff;
-  --brand-2: #a5bcff;
-  --brand-contrast: #0b1020;
-  --gold: #d9a93e;
 }
 
 :root {
@@ -140,40 +132,6 @@
   --sidebar-accent-foreground: #0d2857;
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: #1d4ed8;
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #60a5fa;
-  --primary-foreground: #071a3e;
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #60a5fa;
-  --chart-1: #60a5fa;
-  --chart-2: #93c5fd;
-  --chart-3: #1d4ed8;
-  --chart-4: #bfdbfe;
-  --chart-5: #0d2857;
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: #60a5fa;
-  --sidebar-primary-foreground: #071a3e;
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #60a5fa;
 }
 
 @layer base {

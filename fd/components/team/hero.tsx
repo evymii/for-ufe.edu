@@ -1,7 +1,3 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
-import { routes } from "@/config/routes";
 import { hero } from "@/content/site";
 
 // ── Wave banner ─────────────────────────────────────────────────────────────
@@ -103,101 +99,32 @@ function TeamMark({ className }: { className?: string }) {
 
 export function Hero() {
   return (
-    <>
-      {/* Banner: wave field + centered mark & headline */}
-      <section
-        aria-label={hero.title}
-        className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-[#0A1440] md:min-h-[460px]"
-      >
-        <WaveField />
-        {/* Glow + vignette overlays */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_62%_85%_at_38%_50%,rgba(46,107,255,0.30)_0%,rgba(46,107,255,0.10)_40%,transparent_70%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(90deg,#060D2E_0%,transparent_20%,transparent_80%,#060D2E_100%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,9,34,0.45)_0%,transparent_28%,transparent_72%,rgba(4,9,34,0.55)_100%)]"
-        />
+    // Banner: wave field + centered mark & headline
+    <section
+      aria-label={hero.title}
+      className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-[#0A1440] md:min-h-[460px]"
+    >
+      <WaveField />
+      {/* Glow + vignette overlays */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_62%_85%_at_38%_50%,rgba(46,107,255,0.30)_0%,rgba(46,107,255,0.10)_40%,transparent_70%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(90deg,#060D2E_0%,transparent_20%,transparent_80%,#060D2E_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,9,34,0.45)_0%,transparent_28%,transparent_72%,rgba(4,9,34,0.55)_100%)]"
+      />
 
-        <div className="relative z-10 flex flex-col items-center px-4 py-20 text-center sm:px-6">
-          <TeamMark className="h-12 w-12 text-white md:h-16 md:w-16" />
-          <h1 className="font-display mt-7 max-w-5xl text-[clamp(26px,3.4vw,42px)] leading-[1.2] font-bold tracking-[0.02em] text-white uppercase md:mt-8">
-            {hero.headline}
-          </h1>
-        </div>
-      </section>
-
-      {/* Follow band: badge, intro, CTAs + AUBL highlight */}
-      <section className="border-line bg-paper border-b">
-        <div className="mx-auto grid w-full max-w-[1120px] gap-10 px-4 py-12 sm:px-6 md:py-16 lg:grid-cols-[1.25fr_1fr] lg:gap-14">
-          <div className="flex flex-col items-start justify-center">
-            <p className="border-gold text-gold inline-flex items-center rounded-full border px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase">
-              {hero.badge}
-            </p>
-            <p className="text-mute mt-5 max-w-xl text-base leading-[1.65]">
-              {hero.intro}
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link
-                href={routes.site.roster}
-                className="bg-brand text-brand-contrast font-display inline-flex min-h-12 items-center gap-2 rounded-lg px-6 text-sm font-semibold tracking-[0.08em] uppercase transition-opacity hover:opacity-90"
-              >
-                {hero.ctaPlayers}
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href={routes.site.history}
-                className="text-brand border-brand hover:bg-brand/5 font-display inline-flex min-h-12 items-center rounded-lg border px-6 text-sm font-semibold tracking-[0.08em] uppercase transition-colors"
-              >
-                {hero.ctaHistory}
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex items-stretch">
-            <div className="flex w-full flex-col justify-center rounded-xl bg-[#14338F] p-7 text-white md:p-8">
-              <p className="font-display text-[clamp(34px,4vw,48px)] leading-none font-bold tracking-[0.02em] uppercase">
-                {hero.aubl.title}
-              </p>
-              <span
-                className="mt-5 block h-px w-16 bg-white/30"
-                aria-hidden="true"
-              />
-              <p className="mt-5 text-[15px] leading-[1.65] text-white/85">
-                {hero.aubl.text}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
-/** Row of four quiet stat cards under the hero. */
-export function StatCards({
-  stats,
-}: {
-  stats: ReadonlyArray<{ label: string; value: string }>;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="border-line bg-paper shadow-card card-lift rounded-xl border p-5"
-        >
-          <p className="text-brand font-display text-[38px] leading-none font-bold">
-            {stat.value}
-          </p>
-          <p className="text-mute mt-3 text-sm font-medium">{stat.label}</p>
-        </div>
-      ))}
-    </div>
+      <div className="relative z-10 flex flex-col items-center px-4 py-20 text-center sm:px-6">
+        <TeamMark className="h-12 w-12 text-white md:h-16 md:w-16" />
+        <h1 className="font-display mt-7 max-w-5xl text-[clamp(26px,3.4vw,42px)] leading-[1.2] font-bold tracking-[0.02em] text-white uppercase md:mt-8">
+          {hero.headline}
+        </h1>
+      </div>
+    </section>
   );
 }

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut, ShieldCheck, UserCircle } from "lucide-react";
 
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -105,7 +104,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="hidden md:block" />
           <div className="flex items-center gap-1">
-            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="Account menu">

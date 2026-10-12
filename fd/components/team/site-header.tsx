@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { BallMark } from "@/components/team/photo-slot";
 import { routes } from "@/config/routes";
@@ -14,7 +13,6 @@ import { cn } from "@/lib/utils";
 /** Sticky translucent header — 64px, hairline bottom border, blur. */
 export function SiteHeader() {
   const pathname = usePathname();
-  const { resolvedTheme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
@@ -63,20 +61,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-6">
-          <button
-            type="button"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            aria-label={
-              resolvedTheme === "dark" ? "Гэрэлт горим" : "Харанхуй горим"
-            }
-            className="text-mute hover:text-brand flex size-11 items-center justify-center rounded-lg transition-colors"
-          >
-            <Sun className="hidden size-5 dark:block" aria-hidden="true" />
-            <Moon className="size-5 dark:hidden" aria-hidden="true" />
-          </button>
-
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}

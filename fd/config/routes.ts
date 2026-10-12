@@ -4,10 +4,10 @@ export const routes = {
   login: "/login",
   register: "/register",
   site: {
-    contact: "/holboo-barih",
-    history: "/tuuh",
-    management: "/udirdlaga",
-    roster: "/toglogchid",
+    contact: "/contact",
+    history: "/history",
+    management: "/staff",
+    roster: "/players",
   },
   user: {
     dashboard: "/dashboard",

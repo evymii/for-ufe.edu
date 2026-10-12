@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
 
 import "./globals.css";
 
@@ -47,21 +46,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="mn"
-      suppressHydrationWarning
       className={`${inter.variable} ${oswald.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            <AuthProvider hasSession={hasSession}>{children}</AuthProvider>
-          </QueryProvider>
-        </ThemeProvider>
-        <Toaster theme="dark" position="top-right" />
+        <QueryProvider>
+          <AuthProvider hasSession={hasSession}>{children}</AuthProvider>
+        </QueryProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

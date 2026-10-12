@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 
 import { FadeIn } from "@/components/motion";
 import { PageHeader } from "@/components/shared/page-header";
-import { ThemeSettings } from "@/components/admin/theme-settings";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -25,18 +23,6 @@ export default function AdminSettingsPage() {
       />
 
       <FadeIn className="grid max-w-2xl gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>
-              Applies to the admin console on this device.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ThemeSettings />
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>About this console</CardTitle>

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 
 import { FadeIn } from "@/components/motion";
 import { PageHeader } from "@/components/shared/page-header";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function SettingsPage() {
@@ -36,21 +34,6 @@ export default function SettingsPage() {
       />
 
       <FadeIn className="grid max-w-2xl gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>
-              Light and dark themes follow your system by default.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="theme-toggle">Theme</Label>
-              <ThemeToggle />
-            </div>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Account</CardTitle>

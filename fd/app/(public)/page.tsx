@@ -1,23 +1,16 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { Hero, StatCards } from "@/components/team/hero";
+import { Hero } from "@/components/team/hero";
 import { PlayerProfileTeaser } from "@/components/team/player-profile-card";
 import { SectionHeading } from "@/components/team/section-heading";
 import { routes } from "@/config/routes";
-import { featuredNews, playerProfiles, stats, thanks } from "@/content/site";
+import { featuredNews, playerProfiles, thanks } from "@/content/site";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-
-      {/* Institutional stats */}
-      <section aria-label="Үзүүлэлт" className="bg-paper-soft">
-        <div className="mx-auto w-full max-w-[1120px] px-4 py-[72px] sm:px-6 md:py-24">
-          <StatCards stats={[...stats]} />
-        </div>
-      </section>
 
       {/* Featured news — championship season */}
       <section aria-label={featuredNews.label} className="bg-paper">

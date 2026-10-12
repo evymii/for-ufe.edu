@@ -76,45 +76,55 @@ export interface TimelineEntry {
 
 export const timeline: TimelineEntry[] = [
   {
-    period: "1992–1994",
-    text: "Р.Энхтуяа дасгалжуулагчтай, Ц.Баярхүү ахлагчтай Санхүү Эдийн Засгийн Коллежийн шигшээ баг Их, Дээд Сургуулиудын Аварга шалгаруулах тэмцээнд оролцон 3 удаа түрүүлсэн.",
+    period: "1992",
+    text: "Их, дээд сургуулийн АВАРГА БАГ.",
   },
   {
     period: "1996",
     text: "Санхүү Эдийн Засгийн Дээд Сургуулийн шигшээ багийн үндсэн суурь тавигдсан.",
   },
   {
-    period: "1997–2000",
-    text: "З.Хайдар ахлагчтай шигшээ баг:",
+    period: "1997–2006",
     bullets: [
-      "1997, 1999, 2000 онд Залуучуудын УАШТ-ийн хүрэл медаль",
-      "1999, 2000 онд Оюутны лигийн мөнгөн медаль",
-      "1998, 1999, 2000 онд Насанд хүрэгчдийн УАШТ-ийн мөнгөн медаль",
+      "1997 он — Залуучуудын УАШТ-ийн хүрэл медаль",
+      "1999, 2000 он — Оюутны лигийн хошой мөнгөн медаль",
+      "2000 он — Насанд хүрэгчдийн УАШТ-ийн мөнгөн медаль",
+      "2006 он — Оюутны лигийн мөнгөн медаль",
     ],
   },
   {
-    period: "2006",
-    text: "Оюутны лигийн мөнгөн медаль.",
-  },
-  {
     period: "2017–2018",
-    text: "Ч.Бум-Эрдэнэ ахлагчтай шигшээ баг Нийслэлийн Их Дээд Сургуулиудын Хотын Аварга Шалгаруулах Тэмцээнд мөнгөн медаль хүртэж, Оюутны лигт ELITE 8-д шалгарсан.",
+    text: "Ч.Бум-Эрдэнэ ахлагчтай СЭЗИС шигшээ баг Нийслэлийн их дээд сургуулиудын хотын аварга шалгаруулах тэмцээнд мөнгөн медаль хүртэж, MCBA ELITE 8-д шалгарсан.",
+    bullets: [
+      "Тухайн жил багийн ахлагч Ч.Бум-Эрдэнэ болон төвийн тоглогч Мажаа нар бүх одод болж байв.",
+    ],
   },
   {
     period: "2018–2019",
-    text: "Ч.Бум-Эрдэнэ ахлагчтай шигшээ баг Оюутны лигийн ELITE 8.",
+    text: "Ч.Бум-Эрдэнэ ахлагчтай баг MCBA ELITE 8-д шалгарсан.",
   },
   {
     period: "2019–2020",
-    text: "Ч.Бум-Эрдэнэ ахлагчтай шигшээ баг Оюутны лигийн ELITE 8.",
+    text: "Ч.Бум-Эрдэнэ ахлагчтай шигшээ баг MCBA ELITE 8-д шалгарсан.",
+    bullets: [
+      "2019–2020 оны улиралд багийн төвийн тоглогч М.Дөлгөөн оюутны лигийн «Оюунлаг тамирчин»-аар тодорсон.",
+    ],
   },
   {
     period: "2021–2022",
-    text: "О.Цэдэнсодном ахлагчтай шигшээ баг Оюутны лигийн FINAL 4.",
+    text: "О.Цэдэнсодном ахлагчтай шигшээ баг MCBA FINAL 4-т шалгарч, тухайн улиралд Баруун бүсийг тэргүүлсэн.",
+    bullets: [
+      "Л.Тэмүгэ — оюутны лигийн билэгдлийн гарааны шилдэг төвийн тоглогч",
+      "Н.Эрдэнэ — оны шилдэг шинэ тоглогч",
+    ],
   },
   {
     period: "2022–2023",
-    text: "Н.Болд-Эрдэнэ ахлагчтай шигшээ баг Оюутны лигийн FINAL 4.",
+    text: "Н.Болд-Эрдэнэ ахлагчтай шигшээ баг MCBA FINAL 4-т шалгарсан.",
+    bullets: [
+      "Н.Болд-Эрдэнэ — билэгдлийн гарааны шилдэг довтлон тоглогч",
+      "Баяртогтох болон Болд-Эрдэнэ нар бүх оддын тоглолтонд сонгогдсон.",
+    ],
   },
   {
     period: "2023–2024",
@@ -129,6 +139,10 @@ export const timeline: TimelineEntry[] = [
     highlightLabel: "онцлох жил",
     text: "Н.Наранбаатар ахлагчтай шигшээ баг СЭЗИС-ийн шигшээ багийн түүхэнд анх удаа Оюутны лигийн аварга баг боллоо. AUBL буюу Азийн Их Сургуулиудын Сагсан Бөмбөгийн Лигийн олон улсын тэмцээнд СЭЗИС болон Монгол Улсаа төлөөлөн оролцох эрх авсан.",
   },
+  {
+    period: "2026–2027",
+    text: "Азийн их сургуулиудын сагсан бөмбөгийн лигт Монгол Улсыг төлөөлнө.",
+  },
 ];
 
 // ── Тоглогчид хуудас ────────────────────────────────────────────────────────
@@ -138,16 +152,32 @@ export const players = {
   subtitle: "2026–2027 оны багийн бүрэлдэхүүн",
 } as const;
 
+/**
+ * Season stats for the card strip (NBA-style: SEASON / GP / PPG / APG / RPG).
+ * Fill per player as numbers become available — missing values render as "—".
+ */
+export interface PlayerStats {
+  /** Season label, e.g. "2025–26". */
+  season: string;
+  gp?: number;
+  ppg?: number;
+  apg?: number;
+  rpg?: number;
+}
+
 export interface PlayerProfile {
   number: number;
   name: string;
   role?: string;
   position: string;
+  /** Transparent-background cutout (public/images/player/<number>.png). */
+  photo?: string;
   heightCm: number;
   yearsOnTeam: string;
   yearsPlaying: string;
   major: string;
   hometown: string;
+  stats?: PlayerStats;
   achievements: readonly string[];
   motto: string;
   pregame: string;
@@ -243,6 +273,8 @@ export const playerProfiles: PlayerProfile[] = [
 ];
 
 // ── Удирдлага хуудас ────────────────────────────────────────────────────────
+// The section is growing to 6 members — append each new person here and drop
+// their transparent cutout into public/images/staff/ (see that README).
 
 export interface StaffProfile {
   name: string;
@@ -254,6 +286,8 @@ export interface StaffProfile {
     text?: string;
     list?: readonly string[];
   }>;
+  /** Transparent-background cutout (public/images/staff/<name>.png). */
+  photo?: string;
 }
 
 export const staff: StaffProfile[] = [

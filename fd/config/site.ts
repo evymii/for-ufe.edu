@@ -14,8 +14,8 @@ export const siteConfig = {
 
 export const publicNav = [
   { href: "/", label: "Нүүр" },
-  { href: "/tuuh", label: "Түүх" },
-  { href: "/toglogchid", label: "Тоглогчид" },
-  { href: "/udirdlaga", label: "Удирдлага" },
-  { href: "/holboo-barih", label: "Холбоо барих" },
+  { href: "/history", label: "Түүх" },
+  { href: "/players", label: "Тоглогчид" },
+  { href: "/staff", label: "Удирдлага" },
+  { href: "/contact", label: "Холбоо барих" },
 ] as const;
