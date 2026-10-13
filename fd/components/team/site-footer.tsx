@@ -1,78 +1,150 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
 import { BallMark } from "@/components/team/photo-slot";
-import { publicNav, siteConfig } from "@/config/site";
+import { routes } from "@/config/routes";
+import { publicNav, secondaryNav, siteConfig } from "@/config/site";
 import { contact } from "@/content/site";
 
-/** Solid UFE-blue footer: brand + slogan, navigation, contact details. */
+/**
+ * Ink footer: brand + newsletter mini-field, link columns, contact details
+ * and a mute bottom row. The newsletter field hops to the /newsletter
+ * signup page, where the real subscribe endpoint lives.
+ */
 export function SiteFooter() {
+  const [email, setEmail] = useState("");
+  const router = useRouter();
+
+  const subscribe = (event: FormEvent) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    router.push(`${routes.site.newsletter}?email=${encodeURIComponent(email)}`);
+  };
+
+  const columns: Array<{
+    heading: string;
+    links: Array<{ label: string; href: string; external?: boolean }>;
+  }> = [
+    {
+      heading: "Баг",
+      links: publicNav
+        .filter((item) => item.href !== "/")
+        .map((item) => ({ label: item.label, href: item.href })),
+    },
+    {
+      heading: "Дагах",
+      links: secondaryNav.map((item) => ({
+        label: item.label,
+        href: item.href,
+      })),
+    },
+    {
+      heading: "Их сургууль",
+      links: [
+        { label: "ufe.edu.mn", href: contact.webUrl, external: true },
+        { label: contact.email, href: `mailto:${contact.email}` },
+      ],
+    },
+  ];
+
   return (
-    <footer className="bg-[#14338F] text-white">
-      <div className="mx-auto grid w-full max-w-[1120px] gap-10 px-4 py-14 sm:px-6 md:grid-cols-12 md:py-16">
-        <div className="space-y-4 md:col-span-5">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-white/12">
-              <BallMark className="size-5" />
+    <footer className="bg-ink text-white">
+      <div className="team-shell grid gap-12 py-16 md:grid-cols-12 md:py-16">
+        {/* Brand + newsletter */}
+        <div className="space-y-6 md:col-span-4">
+          <div className="flex items-center gap-3">
+            <span className="flex size-12 items-center justify-center rounded-full bg-white/10">
+              <BallMark className="size-6" />
             </span>
             <div className="leading-none">
-              <p className="font-display text-lg font-bold tracking-[0.04em] uppercase">
+              <p className="font-display text-xl font-bold tracking-[0.04em] uppercase">
                 {siteConfig.shortName}
               </p>
-              <p className="text-[10px] font-medium tracking-[0.22em] text-white/70 uppercase">
+              <p className="text-[10px] font-medium tracking-[0.22em] text-white/50 uppercase">
                 {siteConfig.headerSubtitle}
               </p>
             </div>
           </div>
-          <p className="font-display max-w-sm text-lg font-semibold tracking-[0.02em] uppercase">
+          <p className="font-display max-w-sm text-2xl leading-[1.2] font-semibold tracking-[0.02em] uppercase">
             “{contact.slogan}”
           </p>
+          <form onSubmit={subscribe} className="max-w-sm">
+            <label
+              htmlFor="footer-newsletter"
+              className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase"
+            >
+              Багийн шинэ мэдээ
+            </label>
+            <div className="mt-2 flex h-12 items-center border border-white/25">
+              <input
+                id="footer-newsletter"
+                type="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="имэйл хаяг"
+                className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-white placeholder:text-white/40 focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Бүртгүүлэх"
+                className="font-display hover:text-ink flex h-full w-12 items-center justify-center transition-colors hover:bg-white"
+              >
+                <ArrowRight className="size-5" aria-hidden="true" />
+              </button>
+            </div>
+          </form>
         </div>
 
-        <nav
-          aria-label="Хөтчийн холбоосууд"
-          className="space-y-3 md:col-span-3"
-        >
-          <p className="text-[11px] font-semibold tracking-[0.14em] text-white/60 uppercase">
-            Хөтөч
-          </p>
-          {publicNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block text-sm font-medium text-white/85 transition-colors hover:text-white"
-            >
-              <span className="font-display tracking-[0.06em] uppercase">
-                {item.label}
-              </span>
-            </Link>
-          ))}
-        </nav>
+        {/* Link columns */}
+        {columns.map((column) => (
+          <nav
+            key={column.heading}
+            aria-label={column.heading}
+            className="space-y-4 md:col-span-2"
+          >
+            <p className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase">
+              {column.heading}
+            </p>
+            <ul className="space-y-3">
+              {column.links.map((link) => (
+                <li key={link.label}>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-display text-sm font-medium tracking-[0.06em] text-white/85 uppercase transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="font-display text-sm font-medium tracking-[0.06em] text-white/85 uppercase transition-colors hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
 
-        <div className="space-y-3 md:col-span-4">
-          <p className="text-[11px] font-semibold tracking-[0.14em] text-white/60 uppercase">
+        {/* Contact details */}
+        <div className="space-y-4 border-t border-white/10 pt-6 md:col-span-12">
+          <p className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase">
             Холбоо барих
           </p>
-          <ul className="space-y-3 text-sm text-white/85">
-            <li className="flex items-start gap-2.5">
-              <MapPin
-                className="mt-0.5 size-4 shrink-0 text-white/60"
-                aria-hidden="true"
-              />
-              <span>{contact.address}</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <Phone
-                className="mt-0.5 size-4 shrink-0 text-white/60"
-                aria-hidden="true"
-              />
-              <span>{contact.footerPhones.join(", ")}</span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <Mail
-                className="mt-0.5 size-4 shrink-0 text-white/60"
-                aria-hidden="true"
-              />
+          <ul className="flex flex-col gap-3 text-sm leading-[1.6] text-white/85 sm:flex-row sm:flex-wrap sm:gap-x-10">
+            <li>{contact.address}</li>
+            <li>{contact.footerPhones.join(", ")}</li>
+            <li>
               <a
                 href={`mailto:${contact.email}`}
                 className="transition-colors hover:text-white"
@@ -81,17 +153,11 @@ export function SiteFooter() {
               </a>
             </li>
           </ul>
-          <Link
-            href="/login"
-            className="inline-block pt-2 text-xs tracking-[0.14em] text-white/60 uppercase transition-colors hover:text-white"
-          >
-            Админ → Нэвтрэх
-          </Link>
         </div>
       </div>
 
-      <div className="border-t border-white/15">
-        <div className="mx-auto flex w-full max-w-[1120px] flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-white/60 sm:flex-row sm:px-6">
+      <div className="border-t border-white/10">
+        <div className="team-shell flex flex-col items-center justify-between gap-2 py-5 text-[12px] tracking-[0.08em] text-white/40 uppercase sm:flex-row">
           <p>
             © {new Date().getFullYear()} {siteConfig.fullName}
           </p>

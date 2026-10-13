@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 
+import { ParallaxLayer } from "@/components/team/parallax";
+import { WaveField } from "@/components/team/wave-field";
+import { TeamButton } from "@/components/team/button";
 import { HistoryExperience } from "@/components/team/history-experience";
+import { HistoryExtras } from "@/components/team/history-extras";
+import { routes } from "@/config/routes";
 import { history } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -11,41 +16,61 @@ export const metadata: Metadata = {
   title: "Түүх",
 };
 
-/** Season-celebration style history page: dark hero, then the sticky
- *  year rail + scrollable era sections rendered by HistoryExperience. */
+/**
+ * Season-celebration history page: 720px ink hero with the outlined season
+ * numeral over a parallax texture layer, then the sticky year rail +
+ * side-scrolling era track (HistoryExperience) and the honour roll /
+ * moments gallery / CTA band (HistoryExtras).
+ */
 export default function HistoryPage() {
   return (
     <>
-      <section className="relative overflow-hidden bg-[#14338F] text-white">
-        <p
-          aria-hidden="true"
-          className="font-display pointer-events-none absolute right-4 bottom-6 hidden text-[clamp(64px,10vw,150px)] leading-none font-bold tracking-[0.02em] text-transparent select-none [-webkit-text-stroke:2px_rgba(255,255,255,0.15)] sm:block"
-        >
-          1992–2026
-        </p>
-        <div className="relative mx-auto w-full max-w-[1120px] px-4 py-16 sm:px-6 md:py-24">
+      <section className="bg-ink relative flex min-h-[560px] flex-col items-center justify-center overflow-hidden text-center text-white md:min-h-[720px]">
+        <ParallaxLayer speed={0.4}>
+          <WaveField height={720} opacityRange={[0.05, 0.14]} />
+        </ParallaxLayer>
+
+        <div className="relative flex flex-col items-center px-4 py-20 sm:px-6">
           <nav
             aria-label="Breadcrumb"
-            className="mb-4 flex items-center gap-2 text-[12px] font-semibold tracking-[0.14em] text-white/60 uppercase"
+            className="text-mute mb-4 flex items-center gap-2 text-[12px] font-semibold tracking-[0.14em] uppercase"
           >
             <Link href="/" className="transition-colors hover:text-white">
               Нүүр
             </Link>
             <span aria-hidden="true">/</span>
-            <span className="text-gold">Түүх</span>
+            <span className="text-white">Түүх</span>
           </nav>
-          <h1 className="font-display text-[clamp(48px,9vw,96px)] leading-[1] font-bold tracking-[0.02em] uppercase">
-            Түүх
+
+          <span
+            aria-hidden="true"
+            className="font-display text-[clamp(150px,28vw,320px)] leading-[0.85] font-bold text-transparent select-none [-webkit-text-stroke:3px_#ffffff]"
+          >
+            35
+          </span>
+
+          <h1 className="font-display mt-4 text-[clamp(36px,6vw,56px)] leading-none font-bold tracking-[0.02em] uppercase">
+            {history.title}
           </h1>
-          <p className="font-display mt-2 text-[clamp(18px,3vw,28px)] font-semibold tracking-[0.04em] text-white/85 uppercase">
-            1992 оноос өнөөдрийг хүртэл
-          </p>
-          <p className="mt-6 max-w-2xl text-base leading-[1.75] text-white/80">
+          <p className="mt-5 max-w-[560px] text-[16px] leading-[1.55] text-white/70 md:text-[18px]">
             {history.intro}
           </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#timeline"
+              className="font-display team-focus bg-paper text-ink hover:bg-mute hover:text-paper inline-flex min-h-11 items-center px-6 text-sm font-semibold tracking-[0.06em] uppercase transition-colors"
+            >
+              Цаг хугацааны тууз
+            </a>
+            <TeamButton variant="dark-outline" href={routes.site.roster}>
+              Тоглогчид
+            </TeamButton>
+          </div>
+
           <div
             aria-hidden="true"
-            className="mt-10 hidden items-center gap-2 text-sm font-medium tracking-[0.14em] text-white/60 uppercase md:flex"
+            className="mt-12 hidden items-center gap-2 text-[12px] font-medium tracking-[0.14em] text-white/50 uppercase md:flex"
           >
             <ChevronDown className="animate-bounce" />
             Доош гүйлгэх
@@ -53,7 +78,10 @@ export default function HistoryPage() {
         </div>
       </section>
 
+      <div id="timeline" className="scroll-mt-14" aria-hidden="true" />
+
       <HistoryExperience />
+      <HistoryExtras />
     </>
   );
 }

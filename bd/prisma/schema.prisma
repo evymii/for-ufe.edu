@@ -1,5 +1,6 @@
-// Prisma schema — PostgreSQL only.
-// NOTE (Prisma 7): the datasource `url` is configured in prisma.config.ts, not here.
+// Prisma schema — MongoDB.
+// IDs are ObjectIds; role/status-like fields are validated strings (the
+// MongoDB connector has no native enums).
 
 generator client {
   provider = "prisma-client"
@@ -7,33 +8,35 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-}
-
-enum Role {
-  USER
-  ADMIN
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String         @id @default(uuid()) @db.Uuid
-  email         String         @unique
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  email         String           @unique
+  // Unique among non-null values via a partial index created by the seed —
+  // a plain @unique would allow only ONE user without a username.
+  username      String?
   passwordHash  String
   name          String?
-  role          Role           @default(USER)
-  isActive      Boolean        @default(true)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  role          String           @default("USER") // USER | ADMIN
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   refreshTokens RefreshToken[]
+  contentBlocks ContentBlock[]
+  contentEdits  ContentHistory[]
+  media         Media[]
 
   @@index([role])
   @@index([isActive])
 }
 
 model RefreshToken {
-  id        String    @id @default(uuid()) @db.Uuid
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   tokenHash String    @unique
-  userId    String    @db.Uuid
+  userId    String    @map("user_id") @db.ObjectId
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime  @default(now())
@@ -46,7 +49,7 @@ model RefreshToken {
 // ─── Team site content (public reads, ADMIN-only writes) ────────────────────
 
 model NewsPost {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   slug        String   @unique
   excerpt     String
@@ -65,7 +68,7 @@ model NewsPost {
 }
 
 model Player {
-  id           String   @id @default(uuid()) @db.Uuid
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   slug         String   @unique
   number       Int?
@@ -92,7 +95,7 @@ model Player {
 }
 
 model Game {
-  id            String   @id @default(uuid()) @db.Uuid
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   competition   String   @default("Их сургуулиудын аварга шалгаруулах тэмцээн")
   round         String?
   opponent      String
@@ -115,7 +118,7 @@ model Game {
 }
 
 model StandingRow {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   teamName  String
   teamShort String?
   teamLogo  String?
@@ -130,7 +133,7 @@ model StandingRow {
 }
 
 model Partner {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   logo      String?
   url       String?
@@ -143,23 +146,95 @@ model Partner {
 }
 
 model MediaAlbum {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String    @unique
+  category    String    @default("GAMES") // GAMES | COMMUNITY | EVENTS
+  coverImage  String?
+  images      Json      @default("[]") // [{ url, caption? }]
+  eventDate   DateTime?
+  sortOrder   Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isPublished, sortOrder])
+  @@index([category, isPublished])
+}
+
+// Front office — executive profiles grouped by tab (ownership / basketball
+// operations / business / coaches).
+model Executive {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  slug      String   @unique
+  group     String   @default("COACHES") // OWNERSHIP | OPERATIONS | BUSINESS | COACHES
+  title     String
+  photo     String?
+  bio       String?
+  bullets   String[] @default([])
+  sortOrder Int      @default(0)
+  isPublic  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublic, group, sortOrder])
+}
+
+// Video library — featured player + category chips on /videos.
+model Video {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   slug        String   @unique
-  coverImage  String?
-  images      Json     @default("[]") // [{ url, caption? }]
-  eventDate   DateTime?
-  sortOrder   Int      @default(0)
+  category    String   @default("HIGHLIGHTS") // HIGHLIGHTS | INTERVIEWS | BEHIND_THE_SCENES | PRESS
+  thumbnail   String?
+  videoUrl    String? // direct mp4/hls source
+  youtubeId   String? // YouTube fallback (iframe embed)
+  durationSec Int?
+  isFeatured  Boolean  @default(false)
   isPublished Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([isPublished, sortOrder])
+  @@index([isPublished, category, sortOrder])
+}
+
+// Fan club shop catalogue — product cards on /fan-club.
+model ShopProduct {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  slug           String   @unique
+  category       String   @default("JERSEYS") // JERSEYS | TEES | HOODIES | HATS | KIDS | GEAR
+  price          Int // MNT
+  compareAtPrice Int?
+  image          String?
+  url            String? // external product page
+  sizes          String[] @default([])
+  badge          String?
+  isVisible      Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([isVisible, category, sortOrder])
+}
+
+// Newsletter signups from the public /newsletter page.
+model NewsletterSubscriber {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  firstName String?
+  interests String[] @default([]) // recaps | tickets | community | shop
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 // Editable marketing copy, addressed by page/section (JSON blobs).
 model SiteContent {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   page      String
   section   String
   data      Json
@@ -169,9 +244,70 @@ model SiteContent {
   @@unique([page, section])
 }
 
+// Editable site text, one document per page/key/locale. New pages and keys
+// appear without schema changes: the admin registers defaults (ensure) and
+// edits values; every edit is written to ContentHistory so it can be reverted.
+model ContentBlock {
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  pageSlug  String           @map("page_slug")
+  key       String
+  locale    String
+  type      String // text | richtext | json | image
+  value     String
+  updatedBy String?          @map("updated_by") @db.ObjectId
+  updater   User?            @relation(fields: [updatedBy], references: [id], onDelete: SetNull)
+  history   ContentHistory[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([pageSlug, key, locale])
+  @@index([pageSlug, locale])
+  @@map("content_blocks")
+}
+
+// Uploaded images. Binary assets live in the storage provider (Cloudinary);
+// this collection keeps metadata + the provider's public_id so deleting a
+// document also deletes the asset. Swapping providers means a new provider
+// value + documents.
+model Media {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  provider   String   @default("cloudinary")
+  publicId   String   @unique @map("public_id")
+  url        String
+  mime       String
+  sizeBytes  Int      @map("size_bytes")
+  width      Int?
+  height     Int?
+  altText    String?  @map("alt_text")
+  folder     String   @default("uploads")
+  uploadedBy String?  @map("uploaded_by") @db.ObjectId
+  uploader   User?    @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+  @@index([uploadedBy])
+  @@map("media")
+}
+
+// Full audit trail of content edits: who changed what, when, from which value.
+model ContentHistory {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  blockId   String       @map("block_id") @db.ObjectId
+  block     ContentBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  oldValue  String?      @map("old_value")
+  newValue  String       @map("new_value")
+  changedBy String?      @map("changed_by") @db.ObjectId
+  changer   User?        @relation(fields: [changedBy], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+
+  @@index([blockId, createdAt(sort: Desc)])
+  @@map("content_history")
+}
+
 // Public contact form inbox (admins read/mark/delete).
 model ContactMessage {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   email     String
   phone     String?

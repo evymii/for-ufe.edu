@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Dev guide</title><script src="c30bef94-7f88-4d3e-9d73-4f6faefbf24b"></script><meta name="hz:slide-selector" content="[data-canvas-width]"><meta name="hz:canvas-width" content="1280"><meta name="hz:canvas-height" content="2400"></head><body><x-dc><helmet><style>body{margin:0;background:#F2F2F0;font-family:'Barlow',Arial,sans-serif;color:#0B0B0C}h1,h2,h3{font-family:'Barlow Condensed',Arial,sans-serif;text-transform:uppercase;margin:0;letter-spacing:.02em}p,li{font-size:15px;line-height:1.55;margin:0}ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}.s{background:#fff;border:1px solid #D9D9D6;padding:28px;display:flex;flex-direction:column;gap:10px}.k{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#5A5A57}code,pre{font-family:ui-monospace,Menlo,monospace;font-size:13px}pre{margin:0;background:#0B0B0C;color:#E6E6E3;padding:16px;white-space:pre-wrap;line-height:1.5}.g{display:grid;gap:24px;grid-template-columns:1fr 1fr}</style></helmet>
+<div style="width:1280px;box-sizing:border-box;padding:48px 32px 80px;display:flex;flex-direction:column;gap:24px" data-canvas-width="1280" data-canvas-height="2400" data-document-role="page" data-label="How to develop – build guide">
+<div style="background:#0B0B0C;color:#fff;padding:48px"><span class="k" style="color:#B8B8B4">How to develop these designs</span><h1 style="font-size:64px;line-height:.95;margin-top:8px">Build guide &amp; prompts</h1><p style="margin-top:12px;color:#D9D9D6;max-width:760px">Use the boards to the left as the visual reference. Build in the order below, one page per prompt, and keep every page on the same tokens and components.</p></div>
+<div class="g">
+<div class="s"><span class="k">1 · Stack</span><ul><li><b>Next.js (App Router) + TypeScript</b> for routing, image optimization and server-rendered SEO.</li><li><b>Tailwind CSS</b> with the tokens below mapped to the theme; <b>CSS variables</b> for light/dark.</li><li><b>Motion:</b> CSS transitions first; <b>Framer Motion</b> for the carousel, drawer and lightbox; <b>View Transitions API</b> for route changes (fade out 120ms, in 240ms + 8px rise).</li><li><b>Data:</b> licensed stats/schedule feed behind a typed API route; CMS (Sanity/Contentful) for news, photos, video, history.</li><li><b>Video:</b> HLS player (hls.js or Mux). <b>Tests:</b> Playwright + axe.</li></ul></div>
+<div class="s"><span class="k">2 · Folder structure</span><pre>app/
+  (site)/page.tsx            Home
+  roster/ leaders/ schedule/
+  history/ front-office/
+  news/photos/ news/videos/
+  newsletter/ city-edition/ fan-club/
+components/
+  layout/ Header Footer MegaMenu Drawer
+  cards/  NewsCard PlayerCard VideoCard ProductCard
+  ui/     Button Pill Tabs Dropdown Lightbox Skeleton
+lib/ tokens.ts api.ts motion.ts
+styles/ globals.css</pre></div>
+<div class="s"><span class="k">3 · Tokens (build first)</span><p>ink #0B0B0C · paper #FFF · mist #F2F2F0 · line #D9D9D6 · mute #5A5A57 · accent [TEAM ACCENT]. Barlow Condensed 700 uppercase headings (72/40/28/24), Barlow body 16/24. Grid: 12 col, max 1280, gutter 24, side padding 32/24/16. Spacing 4·8·16·24·32·48·64·96. Breakpoints 1280/1024/768/390. Motion: 200ms ease-out hover, 400ms image zoom, 240ms drawers.</p></div>
+<div class="s"><span class="k">4 · Build order</span><ol><li>Tokens, fonts, Button, Pill, Tabs, Skeleton</li><li>Header (sticky + collapse), Footer, mobile drawer</li><li>Route transition + progress bar</li><li>Card components (News, Player, Video, Product)</li><li>Home → Roster → Leaders → Schedule</li><li>History, Front office, Photos, Videos</li><li>Newsletter (form + states), City edition, Fan club</li><li>Responsive pass, a11y pass, performance pass</li></ol></div>
+</div>
+<div class="s"><span class="k">5 · Master prompt template (one per page)</span><pre>Build the [PAGE] page for a [SPORT] team website in Next.js 14 + TypeScript + Tailwind.
+Use design tokens from lib/tokens.ts and shared components. Match the
+"Design – [PAGE]" board exactly: layout, sizes, spacing, and states.
+Layout: [sections top to bottom with px heights, column counts, gaps].
+Components: [cards with exact sizes, fields, chips].
+Interactions: [hover, focus, tabs, filters, drawers, lightbox].
+Transitions: [durations, easings, stagger, reduced-motion fallback].
+Responsive: 1280 / 1024 / 768 / 390 behavior for each section.
+Data: typed props from /api/[endpoint]; show skeletons while loading.
+A11y: semantic landmarks, 44px targets, 4.5:1 contrast, keyboard paths.
+Do not include team logos or photos; use placeholders from /public/placeholders.
+Acceptance: no layout shift, Lighthouse a11y ≥ 95, Playwright test passes.</pre></div>
+<div class="g">
+<div class="s"><span class="k">6 · Worked example · Roster prompt</span><pre>Build /roster. Header band 200px (mist) with H1 72px, season select 44px,
+Grid/Table toggle. Filter bar 56px: pills (All, Guards, Forwards, Centers,
+Two-way) + search 260×36. Grid: 4 columns (3 @1024, 2 @768/390), gap 24.
+PlayerCard 294×440: portrait 300px with 132px jersey numeral watermark,
+24px position chip top-left, status tag bottom-left; name 16/32; HT·WT·AGE
+strip; PPG·RPG·APG strip; footer link + college. Hover: lift 4px, shadow
+0 12px 24px, 4px ink top border in 200ms, image scale 1.04 in 400ms.
+Table: sticky 48px header, 64px rows, sortable, mobile h-scroll with
+sticky first column. Grid⇄Table crossfade 200ms.</pre></div>
+<div class="s"><span class="k">7 · Page-specific engineering notes</span><ul><li><b>Home:</b> carousel autoplay 6s, pause on hover/focus, crossfade 600ms; video rail uses scroll-snap.</li><li><b>Leaders:</b> tabs change a query param; bars animate width 500ms on data change.</li><li><b>History:</b> parallax via transform on scroll (rAF, disabled for reduced motion); IntersectionObserver for card reveals and decade tab spy.</li><li><b>Schedule:</b> timezone-aware dates; calendar built from the same data as the list.</li><li><b>Photos/Videos:</b> lazy-load with blur-up; lightbox traps focus; video route updates URL with history.pushState.</li><li><b>Newsletter:</b> server action posts to the email provider; optimistic success state.</li><li><b>Fan club:</b> outbound product links open a licensed retailer in a new tab.</li></ul></div>
+</div>
+<div class="s"><span class="k">8 · QA checklist</span><p>Compare each page to its board at 1280 and 390 · all hover/focus states · keyboard-only run · prefers-reduced-motion · no horizontal scroll · image CLS = 0 · Lighthouse perf ≥ 90 · axe has no serious issues · licensed assets only (logos, photos, player data).</p></div>
+</div>
+</x-dc><script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:2400}}">
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body></html>

@@ -3,7 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { PageHero } from "@/components/team/page-hero";
-import { StaffCard, type RosterStaff } from "@/components/team/staff-card";
+import { FrontOffice, type RosterStaff } from "@/components/team/front-office";
+import { StaffSubnav } from "@/components/team/staff-subnav";
+import { Reveal } from "@/components/team/reveal";
 import { staff } from "@/content/site";
 import { staffKey } from "@/lib/staff";
 
@@ -35,32 +37,32 @@ export default function ManagementPage() {
     ...member,
     photo: resolvePhoto(member),
   }));
-  const [headCoach, ...others] = roster;
 
   return (
     <>
-      <PageHero breadcrumb="Удирдлага" title="Удирдлага" />
+      <PageHero
+        breadcrumb="Удирдлага"
+        title="Удирдлага"
+        subtitle="Шигшээ багийн дасгалжуулагчид, удирдлага, багийн ахлагч."
+      />
 
-      <section className="bg-paper-soft">
-        <div className="mx-auto w-full max-w-[1120px] px-4 py-[72px] sm:px-6 md:py-24">
-          <div className="border-line mb-8 flex flex-wrap items-end justify-between gap-4 border-b pb-5">
-            <div>
-              <p className="eyebrow">Багийн удирдлага</p>
-              <h2 className="font-display text-ink mt-1.5 text-xl font-semibold tracking-[0.02em] uppercase">
-                Удирдлага
-                <span className="text-mute ml-2 text-sm font-medium">
-                  {roster.length}
-                </span>
+      <StaffSubnav />
+
+      <section id="coaching" className="bg-paper-soft scroll-mt-24">
+        <div className="team-shell py-12 md:py-16">
+          <Reveal>
+            <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+              <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
+                Багийн удирдлага
               </h2>
+              <span className="text-mute text-[12px] font-semibold tracking-[0.12em] uppercase">
+                {roster.length} гишүүн
+              </span>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {headCoach ? <StaffCard member={headCoach} featured /> : null}
-            {others.map((member) => (
-              <StaffCard key={member.name} member={member} />
-            ))}
-          </div>
+          </Reveal>
+          <Reveal delay={60}>
+            <FrontOffice members={roster} />
+          </Reveal>
         </div>
       </section>
     </>

@@ -44,4 +44,6 @@ export interface SafeUser {
   name: null | string;
   role: Role;
   updatedAt: Date;
+  /** Named staff login (manager / editor / edumanager); null for plain accounts. */
+  username: null | string;
 }

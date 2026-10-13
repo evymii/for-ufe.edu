@@ -23,10 +23,17 @@ export async function deleteGame(req: Request, res: Response): Promise<void> {
 export async function listGames(req: Request, res: Response): Promise<void> {
   const query = req.query as unknown as ListGamesQuery;
   const direction = query.status === 'FINAL' ? 'desc' : 'asc';
+  // month=YYYY-MM narrows to that calendar month (UB evenings, UTC+8).
+  const monthStart = query.month ? new Date(`${query.month}-01T00:00:00.000Z`) : null;
+  const monthEnd = monthStart ? new Date(monthStart.getTime() + 32 * 24 * 60 * 60 * 1000) : null;
+  if (monthEnd) monthEnd.setUTCDate(1);
   const items = await prisma.game.findMany({
     orderBy: { tipsAt: direction },
     take: query.limit ?? 100,
-    where: query.status ? { status: query.status } : {},
+    where: {
+      ...(query.status ? { status: query.status } : {}),
+      ...(monthStart && monthEnd ? { tipsAt: { gte: monthStart, lt: monthEnd } } : {}),
+    },
   });
   ok(res, { items });
 }

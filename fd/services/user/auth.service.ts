@@ -11,7 +11,7 @@ export const authService = {
     return api.post<AuthPayload>("/api/v1/user/auth/register", input);
   },
 
-  login(input: { email: string; password: string }): Promise<AuthPayload> {
+  login(input: { identifier: string; password: string }): Promise<AuthPayload> {
     return api.post<AuthPayload>("/api/v1/user/auth/login", input);
   },
 

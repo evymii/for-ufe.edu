@@ -1,85 +1,18 @@
-import { hero } from "@/content/site";
+"use client";
 
-// ── Wave banner ─────────────────────────────────────────────────────────────
-// Full-width navy banner: a field of thin flowing wave lines bunching toward
-// a blue glow left of center (pure deterministic SVG — no image asset),
-// with the team mark and the headline stacked dead-center.
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-const WAVE_W = 1600;
-const WAVE_H = 460;
-const LINE_COUNT = 88;
-const SAMPLES = 90;
+import { TeamButton } from "@/components/team/button";
+import { WaveField } from "@/components/team/wave-field";
+import { routes } from "@/config/routes";
+import { hero, history } from "@/content/site";
+import { cn } from "@/lib/utils";
 
-/** Deterministic 0..1 shade per line so the field feels hand-drawn. */
-function lineShade(i: number): number {
-  const x = Math.sin((i + 1) * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-}
-
-/** Vertical envelope: lines spread at the glow center, compress at the edges. */
-function envelope(t: number): number {
-  const d = (t - 0.4) / 0.36;
-  return 0.42 + 0.58 * Math.exp(-d * d);
-}
-
-/** Shared undulating ribbon shape, normalized to roughly -1..1. */
-function ribbon(t: number): number {
-  return (
-    Math.sin(t * Math.PI * 2 * 1.15 + 0.65) * 0.52 +
-    Math.sin(t * Math.PI * 2 * 2.05 + 2.4) * 0.3 +
-    Math.sin(t * Math.PI * 2 * 0.62 + 4.1) * 0.36
-  );
-}
-
-function wavePath(i: number): string {
-  const mid = i / (LINE_COUNT - 1) - 0.5;
-  const parts: string[] = [];
-  for (let s = 0; s <= SAMPLES; s++) {
-    const t = s / SAMPLES;
-    const y =
-      WAVE_H / 2 +
-      mid * WAVE_H * 0.92 * envelope(t) +
-      ribbon(t) * 30 * (0.35 + 0.65 * envelope(t));
-    parts.push(
-      `${s === 0 ? "M" : "L"}${(t * WAVE_W).toFixed(1)} ${y.toFixed(1)}`,
-    );
-  }
-  return parts.join(" ");
-}
-
-function WaveField() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="absolute inset-0 h-full w-full"
-      viewBox={`0 0 ${WAVE_W} ${WAVE_H}`}
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        <linearGradient id="hero-wave" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#2E6BFF" stopOpacity="0.05" />
-          <stop offset="0.3" stopColor="#2E6BFF" stopOpacity="0.45" />
-          <stop offset="0.4" stopColor="#6FA0FF" stopOpacity="0.95" />
-          <stop offset="0.55" stopColor="#2E6BFF" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#2E6BFF" stopOpacity="0.05" />
-        </linearGradient>
-      </defs>
-      {Array.from({ length: LINE_COUNT }, (_, i) => {
-        const shade = lineShade(i);
-        return (
-          <path
-            key={i}
-            d={wavePath(i)}
-            fill="none"
-            stroke="url(#hero-wave)"
-            strokeWidth={1.1 + shade * 0.6}
-            opacity={0.3 + shade * 0.5}
-          />
-        );
-      })}
-    </svg>
-  );
-}
+// ── Hero carousel ───────────────────────────────────────────────────────────
+// 640px ink panel: wave-field texture, bottom gradient, 72px condensed
+// headline. Three crossfading slides (600ms), autoplay every 6s — paused on
+// hover/focus — with 80×3 progress bars and 44px arrow controls.
 
 /** Abstract three-bar team mark (two cut bars framing a slanted middle bar). */
 function TeamMark({ className }: { className?: string }) {
@@ -97,34 +30,190 @@ function TeamMark({ className }: { className?: string }) {
   );
 }
 
+interface Slide {
+  kicker: string;
+  headline: string;
+  subline: string;
+  primary: { label: string; href: string };
+  secondary?: { label: string; href: string };
+}
+
+const slides: Slide[] = [
+  {
+    kicker: hero.badge,
+    headline: hero.headline,
+    subline: hero.intro,
+    primary: { label: hero.ctaPlayers, href: routes.site.roster },
+    secondary: { label: hero.ctaHistory, href: routes.site.history },
+  },
+  {
+    kicker: `${hero.aubl.title} · 2026–2027`,
+    headline: hero.aubl.title,
+    subline: hero.aubl.text,
+    primary: { label: hero.ctaHistory, href: routes.site.history },
+    secondary: { label: "Холбоо барих", href: routes.site.contact },
+  },
+  {
+    kicker: "Түүх · 1992–2026",
+    headline: "1992 оноос өнөөдрийг хүртэл",
+    subline: history.intro,
+    primary: { label: "Түүхийг үзэх", href: routes.site.history },
+  },
+];
+
+const AUTOPLAY_MS = 6000;
+
 export function Hero() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [progressKey, setProgressKey] = useState(0);
+  const parallaxRef = useRef<HTMLDivElement>(null);
+
+  const go = useCallback((next: number) => {
+    setIndex(((next % slides.length) + slides.length) % slides.length);
+    setProgressKey((key) => key + 1);
+  }, []);
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = window.setTimeout(() => go(index + 1), AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [index, paused, go, progressKey]);
+
+  // Parallax: the texture layer drifts at 0.4× scroll speed while the hero
+  // is on screen (skipped under prefers-reduced-motion).
+  useEffect(() => {
+    const layer = parallaxRef.current;
+    if (!layer) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const update = () => {
+      const y = Math.min(window.scrollY, 800);
+      layer.style.transform = `translate3d(0, ${y * 0.4}px, 0)`;
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
   return (
-    // Banner: wave field + centered mark & headline
     <section
       aria-label={hero.title}
-      className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-[#0A1440] md:min-h-[460px]"
+      className="bg-ink relative flex h-[560px] items-end overflow-hidden text-white md:h-[640px]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") go(index + 1);
+        if (event.key === "ArrowLeft") go(index - 1);
+      }}
     >
-      <WaveField />
-      {/* Glow + vignette overlays */}
+      <div ref={parallaxRef} className="absolute inset-0 will-change-transform">
+        <WaveField height={640} />
+      </div>
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(ellipse_62%_85%_at_38%_50%,rgba(46,107,255,0.30)_0%,rgba(46,107,255,0.10)_40%,transparent_70%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(90deg,#060D2E_0%,transparent_20%,transparent_80%,#060D2E_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,9,34,0.45)_0%,transparent_28%,transparent_72%,rgba(4,9,34,0.55)_100%)]"
+        className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,.85),rgba(0,0,0,0)_60%)]"
       />
 
-      <div className="relative z-10 flex flex-col items-center px-4 py-20 text-center sm:px-6">
-        <TeamMark className="h-12 w-12 text-white md:h-16 md:w-16" />
-        <h1 className="font-display mt-7 max-w-5xl text-[clamp(26px,3.4vw,42px)] leading-[1.2] font-bold tracking-[0.02em] text-white uppercase md:mt-8">
-          {hero.headline}
-        </h1>
+      <div className="team-shell relative w-full pb-14 md:pb-16">
+        <div className="flex min-h-[240px] max-w-[780px] flex-col md:min-h-[280px]">
+          {slides.map((slide, slideIndex) => (
+            <div
+              key={slide.headline}
+              aria-hidden={slideIndex !== index}
+              className={cn(
+                "flex flex-col gap-4 transition-opacity duration-[600ms] ease-out",
+                slideIndex === index
+                  ? "opacity-100"
+                  : "pointer-events-none absolute inset-0 opacity-0",
+              )}
+            >
+              <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
+                {slide.kicker}
+              </p>
+              <h1 className="font-display text-[clamp(40px,7vw,72px)] leading-[0.98] font-bold tracking-[0.02em] uppercase">
+                {slide.headline}
+              </h1>
+              <p className="max-w-[560px] text-base leading-[1.5] text-white/70">
+                {slide.subline}
+              </p>
+            </div>
+          ))}
+
+          <div className="mt-8 flex flex-wrap items-center gap-6">
+            <TeamButton variant="dark" href={slides[index]!.primary.href}>
+              {slides[index]!.primary.label}
+            </TeamButton>
+            {slides[index]!.secondary ? (
+              <TeamButton
+                variant="dark-outline"
+                href={slides[index]!.secondary!.href}
+              >
+                {slides[index]!.secondary!.label}
+              </TeamButton>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Controls: progress bars + 44px arrows */}
+        <div className="mt-10 flex items-center justify-between gap-6">
+          <div
+            className="flex items-center gap-2"
+            role="tablist"
+            aria-label="Слайд"
+          >
+            {slides.map((slide, slideIndex) => (
+              <button
+                key={slide.headline}
+                type="button"
+                role="tab"
+                aria-selected={slideIndex === index}
+                aria-label={`Слайд ${slideIndex + 1}`}
+                onClick={() => go(slideIndex)}
+                className="team-focus h-11 py-4"
+              >
+                <span className="relative block h-[3px] w-16 overflow-hidden bg-white/25 md:w-20">
+                  {slideIndex === index ? (
+                    <span
+                      key={progressKey}
+                      className="absolute inset-0 origin-left bg-white"
+                      style={{
+                        animation: `hero-progress ${AUTOPLAY_MS}ms linear forwards`,
+                        animationPlayState: paused ? "paused" : "running",
+                      }}
+                    />
+                  ) : slideIndex < index ? (
+                    <span className="absolute inset-0 bg-white/70" />
+                  ) : null}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => go(index - 1)}
+              aria-label="Өмнөх слайд"
+              className="team-focus hover:text-ink flex size-11 items-center justify-center border border-white/30 transition-colors hover:border-white hover:bg-white"
+            >
+              <ArrowLeft className="size-5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(index + 1)}
+              aria-label="Дараагийн слайд"
+              className="team-focus hover:text-ink flex size-11 items-center justify-center border border-white/30 transition-colors hover:border-white hover:bg-white"
+            >
+              <ArrowRight className="size-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
       </div>
+
+      <TeamMark className="absolute top-8 right-6 hidden h-14 w-14 text-white/20 lg:block" />
     </section>
   );
 }

@@ -1,4 +1,3 @@
-import { Prisma } from '../../generated/prisma/client.js';
 import { prisma } from '../../lib/prisma.js';
 
 export interface DailyCountRow {
@@ -12,14 +11,26 @@ export interface UserCounts {
   total: number;
 }
 
-export function getDailyRegistrations(days: number): Promise<DailyCountRow[]> {
-  return prisma.$queryRaw<DailyCountRow[]>(Prisma.sql`
-    SELECT to_char(date_trunc('day', "createdAt"), 'YYYY-MM-DD') AS date, count(*)::int AS count
-    FROM "User"
-    WHERE "createdAt" >= now() - make_interval(days => ${days})
-    GROUP BY 1
-    ORDER BY 1
-  `);
+/** Daily registration counts for the admin chart, grouped in JS from a
+ *  bounded fetch (users created since the window start) — MongoDB has no
+ *  date_trunc, and the window is small enough that client-side grouping is
+ *  exact and cheap. Dates are UTC YYYY-MM-DD. */
+export async function getDailyRegistrations(days: number): Promise<DailyCountRow[]> {
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: 'asc' },
+    select: { createdAt: true },
+    where: { createdAt: { gte: since } },
+  });
+
+  const byDay = new Map<string, number>();
+  for (const { createdAt } of users) {
+    const date = createdAt.toISOString().slice(0, 10);
+    byDay.set(date, (byDay.get(date) ?? 0) + 1);
+  }
+  return [...byDay.entries()]
+    .map(([date, count]) => ({ count, date }))
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export async function getUserCounts(): Promise<UserCounts> {

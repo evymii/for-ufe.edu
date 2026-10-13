@@ -25,6 +25,7 @@ function safeUser(overrides: Partial<SafeUser> = {}): SafeUser {
     name: 'Service Test',
     role: 'USER',
     updatedAt: now,
+    username: null,
     ...overrides,
   };
 }
@@ -38,6 +39,7 @@ const authUserShape: {
   passwordHash: string;
   role: SafeUser['role'];
   updatedAt: Date;
+  username: null | string;
 } = {
   createdAt: now,
   email: 'service@test.local',
@@ -47,6 +49,7 @@ const authUserShape: {
   passwordHash: '$2b$04$somehashsomehashsomehashsomehashsomehashsomehashso',
   role: 'USER',
   updatedAt: now,
+  username: null,
 };
 
 beforeEach(() => {
@@ -92,32 +95,51 @@ describe('auth.service (queries mocked)', () => {
   });
 
   describe('login', () => {
-    it('returns a safe user and tokens for valid credentials', async () => {
+    it('returns a safe user and tokens for a valid username login', async () => {
       const hash = await import('bcrypt').then((b) => b.hash('Password123!', 4));
-      mockedUserQueries.findUserWithPasswordByEmail.mockResolvedValue({
-        ...safeUser(),
+      mockedUserQueries.findUserAuthByUsername.mockResolvedValue({
+        ...authUserShape,
         passwordHash: hash,
+        username: 'manager',
       });
 
       const result = await authService.login({
-        email: 'service@test.local',
+        identifier: 'manager',
         password: 'Password123!',
       });
 
-      expect(result.user.email).toBe('service@test.local');
+      expect(result.user.username).toBe('manager');
       expect(result.user).not.toHaveProperty('passwordHash');
       expect(mockedTokenQueries.createRefreshToken).toHaveBeenCalledTimes(1);
     });
 
-    it('rejects a wrong password with the generic message', async () => {
+    it('falls back to email when the identifier is not a username', async () => {
       const hash = await import('bcrypt').then((b) => b.hash('Password123!', 4));
-      mockedUserQueries.findUserWithPasswordByEmail.mockResolvedValue({
-        ...safeUser(),
+      mockedUserQueries.findUserAuthByUsername.mockResolvedValue(null);
+      mockedUserQueries.findUserAuthByEmail.mockResolvedValue({
+        ...authUserShape,
         passwordHash: hash,
       });
 
+      const result = await authService.login({
+        identifier: 'service@test.local',
+        password: 'Password123!',
+      });
+
+      expect(result.user.email).toBe('service@test.local');
+    });
+
+    it('rejects a wrong password with the generic message', async () => {
+      const hash = await import('bcrypt').then((b) => b.hash('Password123!', 4));
+      mockedUserQueries.findUserAuthByUsername.mockResolvedValue({
+        ...authUserShape,
+        passwordHash: hash,
+        username: 'manager',
+      });
+      mockedUserQueries.findUserAuthByEmail.mockResolvedValue(null);
+
       const error = await authService
-        .login({ email: 'service@test.local', password: 'WrongPassword1!' })
+        .login({ identifier: 'manager', password: 'WrongPassword1!' })
         .catch((e: unknown) => e);
 
       expect(error).toBeInstanceOf(ApiError);
@@ -125,11 +147,12 @@ describe('auth.service (queries mocked)', () => {
       expect((error as ApiError).message).toBe(authService.INVALID_CREDENTIALS_MESSAGE);
     });
 
-    it('rejects an unknown email with the SAME generic message (no enumeration)', async () => {
-      mockedUserQueries.findUserWithPasswordByEmail.mockResolvedValue(null);
+    it('rejects an unknown account with the SAME generic message (no enumeration)', async () => {
+      mockedUserQueries.findUserAuthByUsername.mockResolvedValue(null);
+      mockedUserQueries.findUserAuthByEmail.mockResolvedValue(null);
 
       const error = await authService
-        .login({ email: 'ghost@test.local', password: 'Whatever123!' })
+        .login({ identifier: 'ghost', password: 'Whatever123!' })
         .catch((e: unknown) => e);
 
       expect((error as ApiError).statusCode).toBe(401);
@@ -138,13 +161,16 @@ describe('auth.service (queries mocked)', () => {
 
     it('rejects an inactive user even with valid credentials', async () => {
       const hash = await import('bcrypt').then((b) => b.hash('Password123!', 4));
-      mockedUserQueries.findUserWithPasswordByEmail.mockResolvedValue({
-        ...safeUser({ isActive: false }),
+      mockedUserQueries.findUserAuthByUsername.mockResolvedValue({
+        ...authUserShape,
+        isActive: false,
         passwordHash: hash,
+        username: 'manager',
       });
+      mockedUserQueries.findUserAuthByEmail.mockResolvedValue(null);
 
       const error = await authService
-        .login({ email: 'service@test.local', password: 'Password123!' })
+        .login({ identifier: 'manager', password: 'Password123!' })
         .catch((e: unknown) => e);
 
       expect((error as ApiError).statusCode).toBe(401);

@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -161,7 +161,7 @@ export type SiteContentGroupByOutputType = {
   _max: SiteContentMaxAggregateOutputType | null
 }
 
-export type GetSiteContentGroupByPayload<T extends SiteContentGroupByArgs> = Prisma.PrismaPromise<
+type GetSiteContentGroupByPayload<T extends SiteContentGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<SiteContentGroupByOutputType, T['by']> &
       {
@@ -180,7 +180,7 @@ export type SiteContentWhereInput = {
   AND?: Prisma.SiteContentWhereInput | Prisma.SiteContentWhereInput[]
   OR?: Prisma.SiteContentWhereInput[]
   NOT?: Prisma.SiteContentWhereInput | Prisma.SiteContentWhereInput[]
-  id?: Prisma.UuidFilter<"SiteContent"> | string
+  id?: Prisma.StringFilter<"SiteContent"> | string
   page?: Prisma.StringFilter<"SiteContent"> | string
   section?: Prisma.StringFilter<"SiteContent"> | string
   data?: Prisma.JsonFilter<"SiteContent">
@@ -226,7 +226,7 @@ export type SiteContentScalarWhereWithAggregatesInput = {
   AND?: Prisma.SiteContentScalarWhereWithAggregatesInput | Prisma.SiteContentScalarWhereWithAggregatesInput[]
   OR?: Prisma.SiteContentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SiteContentScalarWhereWithAggregatesInput | Prisma.SiteContentScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"SiteContent"> | string
+  id?: Prisma.StringWithAggregatesFilter<"SiteContent"> | string
   page?: Prisma.StringWithAggregatesFilter<"SiteContent"> | string
   section?: Prisma.StringWithAggregatesFilter<"SiteContent"> | string
   data?: Prisma.JsonWithAggregatesFilter<"SiteContent">
@@ -238,7 +238,7 @@ export type SiteContentCreateInput = {
   id?: string
   page: string
   section: string
-  data: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data: runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -247,25 +247,23 @@ export type SiteContentUncheckedCreateInput = {
   id?: string
   page: string
   section: string
-  data: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data: runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type SiteContentUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   page?: Prisma.StringFieldUpdateOperationsInput | string
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SiteContentUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   page?: Prisma.StringFieldUpdateOperationsInput | string
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -274,25 +272,23 @@ export type SiteContentCreateManyInput = {
   id?: string
   page: string
   section: string
-  data: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data: runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type SiteContentUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   page?: Prisma.StringFieldUpdateOperationsInput | string
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SiteContentUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   page?: Prisma.StringFieldUpdateOperationsInput | string
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  data?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -338,23 +334,7 @@ export type SiteContentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   updatedAt?: boolean
 }, ExtArgs["result"]["siteContent"]>
 
-export type SiteContentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  page?: boolean
-  section?: boolean
-  data?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["siteContent"]>
 
-export type SiteContentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  page?: boolean
-  section?: boolean
-  data?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["siteContent"]>
 
 export type SiteContentSelectScalar = {
   id?: boolean
@@ -495,30 +475,6 @@ export interface SiteContentDelegate<ExtArgs extends runtime.Types.Extensions.In
   createMany<T extends SiteContentCreateManyArgs>(args?: Prisma.SelectSubset<T, SiteContentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many SiteContents and returns the data saved in the database.
-   * @param {SiteContentCreateManyAndReturnArgs} args - Arguments to create many SiteContents.
-   * @example
-   * // Create many SiteContents
-   * const siteContent = await prisma.siteContent.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many SiteContents and only return the `id`
-   * const siteContentWithIdOnly = await prisma.siteContent.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends SiteContentCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, SiteContentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SiteContentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a SiteContent.
    * @param {SiteContentDeleteArgs} args - Arguments to delete one SiteContent.
    * @example
@@ -583,36 +539,6 @@ export interface SiteContentDelegate<ExtArgs extends runtime.Types.Extensions.In
   updateMany<T extends SiteContentUpdateManyArgs>(args: Prisma.SelectSubset<T, SiteContentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more SiteContents and returns the data updated in the database.
-   * @param {SiteContentUpdateManyAndReturnArgs} args - Arguments to update many SiteContents.
-   * @example
-   * // Update many SiteContents
-   * const siteContent = await prisma.siteContent.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more SiteContents and only return the `id`
-   * const siteContentWithIdOnly = await prisma.siteContent.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends SiteContentUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, SiteContentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SiteContentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one SiteContent.
    * @param {SiteContentUpsertArgs} args - Arguments to update or create a SiteContent.
    * @example
@@ -630,6 +556,29 @@ export interface SiteContentDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    */
   upsert<T extends SiteContentUpsertArgs>(args: Prisma.SelectSubset<T, SiteContentUpsertArgs<ExtArgs>>): Prisma.Prisma__SiteContentClient<runtime.Types.Result.GetResult<Prisma.$SiteContentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more SiteContents that matches the filter.
+   * @param {SiteContentFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const siteContent = await prisma.siteContent.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.SiteContentFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a SiteContent.
+   * @param {SiteContentAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const siteContent = await prisma.siteContent.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.SiteContentAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -982,11 +931,6 @@ export type SiteContentFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` SiteContents.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of SiteContents.
-   */
   distinct?: Prisma.SiteContentScalarFieldEnum | Prisma.SiteContentScalarFieldEnum[]
 }
 
@@ -1016,26 +960,6 @@ export type SiteContentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many SiteContents.
    */
   data: Prisma.SiteContentCreateManyInput | Prisma.SiteContentCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * SiteContent createManyAndReturn
- */
-export type SiteContentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SiteContent
-   */
-  select?: Prisma.SiteContentSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the SiteContent
-   */
-  omit?: Prisma.SiteContentOmit<ExtArgs> | null
-  /**
-   * The data used to create many SiteContents.
-   */
-  data: Prisma.SiteContentCreateManyInput | Prisma.SiteContentCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1064,32 +988,6 @@ export type SiteContentUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
  * SiteContent updateMany
  */
 export type SiteContentUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update SiteContents.
-   */
-  data: Prisma.XOR<Prisma.SiteContentUpdateManyMutationInput, Prisma.SiteContentUncheckedUpdateManyInput>
-  /**
-   * Filter which SiteContents to update
-   */
-  where?: Prisma.SiteContentWhereInput
-  /**
-   * Limit how many SiteContents to update.
-   */
-  limit?: number
-}
-
-/**
- * SiteContent updateManyAndReturn
- */
-export type SiteContentUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SiteContent
-   */
-  select?: Prisma.SiteContentSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the SiteContent
-   */
-  omit?: Prisma.SiteContentOmit<ExtArgs> | null
   /**
    * The data used to update SiteContents.
    */
@@ -1160,6 +1058,34 @@ export type SiteContentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many SiteContents to delete.
    */
   limit?: number
+}
+
+/**
+ * SiteContent findRaw
+ */
+export type SiteContentFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * SiteContent aggregateRaw
+ */
+export type SiteContentAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

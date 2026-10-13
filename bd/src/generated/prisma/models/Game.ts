@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -291,7 +291,7 @@ export type GameGroupByOutputType = {
   _max: GameMaxAggregateOutputType | null
 }
 
-export type GetGameGroupByPayload<T extends GameGroupByArgs> = Prisma.PrismaPromise<
+type GetGameGroupByPayload<T extends GameGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<GameGroupByOutputType, T['by']> &
       {
@@ -310,7 +310,7 @@ export type GameWhereInput = {
   AND?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
   OR?: Prisma.GameWhereInput[]
   NOT?: Prisma.GameWhereInput | Prisma.GameWhereInput[]
-  id?: Prisma.UuidFilter<"Game"> | string
+  id?: Prisma.StringFilter<"Game"> | string
   competition?: Prisma.StringFilter<"Game"> | string
   round?: Prisma.StringNullableFilter<"Game"> | string | null
   opponent?: Prisma.StringFilter<"Game"> | string
@@ -333,19 +333,19 @@ export type GameWhereInput = {
 export type GameOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   competition?: Prisma.SortOrder
-  round?: Prisma.SortOrderInput | Prisma.SortOrder
+  round?: Prisma.SortOrder
   opponent?: Prisma.SortOrder
-  opponentShort?: Prisma.SortOrderInput | Prisma.SortOrder
-  opponentLogo?: Prisma.SortOrderInput | Prisma.SortOrder
+  opponentShort?: Prisma.SortOrder
+  opponentLogo?: Prisma.SortOrder
   isHome?: Prisma.SortOrder
   tipsAt?: Prisma.SortOrder
   venue?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  teamScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  opponentScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  note?: Prisma.SortOrderInput | Prisma.SortOrder
-  streamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  ticketUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamScore?: Prisma.SortOrder
+  opponentScore?: Prisma.SortOrder
+  note?: Prisma.SortOrder
+  streamUrl?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -378,19 +378,19 @@ export type GameWhereUniqueInput = Prisma.AtLeast<{
 export type GameOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   competition?: Prisma.SortOrder
-  round?: Prisma.SortOrderInput | Prisma.SortOrder
+  round?: Prisma.SortOrder
   opponent?: Prisma.SortOrder
-  opponentShort?: Prisma.SortOrderInput | Prisma.SortOrder
-  opponentLogo?: Prisma.SortOrderInput | Prisma.SortOrder
+  opponentShort?: Prisma.SortOrder
+  opponentLogo?: Prisma.SortOrder
   isHome?: Prisma.SortOrder
   tipsAt?: Prisma.SortOrder
   venue?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  teamScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  opponentScore?: Prisma.SortOrderInput | Prisma.SortOrder
-  note?: Prisma.SortOrderInput | Prisma.SortOrder
-  streamUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  ticketUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamScore?: Prisma.SortOrder
+  opponentScore?: Prisma.SortOrder
+  note?: Prisma.SortOrder
+  streamUrl?: Prisma.SortOrder
+  ticketUrl?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -405,7 +405,7 @@ export type GameScalarWhereWithAggregatesInput = {
   AND?: Prisma.GameScalarWhereWithAggregatesInput | Prisma.GameScalarWhereWithAggregatesInput[]
   OR?: Prisma.GameScalarWhereWithAggregatesInput[]
   NOT?: Prisma.GameScalarWhereWithAggregatesInput | Prisma.GameScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"Game"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Game"> | string
   competition?: Prisma.StringWithAggregatesFilter<"Game"> | string
   round?: Prisma.StringNullableWithAggregatesFilter<"Game"> | string | null
   opponent?: Prisma.StringWithAggregatesFilter<"Game"> | string
@@ -468,7 +468,6 @@ export type GameUncheckedCreateInput = {
 }
 
 export type GameUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   competition?: Prisma.StringFieldUpdateOperationsInput | string
   round?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   opponent?: Prisma.StringFieldUpdateOperationsInput | string
@@ -489,7 +488,6 @@ export type GameUpdateInput = {
 }
 
 export type GameUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   competition?: Prisma.StringFieldUpdateOperationsInput | string
   round?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   opponent?: Prisma.StringFieldUpdateOperationsInput | string
@@ -531,7 +529,6 @@ export type GameCreateManyInput = {
 }
 
 export type GameUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   competition?: Prisma.StringFieldUpdateOperationsInput | string
   round?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   opponent?: Prisma.StringFieldUpdateOperationsInput | string
@@ -552,7 +549,6 @@ export type GameUpdateManyMutationInput = {
 }
 
 export type GameUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   competition?: Prisma.StringFieldUpdateOperationsInput | string
   round?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   opponent?: Prisma.StringFieldUpdateOperationsInput | string
@@ -670,47 +666,7 @@ export type GameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
 }, ExtArgs["result"]["game"]>
 
-export type GameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  competition?: boolean
-  round?: boolean
-  opponent?: boolean
-  opponentShort?: boolean
-  opponentLogo?: boolean
-  isHome?: boolean
-  tipsAt?: boolean
-  venue?: boolean
-  status?: boolean
-  teamScore?: boolean
-  opponentScore?: boolean
-  note?: boolean
-  streamUrl?: boolean
-  ticketUrl?: boolean
-  sortOrder?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["game"]>
 
-export type GameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  competition?: boolean
-  round?: boolean
-  opponent?: boolean
-  opponentShort?: boolean
-  opponentLogo?: boolean
-  isHome?: boolean
-  tipsAt?: boolean
-  venue?: boolean
-  status?: boolean
-  teamScore?: boolean
-  opponentScore?: boolean
-  note?: boolean
-  streamUrl?: boolean
-  ticketUrl?: boolean
-  sortOrder?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["game"]>
 
 export type GameSelectScalar = {
   id?: boolean
@@ -875,30 +831,6 @@ export interface GameDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   createMany<T extends GameCreateManyArgs>(args?: Prisma.SelectSubset<T, GameCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Games and returns the data saved in the database.
-   * @param {GameCreateManyAndReturnArgs} args - Arguments to create many Games.
-   * @example
-   * // Create many Games
-   * const game = await prisma.game.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Games and only return the `id`
-   * const gameWithIdOnly = await prisma.game.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends GameCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, GameCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Game.
    * @param {GameDeleteArgs} args - Arguments to delete one Game.
    * @example
@@ -963,36 +895,6 @@ export interface GameDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   updateMany<T extends GameUpdateManyArgs>(args: Prisma.SelectSubset<T, GameUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Games and returns the data updated in the database.
-   * @param {GameUpdateManyAndReturnArgs} args - Arguments to update many Games.
-   * @example
-   * // Update many Games
-   * const game = await prisma.game.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Games and only return the `id`
-   * const gameWithIdOnly = await prisma.game.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends GameUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, GameUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one Game.
    * @param {GameUpsertArgs} args - Arguments to update or create a Game.
    * @example
@@ -1010,6 +912,29 @@ export interface GameDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    */
   upsert<T extends GameUpsertArgs>(args: Prisma.SelectSubset<T, GameUpsertArgs<ExtArgs>>): Prisma.Prisma__GameClient<runtime.Types.Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more Games that matches the filter.
+   * @param {GameFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const game = await prisma.game.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.GameFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a Game.
+   * @param {GameAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const game = await prisma.game.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.GameAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1374,11 +1299,6 @@ export type GameFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Games.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of Games.
-   */
   distinct?: Prisma.GameScalarFieldEnum | Prisma.GameScalarFieldEnum[]
 }
 
@@ -1408,26 +1328,6 @@ export type GameCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Games.
    */
   data: Prisma.GameCreateManyInput | Prisma.GameCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * Game createManyAndReturn
- */
-export type GameCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Game
-   */
-  select?: Prisma.GameSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Game
-   */
-  omit?: Prisma.GameOmit<ExtArgs> | null
-  /**
-   * The data used to create many Games.
-   */
-  data: Prisma.GameCreateManyInput | Prisma.GameCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1456,32 +1356,6 @@ export type GameUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
  * Game updateMany
  */
 export type GameUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update Games.
-   */
-  data: Prisma.XOR<Prisma.GameUpdateManyMutationInput, Prisma.GameUncheckedUpdateManyInput>
-  /**
-   * Filter which Games to update
-   */
-  where?: Prisma.GameWhereInput
-  /**
-   * Limit how many Games to update.
-   */
-  limit?: number
-}
-
-/**
- * Game updateManyAndReturn
- */
-export type GameUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Game
-   */
-  select?: Prisma.GameSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Game
-   */
-  omit?: Prisma.GameOmit<ExtArgs> | null
   /**
    * The data used to update Games.
    */
@@ -1552,6 +1426,34 @@ export type GameDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Games to delete.
    */
   limit?: number
+}
+
+/**
+ * Game findRaw
+ */
+export type GameFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * Game aggregateRaw
+ */
+export type GameAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

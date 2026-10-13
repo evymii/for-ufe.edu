@@ -1,23 +1,49 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { LayoutGrid, Rows3 } from "lucide-react";
-
+import { useMemo, useState } from "react";
 import {
-  PlayerCard,
-  PlayerDetails,
+  ChevronDown,
+  ChevronUp,
+  LayoutGrid,
+  Rows3,
+  Search,
+} from "lucide-react";
+
+import { PlayerCard, PlayerDetails } from "@/components/team/player-card";
+import {
   basePosition,
+  positionGroup,
   type RosterPlayer,
-} from "@/components/team/player-card";
+} from "@/components/team/roster-utils";
 import { PlayerCutout } from "@/components/team/player-photo";
 import { cn } from "@/lib/utils";
 
-type ViewMode = "grid" | "list";
+type ViewMode = "grid" | "table";
+type Group = "all" | "guard" | "forward" | "center";
+
+const GROUP_LABELS: Array<{ id: Group; label: string }> = [
+  { id: "all", label: "Бүгд" },
+  { id: "guard", label: "Холбон / Довтлон" },
+  { id: "forward", label: "Хүчний" },
+  { id: "center", label: "Төв" },
+];
+
+type SortKey = "name" | "number" | "position" | "height" | "major";
+
+const COLUMNS: Array<{ key: SortKey; label: string; className?: string }> = [
+  { key: "name", label: "Тоглогч" },
+  { key: "number", label: "№" },
+  { key: "position", label: "Поз" },
+  { key: "height", label: "Өндөр" },
+  { key: "major", label: "Мэргэжил" },
+];
+
+const POSITION_ORDER = ["guard", "forward", "center"];
 
 /**
- * NBA-roster-style browser: a "switch view" toolbar (card grid / list) and
- * the two presentations of the same roster. Cards default — the grid is the
- * showcase view.
+ * Editorial roster browser: position pills + search, grid ⇄ table toggle
+ * (200ms crossfade), NBA-style cards in the grid view and a sticky-header,
+ * zebra-striped, sortable table in the other.
  */
 export function RosterBrowser({
   players,
@@ -27,28 +53,76 @@ export function RosterBrowser({
   subtitle: string;
 }) {
   const [view, setView] = useState<ViewMode>("grid");
+  const [group, setGroup] = useState<Group>("all");
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    return players.filter((player) => {
+      if (group !== "all" && positionGroup(player.position) !== group) {
+        return false;
+      }
+      if (
+        needle &&
+        !player.name.toLowerCase().includes(needle) &&
+        !String(player.number).includes(needle)
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }, [players, group, query]);
 
   return (
-    <section className="bg-paper-soft">
-      <div className="mx-auto w-full max-w-[1120px] px-4 py-[72px] sm:px-6 md:py-24">
-        {/* Toolbar: section label left, switch-view control right */}
-        <div className="border-line mb-8 flex flex-wrap items-end justify-between gap-4 border-b pb-5">
-          <div>
-            <p className="eyebrow">{subtitle}</p>
-            <h2 className="font-display text-ink mt-1.5 text-xl font-semibold tracking-[0.02em] uppercase">
-              Тоглогчид
-              <span className="text-mute ml-2 text-sm font-medium">
-                {players.length}
-              </span>
-            </h2>
+    <section className="bg-paper">
+      <div className="team-shell py-12 md:py-16">
+        {/* Control row: pills left, search + view toggle right */}
+        <div className="border-line flex flex-wrap items-center justify-between gap-4 border-b pb-5">
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label="Байрлалаар шүүх"
+          >
+            {GROUP_LABELS.map((item) => {
+              const count =
+                item.id === "all"
+                  ? players.length
+                  : players.filter((p) => positionGroup(p.position) === item.id)
+                      .length;
+              const active = group === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setGroup(item.id)}
+                  aria-pressed={active}
+                  className={cn(
+                    "team-focus min-h-9 rounded-full border px-4 text-[12px] font-semibold tracking-[0.1em] uppercase transition-colors",
+                    active
+                      ? "border-ink bg-ink text-paper"
+                      : "border-line text-mute hover:border-ink hover:text-ink",
+                  )}
+                >
+                  {item.label} {count}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-mute hidden text-[11px] font-semibold tracking-[0.18em] uppercase sm:block">
-              Харагдац солих
-            </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[200px] items-center gap-2 border px-3">
+              <Search className="size-4 shrink-0" aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Тоглогч хайх"
+                aria-label="Тоглогч хайх"
+                className="text-ink placeholder:text-mute min-w-0 flex-1 bg-transparent text-sm focus:outline-none"
+              />
+            </label>
             <div
-              className="border-line bg-paper inline-flex overflow-hidden rounded-lg border"
+              className="border-line flex border"
               role="group"
               aria-label="Харагдац солих"
             >
@@ -60,9 +134,9 @@ export function RosterBrowser({
                 <LayoutGrid className="size-4" aria-hidden="true" />
               </ViewButton>
               <ViewButton
-                active={view === "list"}
-                onClick={() => setView("list")}
-                label="Жагсаалт харагдац"
+                active={view === "table"}
+                onClick={() => setView("table")}
+                label="Хүснэгт харагдац"
               >
                 <Rows3 className="size-4" aria-hidden="true" />
               </ViewButton>
@@ -70,15 +144,26 @@ export function RosterBrowser({
           </div>
         </div>
 
-        {view === "grid" ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {players.map((player) => (
-              <PlayerCard key={player.number} player={player} />
-            ))}
-          </div>
-        ) : (
-          <PlayerList players={players} />
-        )}
+        {/* View switch crossfades 200ms; height follows content */}
+        <div key={view} className="view-swap mt-8">
+          {filtered.length === 0 ? (
+            <p className="text-mute py-16 text-center text-sm tracking-[0.08em] uppercase">
+              Таарах тоглогч олдсонгүй
+            </p>
+          ) : view === "grid" ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filtered.map((player) => (
+                <PlayerCard key={player.number} player={player} />
+              ))}
+            </div>
+          ) : (
+            <PlayerTable players={filtered} />
+          )}
+        </div>
+
+        <p className="text-mute mt-6 text-[12px] tracking-[0.12em] uppercase">
+          {subtitle} · {filtered.length} тоглогч
+        </p>
       </div>
     </section>
   );
@@ -93,7 +178,7 @@ function ViewButton({
   active: boolean;
   onClick: () => void;
   label: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <button
@@ -103,8 +188,8 @@ function ViewButton({
       aria-label={label}
       title={label}
       className={cn(
-        "flex size-11 items-center justify-center transition-colors",
-        active ? "bg-brand text-brand-contrast" : "text-mute hover:text-brand",
+        "team-focus flex size-9 items-center justify-center transition-colors",
+        active ? "bg-ink text-paper" : "text-mute hover:text-ink",
       )}
     >
       {children}
@@ -112,39 +197,90 @@ function ViewButton({
   );
 }
 
-/** Stat columns shared by the header row and every player row. */
-const LIST_COLUMNS = [
-  "Өндөр",
-  "Мэргэжил",
-  "Төрсөн газар",
-  "Багт",
-  "Тоглосон",
-] as const;
-
 const ROW_GRID =
-  "grid grid-cols-[minmax(190px,1.9fr)_minmax(64px,0.7fr)_minmax(110px,1.2fr)_minmax(100px,1fr)_minmax(84px,0.9fr)_minmax(76px,0.8fr)] items-center gap-x-4";
+  "grid grid-cols-[minmax(48px,64px)_minmax(180px,2.2fr)_minmax(72px,0.8fr)_minmax(96px,0.9fr)_minmax(110px,1.1fr)_minmax(96px,0.9fr)_minmax(88px,0.8fr)] items-center gap-x-4";
 
-/** Flat roster table (NBA list view): headshot + name, stat columns, expandable row. */
-function PlayerList({ players }: { players: RosterPlayer[] }) {
+/** Flat sortable table: sticky 48px header, 64px zebra rows, expandable. */
+function PlayerTable({ players }: { players: RosterPlayer[] }) {
+  const [sortKey, setSortKey] = useState<SortKey>("number");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const sorted = useMemo(() => {
+    const factor = sortDir === "asc" ? 1 : -1;
+    return [...players].sort((a, b) => {
+      switch (sortKey) {
+        case "name":
+          return a.name.localeCompare(b.name, "mn") * factor;
+        case "number":
+          return (a.number - b.number) * factor;
+        case "position":
+          return (
+            (POSITION_ORDER.indexOf(positionGroup(a.position)) -
+              POSITION_ORDER.indexOf(positionGroup(b.position))) *
+            factor
+          );
+        case "height":
+          return (a.heightCm - b.heightCm) * factor;
+        case "major":
+          return a.major.localeCompare(b.major, "mn") * factor;
+      }
+    });
+  }, [players, sortKey, sortDir]);
+
+  const toggleSort = (key: SortKey) => {
+    if (key === sortKey) {
+      setSortDir((dir) => (dir === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
   return (
-    <div className="border-line bg-paper overflow-hidden rounded-xl border">
+    <div className="border-line border">
       <div className="overflow-x-auto">
-        <div className="min-w-[760px]">
-          {/* header row */}
+        <div className="min-w-[820px]">
+          {/* Sticky header row */}
           <div
             className={cn(
               ROW_GRID,
-              "border-line text-mute border-b px-4 py-3 text-[10px] font-semibold tracking-[0.12em] uppercase",
+              "border-line bg-paper sticky top-14 z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
             )}
           >
-            <span>Тоглогч</span>
-            {LIST_COLUMNS.map((column) => (
-              <span key={column}>{column}</span>
+            {COLUMNS.map((column) => (
+              <button
+                key={column.key}
+                type="button"
+                onClick={() => toggleSort(column.key)}
+                aria-label={`${column.label} — эрэмбэлэх`}
+                className={cn(
+                  "team-focus text-mute hover:text-ink flex items-center gap-1 px-4 py-3 text-left transition-colors",
+                  column.key === "name" && "pr-0",
+                )}
+              >
+                {column.label}
+                {sortKey === column.key ? (
+                  sortDir === "asc" ? (
+                    <ChevronUp
+                      className="size-3.5 transition-transform duration-150"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <ChevronDown
+                      className="size-3.5 transition-transform duration-150"
+                      aria-hidden="true"
+                    />
+                  )
+                ) : null}
+              </button>
             ))}
+            <span className="text-mute px-4 py-3 text-[11px] font-semibold tracking-[0.12em] uppercase">
+              Тоглосон
+            </span>
           </div>
 
-          {players.map((player, index) => (
-            <PlayerListRow
+          {sorted.map((player, index) => (
+            <PlayerTableRow
               key={player.number}
               player={player}
               zebra={index % 2 === 1}
@@ -156,7 +292,7 @@ function PlayerList({ players }: { players: RosterPlayer[] }) {
   );
 }
 
-function PlayerListRow({
+function PlayerTableRow({
   player,
   zebra,
 }: {
@@ -164,23 +300,10 @@ function PlayerListRow({
   zebra: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const detailsId = `player-list-details-${player.number}`;
-
-  const cells = [
-    `${player.heightCm} см`,
-    player.major,
-    player.hometown,
-    player.yearsOnTeam,
-    player.yearsPlaying,
-  ];
+  const detailsId = `player-row-details-${player.number}`;
 
   return (
-    <div
-      className={cn(
-        "border-line border-b last:border-b-0",
-        zebra && "bg-paper-soft/60",
-      )}
-    >
+    <div className={cn(zebra && "bg-paper-soft")}>
       <button
         type="button"
         onClick={() => setExpanded((open) => !open)}
@@ -188,17 +311,21 @@ function PlayerListRow({
         aria-controls={detailsId}
         className={cn(
           ROW_GRID,
-          "hover:bg-brand/5 w-full px-4 py-3 text-left transition-colors",
+          "hover:bg-mute/10 border-line w-full border-b px-4 py-3 text-left transition-colors",
+          "min-h-16 [&>*:first-child]:sticky [&>*:first-child]:left-0 [&>*:first-child]:bg-inherit",
         )}
       >
+        <span className="font-display text-ink pl-1 text-lg font-bold">
+          {String(player.number).padStart(2, "0")}
+        </span>
         <span className="flex min-w-0 items-center gap-3">
-          <span className="border-line bg-paper-soft size-12 shrink-0 overflow-hidden rounded-lg border">
+          <span className="border-line bg-paper size-10 shrink-0 overflow-hidden border">
             <PlayerCutout
               name={player.name}
               number={player.number}
               photo={player.photo}
-              sizes="48px"
-              fallbackClassName="[&>span]:text-4xl"
+              sizes="40px"
+              fallbackClassName="[&>span]:text-3xl"
             />
           </span>
           <span className="min-w-0">
@@ -206,21 +333,25 @@ function PlayerListRow({
               {player.name}
             </span>
             <span className="text-mute block truncate text-xs">
-              #{player.number} · {basePosition(player.position)}
+              {player.role ?? basePosition(player.position)}
             </span>
           </span>
         </span>
-        {cells.map((cell, index) => (
-          <span
-            key={LIST_COLUMNS[index]}
-            className="text-ink truncate text-sm font-medium"
-          >
-            {cell}
-          </span>
-        ))}
+        <span className="text-ink truncate text-sm font-medium">
+          {basePosition(player.position)}
+        </span>
+        <span className="text-ink truncate text-sm font-medium">
+          {player.heightCm} см
+        </span>
+        <span className="text-ink truncate text-sm font-medium">
+          {player.major}
+        </span>
+        <span className="text-ink truncate text-sm font-medium">
+          {player.yearsPlaying}
+        </span>
       </button>
       {expanded ? (
-        <div id={detailsId} className={cn(zebra && "bg-paper-soft/60")}>
+        <div id={detailsId} className={cn(zebra && "bg-paper-soft")}>
           <PlayerDetails player={player} />
         </div>
       ) : null}

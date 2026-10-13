@@ -16,7 +16,7 @@ healthRouter.get(
   '/ready',
   asyncHandler(async (_req, res) => {
     try {
-      await prisma.$queryRaw`SELECT 1`;
+      await prisma.$runCommandRaw({ ping: 1 });
     } catch (error) {
       logger.error({ err: error }, 'Readiness check failed — database unreachable');
       res.status(503).json({

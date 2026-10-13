@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -37,14 +38,16 @@ export function LoginForm() {
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { identifier: "", password: "" },
   });
 
   async function onSubmit(values: LoginValues): Promise<void> {
     setSubmitting(true);
     try {
-      const user = await login(values.email, values.password);
-      toast.success(`Тавтай морил, ${user.name ?? user.email}!`);
+      const user = await login(values.identifier, values.password);
+      toast.success(
+        `Тавтай морил, ${user.username ?? user.name ?? user.email}!`,
+      );
       const next = searchParams.get("next");
       const target =
         next && next.startsWith("/") && !next.startsWith("//")
@@ -76,56 +79,60 @@ export function LoginForm() {
           СЭЗИС БАСКЕТБОЛ дансаараа үргэлжлүүлнэ үү.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit} noValidate>
-        <CardContent className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Имэйл</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    autoComplete="email"
-                    placeholder="ta@imeil.mn"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Нууц үг</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="current-password"
-                    placeholder="••••••••"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-        <CardFooter className="mt-4 flex flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <LogIn aria-hidden="true" />
-            )}
-            {submitting ? "Нэвтэрч байна…" : "Нэвтрэх"}
-          </Button>
-        </CardFooter>
-      </form>
+      {/* FormProvider — FormItem/FormLabel/FormControl read the form context
+          (getFieldState); without it they crash at render. */}
+      <Form {...form}>
+        <form onSubmit={handleSubmit} noValidate>
+          <CardContent className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="identifier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Нэвтрэх нэр</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      autoComplete="username"
+                      placeholder="Хэрэглэгчийн нэр"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Нууц үг</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      placeholder="••••••••"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="mt-4 flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <LogIn aria-hidden="true" />
+              )}
+              {submitting ? "Нэвтэрч байна…" : "Нэвтрэх"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }

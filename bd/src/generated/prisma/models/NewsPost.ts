@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -251,7 +251,7 @@ export type NewsPostGroupByOutputType = {
   _max: NewsPostMaxAggregateOutputType | null
 }
 
-export type GetNewsPostGroupByPayload<T extends NewsPostGroupByArgs> = Prisma.PrismaPromise<
+type GetNewsPostGroupByPayload<T extends NewsPostGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<NewsPostGroupByOutputType, T['by']> &
       {
@@ -270,7 +270,7 @@ export type NewsPostWhereInput = {
   AND?: Prisma.NewsPostWhereInput | Prisma.NewsPostWhereInput[]
   OR?: Prisma.NewsPostWhereInput[]
   NOT?: Prisma.NewsPostWhereInput | Prisma.NewsPostWhereInput[]
-  id?: Prisma.UuidFilter<"NewsPost"> | string
+  id?: Prisma.StringFilter<"NewsPost"> | string
   title?: Prisma.StringFilter<"NewsPost"> | string
   slug?: Prisma.StringFilter<"NewsPost"> | string
   excerpt?: Prisma.StringFilter<"NewsPost"> | string
@@ -292,7 +292,7 @@ export type NewsPostOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   category?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -329,7 +329,7 @@ export type NewsPostOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   category?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -349,7 +349,7 @@ export type NewsPostScalarWhereWithAggregatesInput = {
   AND?: Prisma.NewsPostScalarWhereWithAggregatesInput | Prisma.NewsPostScalarWhereWithAggregatesInput[]
   OR?: Prisma.NewsPostScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NewsPostScalarWhereWithAggregatesInput | Prisma.NewsPostScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"NewsPost"> | string
+  id?: Prisma.StringWithAggregatesFilter<"NewsPost"> | string
   title?: Prisma.StringWithAggregatesFilter<"NewsPost"> | string
   slug?: Prisma.StringWithAggregatesFilter<"NewsPost"> | string
   excerpt?: Prisma.StringWithAggregatesFilter<"NewsPost"> | string
@@ -400,7 +400,6 @@ export type NewsPostUncheckedCreateInput = {
 }
 
 export type NewsPostUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -417,7 +416,6 @@ export type NewsPostUpdateInput = {
 }
 
 export type NewsPostUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -451,7 +449,6 @@ export type NewsPostCreateManyInput = {
 }
 
 export type NewsPostUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -468,7 +465,6 @@ export type NewsPostUpdateManyMutationInput = {
 }
 
 export type NewsPostUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
@@ -585,39 +581,7 @@ export type NewsPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updatedAt?: boolean
 }, ExtArgs["result"]["newsPost"]>
 
-export type NewsPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  title?: boolean
-  slug?: boolean
-  excerpt?: boolean
-  content?: boolean
-  coverImage?: boolean
-  category?: boolean
-  tags?: boolean
-  isFeatured?: boolean
-  isPublished?: boolean
-  publishedAt?: boolean
-  sortOrder?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["newsPost"]>
 
-export type NewsPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  title?: boolean
-  slug?: boolean
-  excerpt?: boolean
-  content?: boolean
-  coverImage?: boolean
-  category?: boolean
-  tags?: boolean
-  isFeatured?: boolean
-  isPublished?: boolean
-  publishedAt?: boolean
-  sortOrder?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["newsPost"]>
 
 export type NewsPostSelectScalar = {
   id?: boolean
@@ -774,30 +738,6 @@ export interface NewsPostDelegate<ExtArgs extends runtime.Types.Extensions.Inter
   createMany<T extends NewsPostCreateManyArgs>(args?: Prisma.SelectSubset<T, NewsPostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many NewsPosts and returns the data saved in the database.
-   * @param {NewsPostCreateManyAndReturnArgs} args - Arguments to create many NewsPosts.
-   * @example
-   * // Create many NewsPosts
-   * const newsPost = await prisma.newsPost.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many NewsPosts and only return the `id`
-   * const newsPostWithIdOnly = await prisma.newsPost.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends NewsPostCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, NewsPostCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NewsPostPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a NewsPost.
    * @param {NewsPostDeleteArgs} args - Arguments to delete one NewsPost.
    * @example
@@ -862,36 +802,6 @@ export interface NewsPostDelegate<ExtArgs extends runtime.Types.Extensions.Inter
   updateMany<T extends NewsPostUpdateManyArgs>(args: Prisma.SelectSubset<T, NewsPostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more NewsPosts and returns the data updated in the database.
-   * @param {NewsPostUpdateManyAndReturnArgs} args - Arguments to update many NewsPosts.
-   * @example
-   * // Update many NewsPosts
-   * const newsPost = await prisma.newsPost.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more NewsPosts and only return the `id`
-   * const newsPostWithIdOnly = await prisma.newsPost.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends NewsPostUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, NewsPostUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NewsPostPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one NewsPost.
    * @param {NewsPostUpsertArgs} args - Arguments to update or create a NewsPost.
    * @example
@@ -909,6 +819,29 @@ export interface NewsPostDelegate<ExtArgs extends runtime.Types.Extensions.Inter
    * })
    */
   upsert<T extends NewsPostUpsertArgs>(args: Prisma.SelectSubset<T, NewsPostUpsertArgs<ExtArgs>>): Prisma.Prisma__NewsPostClient<runtime.Types.Result.GetResult<Prisma.$NewsPostPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more NewsPosts that matches the filter.
+   * @param {NewsPostFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const newsPost = await prisma.newsPost.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.NewsPostFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a NewsPost.
+   * @param {NewsPostAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const newsPost = await prisma.newsPost.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.NewsPostAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1269,11 +1202,6 @@ export type NewsPostFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` NewsPosts.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of NewsPosts.
-   */
   distinct?: Prisma.NewsPostScalarFieldEnum | Prisma.NewsPostScalarFieldEnum[]
 }
 
@@ -1303,26 +1231,6 @@ export type NewsPostCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many NewsPosts.
    */
   data: Prisma.NewsPostCreateManyInput | Prisma.NewsPostCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * NewsPost createManyAndReturn
- */
-export type NewsPostCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the NewsPost
-   */
-  select?: Prisma.NewsPostSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the NewsPost
-   */
-  omit?: Prisma.NewsPostOmit<ExtArgs> | null
-  /**
-   * The data used to create many NewsPosts.
-   */
-  data: Prisma.NewsPostCreateManyInput | Prisma.NewsPostCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1351,32 +1259,6 @@ export type NewsPostUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
  * NewsPost updateMany
  */
 export type NewsPostUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update NewsPosts.
-   */
-  data: Prisma.XOR<Prisma.NewsPostUpdateManyMutationInput, Prisma.NewsPostUncheckedUpdateManyInput>
-  /**
-   * Filter which NewsPosts to update
-   */
-  where?: Prisma.NewsPostWhereInput
-  /**
-   * Limit how many NewsPosts to update.
-   */
-  limit?: number
-}
-
-/**
- * NewsPost updateManyAndReturn
- */
-export type NewsPostUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the NewsPost
-   */
-  select?: Prisma.NewsPostSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the NewsPost
-   */
-  omit?: Prisma.NewsPostOmit<ExtArgs> | null
   /**
    * The data used to update NewsPosts.
    */
@@ -1447,6 +1329,34 @@ export type NewsPostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many NewsPosts to delete.
    */
   limit?: number
+}
+
+/**
+ * NewsPost findRaw
+ */
+export type NewsPostFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * NewsPost aggregateRaw
+ */
+export type NewsPostAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

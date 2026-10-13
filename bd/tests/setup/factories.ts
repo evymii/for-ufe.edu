@@ -31,7 +31,7 @@ export async function createTestUser(
   const password = overrides.password ?? 'Password123!';
   const passwordHash = await bcrypt.hash(password, 4);
 
-  const user: SafeUser = await prisma.user.create({
+  const user = (await prisma.user.create({
     data: {
       email,
       isActive: overrides.isActive ?? true,
@@ -40,7 +40,7 @@ export async function createTestUser(
       role: overrides.role ?? 'USER',
     },
     select: SAFE_USER_SELECT,
-  });
+  })) as SafeUser;
 
   return { email, id: user.id, password, role: user.role };
 }

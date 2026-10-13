@@ -3,29 +3,14 @@
 import { useState } from "react";
 import { ChevronDown, Trophy } from "lucide-react";
 
-import type { PlayerProfile } from "@/content/site";
 import { PlayerCutout } from "@/components/team/player-photo";
+import type { RosterPlayer } from "@/components/team/roster-utils";
+import { basePosition, splitName } from "@/components/team/roster-utils";
 import { cn } from "@/lib/utils";
-
-/** Player + resolved photo path, as prepared by the /players page. */
-export type RosterPlayer = Omit<PlayerProfile, "photo"> & {
-  photo: null | string;
-};
-
-/** Uppercase base position ("Center · Double-double machine" → "CENTER"). */
-export function basePosition(position: string) {
-  return position.split("·")[0]!.trim();
-}
-
-/** Stacked Mongolian name: first word over the rest, NBA-card style. */
-export function splitName(name: string): [string, string] {
-  const [first = "", ...rest] = name.split(" ");
-  return [first, rest.join(" ")];
-}
 
 /**
  * Shared expandable detail block (achievements + the three personal lines)
- * reused by both the grid card and the list row.
+ * reused by both the grid card and the table row.
  */
 export function PlayerDetails({ player }: { player: RosterPlayer }) {
   const personalLines = [
@@ -35,17 +20,17 @@ export function PlayerDetails({ player }: { player: RosterPlayer }) {
   ];
 
   return (
-    <div className="border-line space-y-4 border-t px-5 py-4">
-      <div>
+    <div className="border-line space-y-4 border-t">
+      <div className="px-5 pt-4">
         <p className="eyebrow">Амжилтууд</p>
         <ul className="mt-2.5 space-y-1.5">
           {player.achievements.map((achievement) => (
             <li
               key={achievement}
-              className="text-mute flex gap-2 text-[13px] leading-[1.6]"
+              className="text-mute flex gap-2.5 text-[13px] leading-[1.6]"
             >
               <span
-                className="bg-gold mt-2 size-1.5 shrink-0 rounded-full"
+                className="bg-ink mt-2 size-1.5 shrink-0"
                 aria-hidden="true"
               />
               {achievement}
@@ -53,7 +38,7 @@ export function PlayerDetails({ player }: { player: RosterPlayer }) {
           ))}
         </ul>
       </div>
-      <dl className="space-y-2">
+      <dl className="space-y-2 px-5">
         {personalLines.map((line) => (
           <div key={line.label} className="flex flex-col gap-0.5">
             <dt className="text-mute text-[11px] font-semibold tracking-[0.1em] uppercase">
@@ -85,7 +70,7 @@ export function DetailsToggle({
       onClick={onToggle}
       aria-expanded={expanded}
       aria-controls={controlId}
-      className="text-mute hover:text-brand flex w-full items-center justify-between gap-2 px-5 py-3 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
+      className="text-mute hover:text-ink team-focus flex w-full items-center justify-between gap-2 border-t px-5 py-3.5 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
     >
       <span className="flex items-center gap-2">
         <Trophy className="size-4" aria-hidden="true" />
@@ -93,7 +78,7 @@ export function DetailsToggle({
       </span>
       <ChevronDown
         className={cn(
-          "size-4 transition-transform duration-200",
+          "size-4 transition-transform duration-150",
           expanded && "rotate-180",
         )}
         aria-hidden="true"
@@ -102,107 +87,92 @@ export function DetailsToggle({
   );
 }
 
+/** Cell of the card's 3-up measurement strip. */
+function MeasureCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="px-2 text-center first:pl-0 last:pr-0">
+      <p className="text-mute text-[10px] font-semibold tracking-[0.14em] uppercase">
+        {label}
+      </p>
+      <p className="font-display text-ink mt-1 text-[20px] leading-none font-bold">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 /**
- * NBA-roster-style portrait card: stacked name + position top-left, giant
- * faded jersey number top-right, transparent player cutout over the bio
- * rows, then a divided stats strip and a footer toggle that expands the
- * full profile (achievements + personal lines).
+ * Editorial roster card: mist portrait panel with the 132px jersey numeral
+ * watermark and position chip, stacked name, 3-up measurement strip behind
+ * hairline rules, and a footer toggle expanding the full profile. Hover
+ * lifts the card and grows a 4px ink top border.
  */
 export function PlayerCard({ player }: { player: RosterPlayer }) {
   const [expanded, setExpanded] = useState(false);
   const [firstName, lastName] = splitName(player.name);
   const detailsId = `player-details-${player.number}`;
 
-  const bio = [
-    { label: "Өндөр", value: `${player.heightCm} см` },
-    { label: "Мэргэжил", value: player.major },
-    { label: "Багт", value: player.yearsOnTeam },
-    { label: "Тоглосон", value: player.yearsPlaying },
-    { label: "Төрсөн", value: player.hometown },
-  ];
-  // NBA-style strip: SEASON / GP / PPG / APG / RPG — "—" until stats land.
-  const dash = "—";
-  const stats = [
-    { label: "Улирал", value: player.stats?.season ?? dash },
-    { label: "GP", value: player.stats?.gp ?? dash },
-    { label: "PPG", value: player.stats?.ppg ?? dash },
-    { label: "APG", value: player.stats?.apg ?? dash },
-    { label: "RPG", value: player.stats?.rpg ?? dash },
-  ];
-
   return (
-    <article className="border-line bg-paper shadow-card card-lift relative flex flex-col overflow-hidden rounded-xl border">
-      {/* Hero area: name/bio left, giant number behind, cutout right.
-          Tall enough that the 93%-wide cutout box is width-limited, not
-          height-limited — portrait cutouts use the full side space. */}
-      <div className="relative min-h-[420px] flex-1 p-5">
+    <article className="border-line bg-paper group relative flex flex-col border transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]">
+      {/* Ink top border that grows in on hover */}
+      <span
+        aria-hidden="true"
+        className="bg-ink absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-200 group-hover:scale-x-100"
+      />
+
+      {/* Portrait panel: mist ground, watermark numeral, position chip */}
+      <div className="bg-paper-soft relative h-[280px] overflow-hidden md:h-[300px]">
         <span
           aria-hidden="true"
-          className="text-brand/10 font-display pointer-events-none absolute top-0 right-3 z-0 text-[7rem] leading-none font-bold select-none"
+          className="font-display text-mute/20 pointer-events-none absolute -top-2 right-2 z-0 text-[132px] leading-none font-bold select-none"
         >
-          {player.number}
+          {String(player.number).padStart(2, "0")}
         </span>
-
-        <div className="relative z-10 max-w-[68%]">
-          <h3 className="font-display text-ink text-[22px] leading-[1.05] font-bold tracking-[0.01em] uppercase">
-            {firstName}
-            {lastName ? (
-              <>
-                <br />
-                {lastName}
-              </>
-            ) : null}
-          </h3>
-          <p className="text-mute mt-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase">
-            {basePosition(player.position)}
-          </p>
-
-          <dl className="mt-5 space-y-2">
-            {bio.map((row) => (
-              <div
-                key={row.label}
-                className="border-line flex items-baseline justify-between gap-3 border-b pb-1.5"
-              >
-                <dt className="text-mute shrink-0 text-[10px] font-semibold tracking-[0.08em] uppercase">
-                  {row.label}
-                </dt>
-                <dd className="text-ink min-w-0 text-right text-[13px] font-medium break-words [text-shadow:0_1px_8px_var(--paper)]">
-                  {row.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        {/* transparent cutout, anchored bottom-right, over the number */}
-        <div className="pointer-events-none absolute right-0 bottom-0 z-[5] h-[88%] w-[93%] p-2">
+        <span className="border-ink bg-paper absolute top-3 left-3 z-10 border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
+          {basePosition(player.position)}
+        </span>
+        {player.role ? (
+          <span className="bg-ink text-paper absolute bottom-3 left-3 z-10 px-2 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase">
+            {player.role}
+          </span>
+        ) : null}
+        <div className="absolute inset-0 z-[5] transition-transform duration-400 group-hover:scale-[1.04]">
           <PlayerCutout
             name={player.name}
             number={player.number}
             photo={player.photo}
-            fallback="none"
-            anchor="right"
-            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+            fallback="slot"
+            anchor="center"
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
           />
         </div>
       </div>
 
-      {/* Stats strip — NBA-style: Улирал / GP / PPG / APG / RPG */}
-      <dl className="bg-paper-soft border-line grid grid-cols-5 divide-x border-t">
-        {stats.map((stat) => (
-          <div key={stat.label} className="px-1 py-3 text-center">
-            <dt className="text-mute text-[10px] font-semibold tracking-[0.1em] uppercase">
-              {stat.label}
-            </dt>
-            <dd className="font-display text-ink mt-1 text-[15px] leading-none font-semibold">
-              {stat.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      {/* Name block: small first name, big last name */}
+      <div className="px-4 pt-4">
+        <p className="font-display text-mute text-[15px] leading-none font-semibold tracking-[0.06em] uppercase">
+          {firstName}
+        </p>
+        <h3 className="font-display text-ink mt-1 text-[30px] leading-[1.02] font-bold tracking-[0.02em] uppercase">
+          {lastName || firstName}
+        </h3>
+      </div>
+
+      {/* Measurement strip behind hairline rules */}
+      <div className="border-line mx-4 mt-3 grid grid-cols-3 border-y py-2.5">
+        <MeasureCell label="Өндөр" value={`${player.heightCm}`} />
+        <MeasureCell
+          label="Багт"
+          value={player.yearsOnTeam.replace(/ дэх жил| жил/, "")}
+        />
+        <MeasureCell
+          label="Тоглосон"
+          value={player.yearsPlaying.replace(/ жил/, "")}
+        />
+      </div>
 
       {/* Footer toggle + expandable profile */}
-      <div className="border-line border-t">
+      <div className="mt-auto pt-3">
         <DetailsToggle
           expanded={expanded}
           onToggle={() => setExpanded((open) => !open)}

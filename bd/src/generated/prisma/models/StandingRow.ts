@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -235,7 +235,7 @@ export type StandingRowGroupByOutputType = {
   _max: StandingRowMaxAggregateOutputType | null
 }
 
-export type GetStandingRowGroupByPayload<T extends StandingRowGroupByArgs> = Prisma.PrismaPromise<
+type GetStandingRowGroupByPayload<T extends StandingRowGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<StandingRowGroupByOutputType, T['by']> &
       {
@@ -254,7 +254,7 @@ export type StandingRowWhereInput = {
   AND?: Prisma.StandingRowWhereInput | Prisma.StandingRowWhereInput[]
   OR?: Prisma.StandingRowWhereInput[]
   NOT?: Prisma.StandingRowWhereInput | Prisma.StandingRowWhereInput[]
-  id?: Prisma.UuidFilter<"StandingRow"> | string
+  id?: Prisma.StringFilter<"StandingRow"> | string
   teamName?: Prisma.StringFilter<"StandingRow"> | string
   teamShort?: Prisma.StringNullableFilter<"StandingRow"> | string | null
   teamLogo?: Prisma.StringNullableFilter<"StandingRow"> | string | null
@@ -269,8 +269,8 @@ export type StandingRowWhereInput = {
 export type StandingRowOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
-  teamShort?: Prisma.SortOrderInput | Prisma.SortOrder
-  teamLogo?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamShort?: Prisma.SortOrder
+  teamLogo?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -298,8 +298,8 @@ export type StandingRowWhereUniqueInput = Prisma.AtLeast<{
 export type StandingRowOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
-  teamShort?: Prisma.SortOrderInput | Prisma.SortOrder
-  teamLogo?: Prisma.SortOrderInput | Prisma.SortOrder
+  teamShort?: Prisma.SortOrder
+  teamLogo?: Prisma.SortOrder
   wins?: Prisma.SortOrder
   losses?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -317,7 +317,7 @@ export type StandingRowScalarWhereWithAggregatesInput = {
   AND?: Prisma.StandingRowScalarWhereWithAggregatesInput | Prisma.StandingRowScalarWhereWithAggregatesInput[]
   OR?: Prisma.StandingRowScalarWhereWithAggregatesInput[]
   NOT?: Prisma.StandingRowScalarWhereWithAggregatesInput | Prisma.StandingRowScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"StandingRow"> | string
+  id?: Prisma.StringWithAggregatesFilter<"StandingRow"> | string
   teamName?: Prisma.StringWithAggregatesFilter<"StandingRow"> | string
   teamShort?: Prisma.StringNullableWithAggregatesFilter<"StandingRow"> | string | null
   teamLogo?: Prisma.StringNullableWithAggregatesFilter<"StandingRow"> | string | null
@@ -356,7 +356,6 @@ export type StandingRowUncheckedCreateInput = {
 }
 
 export type StandingRowUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   teamName?: Prisma.StringFieldUpdateOperationsInput | string
   teamShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -369,7 +368,6 @@ export type StandingRowUpdateInput = {
 }
 
 export type StandingRowUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   teamName?: Prisma.StringFieldUpdateOperationsInput | string
   teamShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -395,7 +393,6 @@ export type StandingRowCreateManyInput = {
 }
 
 export type StandingRowUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   teamName?: Prisma.StringFieldUpdateOperationsInput | string
   teamShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -408,7 +405,6 @@ export type StandingRowUpdateManyMutationInput = {
 }
 
 export type StandingRowUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   teamName?: Prisma.StringFieldUpdateOperationsInput | string
   teamShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamLogo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -486,31 +482,7 @@ export type StandingRowSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   updatedAt?: boolean
 }, ExtArgs["result"]["standingRow"]>
 
-export type StandingRowSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  teamName?: boolean
-  teamShort?: boolean
-  teamLogo?: boolean
-  wins?: boolean
-  losses?: boolean
-  sortOrder?: boolean
-  isCurrent?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["standingRow"]>
 
-export type StandingRowSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  teamName?: boolean
-  teamShort?: boolean
-  teamLogo?: boolean
-  wins?: boolean
-  losses?: boolean
-  sortOrder?: boolean
-  isCurrent?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["standingRow"]>
 
 export type StandingRowSelectScalar = {
   id?: boolean
@@ -659,30 +631,6 @@ export interface StandingRowDelegate<ExtArgs extends runtime.Types.Extensions.In
   createMany<T extends StandingRowCreateManyArgs>(args?: Prisma.SelectSubset<T, StandingRowCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many StandingRows and returns the data saved in the database.
-   * @param {StandingRowCreateManyAndReturnArgs} args - Arguments to create many StandingRows.
-   * @example
-   * // Create many StandingRows
-   * const standingRow = await prisma.standingRow.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many StandingRows and only return the `id`
-   * const standingRowWithIdOnly = await prisma.standingRow.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends StandingRowCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StandingRowCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StandingRowPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a StandingRow.
    * @param {StandingRowDeleteArgs} args - Arguments to delete one StandingRow.
    * @example
@@ -747,36 +695,6 @@ export interface StandingRowDelegate<ExtArgs extends runtime.Types.Extensions.In
   updateMany<T extends StandingRowUpdateManyArgs>(args: Prisma.SelectSubset<T, StandingRowUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more StandingRows and returns the data updated in the database.
-   * @param {StandingRowUpdateManyAndReturnArgs} args - Arguments to update many StandingRows.
-   * @example
-   * // Update many StandingRows
-   * const standingRow = await prisma.standingRow.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more StandingRows and only return the `id`
-   * const standingRowWithIdOnly = await prisma.standingRow.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends StandingRowUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StandingRowUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StandingRowPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one StandingRow.
    * @param {StandingRowUpsertArgs} args - Arguments to update or create a StandingRow.
    * @example
@@ -794,6 +712,29 @@ export interface StandingRowDelegate<ExtArgs extends runtime.Types.Extensions.In
    * })
    */
   upsert<T extends StandingRowUpsertArgs>(args: Prisma.SelectSubset<T, StandingRowUpsertArgs<ExtArgs>>): Prisma.Prisma__StandingRowClient<runtime.Types.Result.GetResult<Prisma.$StandingRowPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more StandingRows that matches the filter.
+   * @param {StandingRowFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const standingRow = await prisma.standingRow.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.StandingRowFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a StandingRow.
+   * @param {StandingRowAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const standingRow = await prisma.standingRow.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.StandingRowAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1150,11 +1091,6 @@ export type StandingRowFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` StandingRows.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of StandingRows.
-   */
   distinct?: Prisma.StandingRowScalarFieldEnum | Prisma.StandingRowScalarFieldEnum[]
 }
 
@@ -1184,26 +1120,6 @@ export type StandingRowCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many StandingRows.
    */
   data: Prisma.StandingRowCreateManyInput | Prisma.StandingRowCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * StandingRow createManyAndReturn
- */
-export type StandingRowCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StandingRow
-   */
-  select?: Prisma.StandingRowSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StandingRow
-   */
-  omit?: Prisma.StandingRowOmit<ExtArgs> | null
-  /**
-   * The data used to create many StandingRows.
-   */
-  data: Prisma.StandingRowCreateManyInput | Prisma.StandingRowCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1232,32 +1148,6 @@ export type StandingRowUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
  * StandingRow updateMany
  */
 export type StandingRowUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update StandingRows.
-   */
-  data: Prisma.XOR<Prisma.StandingRowUpdateManyMutationInput, Prisma.StandingRowUncheckedUpdateManyInput>
-  /**
-   * Filter which StandingRows to update
-   */
-  where?: Prisma.StandingRowWhereInput
-  /**
-   * Limit how many StandingRows to update.
-   */
-  limit?: number
-}
-
-/**
- * StandingRow updateManyAndReturn
- */
-export type StandingRowUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StandingRow
-   */
-  select?: Prisma.StandingRowSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the StandingRow
-   */
-  omit?: Prisma.StandingRowOmit<ExtArgs> | null
   /**
    * The data used to update StandingRows.
    */
@@ -1328,6 +1218,34 @@ export type StandingRowDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many StandingRows to delete.
    */
   limit?: number
+}
+
+/**
+ * StandingRow findRaw
+ */
+export type StandingRowFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * StandingRow aggregateRaw
+ */
+export type StandingRowAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

@@ -58,7 +58,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Team site design system (minimal, white, academic) ─────────────────────
+/* ─── Team site design system (editorial black & white sports media) ─────────
    Semantic tokens consumed by app/(public) via bg-paper / text-ink /
    border-line / bg-brand etc. Light-only — no dark counterpart.
    The admin & user areas keep the shadcn vars further below untouched. */
@@ -77,20 +77,20 @@
 }
 
 @theme {
-  --shadow-card: 0 4px 16px rgb(20 51 143 / 0.08);
-  --shadow-card-hover: 0 10px 28px rgb(20 51 143 / 0.14);
+  --shadow-card: 0 12px 24px rgb(0 0 0 / 0.08);
+  --shadow-card-hover: 0 12px 24px rgb(0 0 0 / 0.12);
 }
 
 :root {
   --paper: #ffffff;
-  --paper-soft: #f5f7fb;
-  --ink: #0f172a;
-  --mute: #5b6478;
-  --line: #e3e8f1;
-  --brand: #14338f;
-  --brand-2: #2e5bd8;
+  --paper-soft: #f2f2f0;
+  --ink: #0b0b0c;
+  --mute: #5a5a57;
+  --line: #d9d9d6;
+  --brand: #0b0b0c;
+  --brand-2: #3a3a38;
   --brand-contrast: #ffffff;
-  --gold: #c8962e;
+  --gold: #0b0b0c;
 }
 
 :root {
@@ -144,28 +144,121 @@
   html {
     @apply font-sans;
   }
+  /* Skip-to-content — first in tab order on public pages. */
+  .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 100;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateY(-200%);
+    transition: transform 0.15s ease;
+  }
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
+  }
 }
 
 /* ─── Team site utilities ─────────────────────────────────────────────────── */
 
-/* Section eyebrow label: 12px uppercase, wide tracking, brand-2. */
+/* Page shell: max 1280, side padding 32 / 24 / 16 (tablet / mobile). */
+.team-shell {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+@media (min-width: 768px) {
+  .team-shell {
+    padding-inline: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  .team-shell {
+    padding-inline: 32px;
+  }
+}
+
+/* Section eyebrow label (meta): 12px uppercase, wide tracking, mute. */
 .eyebrow {
-  color: var(--brand-2);
+  color: var(--mute);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* Card lift on hover — the one allowed motion, 0.2s ease. */
+/* Card lift on hover — 4px rise, editorial shadow, 0.2s ease. */
 .card-lift {
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 .card-lift:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
+}
+
+/* Nav link underline that grows from the left, 180ms. */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.18s ease;
+}
+.nav-underline:hover::after,
+.nav-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Route-change entrance: 8px rise + fade over 240ms, ease-out. */
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-enter {
+  animation: page-rise 0.24s ease-out both;
+}
+
+/* Scroll reveal: sections rise 16px and fade over 400ms. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
+}
+.reveal[data-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Focus ring: 2px ink, 2px offset — the site-wide focus treatment. */
+.team-focus:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 /* Hide scrollbars on horizontal card rails. */
@@ -174,4 +267,50 @@
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: opacity-fade 0.12s ease-out both;
+  }
+  .reveal {
+    transform: none;
+    transition: opacity 0.2s ease-out;
+  }
+  .card-lift,
+  .card-lift:hover {
+    transform: none;
+  }
+}
+
+@keyframes opacity-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hero slide progress bar (80×3): fills across the 6s autoplay window. */
+@keyframes hero-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Grid ⇄ table view swap: 200ms crossfade. */
+.view-swap {
+  animation: view-fade 0.2s ease-out both;
+}
+@keyframes view-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

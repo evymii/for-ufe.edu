@@ -137,6 +137,10 @@ export const createGameSchema = z.object(gameFields);
 
 export const listGamesQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional(),
+  month: z
+    .string()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be YYYY-MM')
+    .optional(),
   status: gameStatusEnum.optional(),
 });
 
@@ -165,12 +169,15 @@ const partnerFields = {
 export const createPartnerSchema = z.object(partnerFields);
 
 // ── Media albums ─────────────────────────────────────────────────────────────
+export const albumCategoryEnum = z.enum(['COMMUNITY', 'EVENTS', 'GAMES']);
+
 const albumImageSchema = z.object({
   caption: optionalText(200),
   url: z.string().trim().min(1).max(600),
 });
 
 const albumFields = {
+  category: albumCategoryEnum.optional(),
   coverImage: optionalText(600),
   eventDate: optionalDate,
   images: z.array(albumImageSchema).max(80).optional(),
@@ -182,6 +189,91 @@ const albumFields = {
 
 export const createAlbumSchema = z.object(albumFields);
 
+export const listAlbumsQuerySchema = z.object({
+  category: albumCategoryEnum.optional(),
+});
+
+// ── Executives (front office tabs) ───────────────────────────────────────────
+export const executiveGroupEnum = z.enum(['BUSINESS', 'COACHES', 'OPERATIONS', 'OWNERSHIP']);
+
+const executiveFields = {
+  bio: optionalText(5000),
+  bullets: stringList,
+  group: executiveGroupEnum.optional(),
+  isPublic: optionalBool,
+  name: text(120),
+  photo: optionalText(600),
+  slug: text(140),
+  sortOrder: optionalInt(0, 9999),
+  title: text(160),
+};
+
+export const createExecutiveSchema = z.object(executiveFields);
+
+export const listExecutivesQuerySchema = z.object({
+  group: executiveGroupEnum.optional(),
+});
+
+// ── Videos ───────────────────────────────────────────────────────────────────
+export const videoCategoryEnum = z.enum(['BEHIND_THE_SCENES', 'HIGHLIGHTS', 'INTERVIEWS', 'PRESS']);
+
+const videoFields = {
+  category: videoCategoryEnum.optional(),
+  durationSec: optionalInt(0, 36_000),
+  isFeatured: optionalBool,
+  isPublished: optionalBool,
+  publishedAt: optionalDate,
+  slug: text(140),
+  sortOrder: optionalInt(0, 9999),
+  thumbnail: optionalText(600),
+  title: text(200),
+  videoUrl: optionalText(600),
+  youtubeId: optionalText(20),
+};
+
+export const createVideoSchema = z.object(videoFields);
+
+export const listVideosQuerySchema = z.object({
+  category: videoCategoryEnum.optional(),
+  featured: boolFlag.optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+});
+
+// ── Shop products (fan club) ─────────────────────────────────────────────────
+export const shopCategoryEnum = z.enum(['GEAR', 'HATS', 'HOODIES', 'JERSEYS', 'KIDS', 'TEES']);
+
+const shopFields = {
+  badge: optionalText(40),
+  category: shopCategoryEnum.optional(),
+  compareAtPrice: optionalInt(0, 100_000_000),
+  image: optionalText(600),
+  isVisible: optionalBool,
+  name: text(200),
+  price: z.coerce.number().int().min(0).max(100_000_000),
+  sizes: stringList,
+  slug: text(140),
+  sortOrder: optionalInt(0, 9999),
+  url: optionalText(600),
+};
+
+export const createShopProductSchema = z.object(shopFields);
+
+export const listShopQuerySchema = z.object({
+  category: shopCategoryEnum.optional(),
+});
+
+// ── Newsletter (public signup + admin inbox) ─────────────────────────────────
+export const newsletterInterestEnum = z.enum(['community', 'recaps', 'shop', 'tickets']);
+
+export const newsletterSubscribeSchema = z.object({
+  email: z
+    .email()
+    .max(254)
+    .transform((value) => value.toLowerCase()),
+  firstName: optionalText(80),
+  interests: z.array(newsletterInterestEnum).max(4).optional(),
+});
+
 // ── Update variants: everything optional (essentials included) ───────────────
 export const updateNewsSchema = createNewsSchema.partial();
 export const updatePlayerSchema = createPlayerSchema.partial();
@@ -189,6 +281,9 @@ export const updateGameSchema = createGameSchema.partial();
 export const updateStandingSchema = createStandingSchema.partial();
 export const updatePartnerSchema = createPartnerSchema.partial();
 export const updateAlbumSchema = createAlbumSchema.partial();
+export const updateExecutiveSchema = createExecutiveSchema.partial();
+export const updateVideoSchema = createVideoSchema.partial();
+export const updateShopProductSchema = createShopProductSchema.partial();
 
 // ── Site content (singleton copy, allowlisted by page/section) ───────────────
 export const siteContentPutSchema = z.object({
@@ -222,9 +317,14 @@ export const contactReadSchema = z.object({
 
 export type CreateContactInput = z.infer<typeof createContactSchema>;
 export type CreateGameInput = z.infer<typeof createGameSchema>;
+export type ListAlbumsQuery = z.infer<typeof listAlbumsQuerySchema>;
+export type ListExecutivesQuery = z.infer<typeof listExecutivesQuerySchema>;
 export type ListGamesQuery = z.infer<typeof listGamesQuerySchema>;
 export type ListNewsQuery = z.infer<typeof listNewsQuerySchema>;
 export type ListPlayersQuery = z.infer<typeof listPlayersQuerySchema>;
+export type ListShopQuery = z.infer<typeof listShopQuerySchema>;
+export type ListVideosQuery = z.infer<typeof listVideosQuerySchema>;
+export type NewsletterSubscribeInput = z.infer<typeof newsletterSubscribeSchema>;
 export type SiteContentPutInput = z.infer<typeof siteContentPutSchema>;
 export type UpdateGameInput = z.infer<typeof updateGameSchema>;
 

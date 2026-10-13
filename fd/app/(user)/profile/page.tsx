@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -97,40 +98,44 @@ export default function ProfilePage() {
               Your email ({data?.user.email}) cannot be changed.
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleSubmit} noValidate>
-            <CardContent>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Your name"
-                        autoComplete="name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Shown on your dashboard and account menu.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter className="mt-4">
-              <Button type="submit" disabled={update.isPending}>
-                {update.isPending ? (
-                  <Loader2 className="animate-spin" aria-hidden="true" />
-                ) : (
-                  <Save aria-hidden="true" />
-                )}
-                Save changes
-              </Button>
-            </CardFooter>
-          </form>
+          {/* FormProvider — FormItem/FormLabel/FormControl read the form
+              context (getFieldState); without it they crash at render. */}
+          <Form {...form}>
+            <form onSubmit={handleSubmit} noValidate>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your name"
+                          autoComplete="name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Shown on your dashboard and account menu.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+              <CardFooter className="mt-4">
+                <Button type="submit" disabled={update.isPending}>
+                  {update.isPending ? (
+                    <Loader2 className="animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Save aria-hidden="true" />
+                  )}
+                  Save changes
+                </Button>
+              </CardFooter>
+            </form>
+          </Form>
         </Card>
       )}
     </div>

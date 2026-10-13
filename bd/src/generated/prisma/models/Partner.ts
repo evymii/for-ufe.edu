@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -213,7 +213,7 @@ export type PartnerGroupByOutputType = {
   _max: PartnerMaxAggregateOutputType | null
 }
 
-export type GetPartnerGroupByPayload<T extends PartnerGroupByArgs> = Prisma.PrismaPromise<
+type GetPartnerGroupByPayload<T extends PartnerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PartnerGroupByOutputType, T['by']> &
       {
@@ -232,7 +232,7 @@ export type PartnerWhereInput = {
   AND?: Prisma.PartnerWhereInput | Prisma.PartnerWhereInput[]
   OR?: Prisma.PartnerWhereInput[]
   NOT?: Prisma.PartnerWhereInput | Prisma.PartnerWhereInput[]
-  id?: Prisma.UuidFilter<"Partner"> | string
+  id?: Prisma.StringFilter<"Partner"> | string
   name?: Prisma.StringFilter<"Partner"> | string
   logo?: Prisma.StringNullableFilter<"Partner"> | string | null
   url?: Prisma.StringNullableFilter<"Partner"> | string | null
@@ -245,8 +245,8 @@ export type PartnerWhereInput = {
 export type PartnerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  logo?: Prisma.SortOrderInput | Prisma.SortOrder
-  url?: Prisma.SortOrderInput | Prisma.SortOrder
+  logo?: Prisma.SortOrder
+  url?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isVisible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -270,8 +270,8 @@ export type PartnerWhereUniqueInput = Prisma.AtLeast<{
 export type PartnerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  logo?: Prisma.SortOrderInput | Prisma.SortOrder
-  url?: Prisma.SortOrderInput | Prisma.SortOrder
+  logo?: Prisma.SortOrder
+  url?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isVisible?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -287,7 +287,7 @@ export type PartnerScalarWhereWithAggregatesInput = {
   AND?: Prisma.PartnerScalarWhereWithAggregatesInput | Prisma.PartnerScalarWhereWithAggregatesInput[]
   OR?: Prisma.PartnerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PartnerScalarWhereWithAggregatesInput | Prisma.PartnerScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"Partner"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Partner"> | string
   name?: Prisma.StringWithAggregatesFilter<"Partner"> | string
   logo?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
   url?: Prisma.StringNullableWithAggregatesFilter<"Partner"> | string | null
@@ -320,7 +320,6 @@ export type PartnerUncheckedCreateInput = {
 }
 
 export type PartnerUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -331,7 +330,6 @@ export type PartnerUpdateInput = {
 }
 
 export type PartnerUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -353,7 +351,6 @@ export type PartnerCreateManyInput = {
 }
 
 export type PartnerUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -364,7 +361,6 @@ export type PartnerUpdateManyMutationInput = {
 }
 
 export type PartnerUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -428,27 +424,7 @@ export type PartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
 }, ExtArgs["result"]["partner"]>
 
-export type PartnerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  logo?: boolean
-  url?: boolean
-  sortOrder?: boolean
-  isVisible?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["partner"]>
 
-export type PartnerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  logo?: boolean
-  url?: boolean
-  sortOrder?: boolean
-  isVisible?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["partner"]>
 
 export type PartnerSelectScalar = {
   id?: boolean
@@ -593,30 +569,6 @@ export interface PartnerDelegate<ExtArgs extends runtime.Types.Extensions.Intern
   createMany<T extends PartnerCreateManyArgs>(args?: Prisma.SelectSubset<T, PartnerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Partners and returns the data saved in the database.
-   * @param {PartnerCreateManyAndReturnArgs} args - Arguments to create many Partners.
-   * @example
-   * // Create many Partners
-   * const partner = await prisma.partner.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Partners and only return the `id`
-   * const partnerWithIdOnly = await prisma.partner.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends PartnerCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, PartnerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Partner.
    * @param {PartnerDeleteArgs} args - Arguments to delete one Partner.
    * @example
@@ -681,36 +633,6 @@ export interface PartnerDelegate<ExtArgs extends runtime.Types.Extensions.Intern
   updateMany<T extends PartnerUpdateManyArgs>(args: Prisma.SelectSubset<T, PartnerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Partners and returns the data updated in the database.
-   * @param {PartnerUpdateManyAndReturnArgs} args - Arguments to update many Partners.
-   * @example
-   * // Update many Partners
-   * const partner = await prisma.partner.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Partners and only return the `id`
-   * const partnerWithIdOnly = await prisma.partner.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends PartnerUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, PartnerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one Partner.
    * @param {PartnerUpsertArgs} args - Arguments to update or create a Partner.
    * @example
@@ -728,6 +650,29 @@ export interface PartnerDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * })
    */
   upsert<T extends PartnerUpsertArgs>(args: Prisma.SelectSubset<T, PartnerUpsertArgs<ExtArgs>>): Prisma.Prisma__PartnerClient<runtime.Types.Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more Partners that matches the filter.
+   * @param {PartnerFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const partner = await prisma.partner.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.PartnerFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a Partner.
+   * @param {PartnerAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const partner = await prisma.partner.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.PartnerAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1082,11 +1027,6 @@ export type PartnerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Partners.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of Partners.
-   */
   distinct?: Prisma.PartnerScalarFieldEnum | Prisma.PartnerScalarFieldEnum[]
 }
 
@@ -1116,26 +1056,6 @@ export type PartnerCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Partners.
    */
   data: Prisma.PartnerCreateManyInput | Prisma.PartnerCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * Partner createManyAndReturn
- */
-export type PartnerCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Partner
-   */
-  select?: Prisma.PartnerSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Partner
-   */
-  omit?: Prisma.PartnerOmit<ExtArgs> | null
-  /**
-   * The data used to create many Partners.
-   */
-  data: Prisma.PartnerCreateManyInput | Prisma.PartnerCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1164,32 +1084,6 @@ export type PartnerUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
  * Partner updateMany
  */
 export type PartnerUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update Partners.
-   */
-  data: Prisma.XOR<Prisma.PartnerUpdateManyMutationInput, Prisma.PartnerUncheckedUpdateManyInput>
-  /**
-   * Filter which Partners to update
-   */
-  where?: Prisma.PartnerWhereInput
-  /**
-   * Limit how many Partners to update.
-   */
-  limit?: number
-}
-
-/**
- * Partner updateManyAndReturn
- */
-export type PartnerUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Partner
-   */
-  select?: Prisma.PartnerSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Partner
-   */
-  omit?: Prisma.PartnerOmit<ExtArgs> | null
   /**
    * The data used to update Partners.
    */
@@ -1260,6 +1154,34 @@ export type PartnerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Partners to delete.
    */
   limit?: number
+}
+
+/**
+ * Partner findRaw
+ */
+export type PartnerFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * Partner aggregateRaw
+ */
+export type PartnerAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

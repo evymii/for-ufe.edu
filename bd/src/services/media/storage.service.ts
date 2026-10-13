@@ -1,0 +1,91 @@
+import type { UploadApiResponse } from 'cloudinary';
+
+import { v2 as cloudinary } from 'cloudinary';
+import { fileTypeFromBuffer } from 'file-type';
+
+import { MEDIA_MIME_ALLOWLIST } from '../../config/constants.js';
+import { env } from '../../config/env.js';
+import { ApiError } from '../../lib/ApiError.js';
+import { logger } from '../../lib/logger.js';
+
+cloudinary.config({
+  api_key: env.CLOUDINARY_API_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET,
+  cloud_name: env.CLOUDINARY_CLOUD_NAME,
+  secure: true,
+});
+
+export interface StoredImage {
+  bytes: number;
+  height: null | number;
+  mime: string;
+  publicId: string;
+  url: string;
+  width: null | number;
+}
+
+export async function deleteImage(publicId: string): Promise<void> {
+  requireConfigured();
+  await cloudinary.uploader.destroy(publicId, { invalidate: true, resource_type: 'image' });
+}
+
+/**
+ * The ONLY file that knows which storage provider we use. Swapping to R2 (or
+ * anything else) later means rewriting this file alone — controllers,
+ * services and routes only ever see uploadImage/deleteImage.
+ */
+export async function uploadImage(buffer: Buffer, subfolder: string): Promise<StoredImage> {
+  requireConfigured();
+
+  // Trust the bytes, never the client's MIME type or filename. SVG is
+  // rejected implicitly: it is not in the allowlist (it can carry scripts).
+  const detected = await fileTypeFromBuffer(buffer);
+  if (!detected || !(MEDIA_MIME_ALLOWLIST as readonly string[]).includes(detected.mime)) {
+    throw ApiError.badRequest(
+      'Unsupported or invalid image file (allowed: JPEG, PNG, WebP, GIF, AVIF)',
+    );
+  }
+
+  try {
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: `${env.CLOUDINARY_FOLDER}/${subfolder}`,
+            overwrite: false,
+            resource_type: 'image',
+            unique_filename: true,
+          },
+          (error, response) => {
+            if (error || !response) {
+              reject(error ?? new Error('Cloudinary returned an empty upload response'));
+            } else {
+              resolve(response);
+            }
+          },
+        )
+        .end(buffer);
+    });
+
+    return {
+      bytes: result.bytes,
+      height: result.height ?? null,
+      mime: detected.mime,
+      publicId: result.public_id,
+      url: result.secure_url,
+      width: result.width ?? null,
+    };
+  } catch (error) {
+    // Provider-side failure (quota, network, auth): log details server-side,
+    // surface only a safe message.
+    if (error instanceof ApiError) throw error;
+    logger.error({ err: error }, 'Cloudinary upload failed');
+    throw ApiError.serviceUnavailable('Image storage rejected the upload — try again later');
+  }
+}
+
+function requireConfigured(): void {
+  if (!env.storageConfigured) {
+    throw ApiError.serviceUnavailable('Media storage is not configured on this server');
+  }
+}

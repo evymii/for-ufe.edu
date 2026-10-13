@@ -140,8 +140,8 @@ const eras: Era[] = [
   },
 ];
 
-/** Sticky chrome: site header (64px) + year rail (60px). */
-const TOP_OFFSET = 124;
+/** Sticky chrome: collapsed site header (56px) + year rail (56px). */
+const TOP_OFFSET = 112;
 
 let tweenTimer = 0;
 
@@ -286,10 +286,10 @@ export function HistoryExperience() {
       {/* Sticky year rail — scroll-spy + reading progress */}
       <nav
         aria-label="Он цэс"
-        className="sticky top-16 z-30 h-[60px] border-b border-white/10 bg-[#0D2857]"
+        className="border-line bg-paper sticky top-14 z-30 h-14 border-b"
       >
-        <div className="mx-auto flex h-full w-full max-w-[1120px] items-center px-4 sm:px-6">
-          <ul className="flex items-center gap-1 overflow-x-auto">
+        <div className="team-shell flex h-full items-center">
+          <ul className="no-scrollbar flex items-center gap-1 overflow-x-auto">
             {eras.map((era) => {
               const active = era.id === activeId;
               return (
@@ -302,10 +302,10 @@ export function HistoryExperience() {
                       jumpTo(era);
                     }}
                     className={cn(
-                      "font-display shrink-0 rounded-full px-4 py-1.5 text-sm font-semibold tracking-[0.1em] uppercase transition-colors",
+                      "font-display team-focus flex h-14 shrink-0 border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
                       active
-                        ? "bg-gold text-[#0D2857]"
-                        : "text-white/70 hover:text-white",
+                        ? "border-ink text-ink"
+                        : "text-mute hover:text-ink border-transparent",
                     )}
                   >
                     {era.navLabel}
@@ -318,7 +318,7 @@ export function HistoryExperience() {
         <div
           ref={barRef}
           aria-hidden="true"
-          className="bg-gold absolute bottom-0 left-0 h-0.5 w-full origin-left"
+          className="bg-ink absolute bottom-0 left-0 h-0.5 w-full origin-left"
           style={{ transform: "scaleX(0)" }}
         />
       </nav>
@@ -341,7 +341,7 @@ export function HistoryExperience() {
                 className={cn(
                   "relative h-full w-full shrink-0 border-r last:border-r-0",
                   era.highlight
-                    ? "border-white/10 bg-[#14338F] text-white"
+                    ? "bg-ink border-white/10 text-white"
                     : "border-line/60 bg-paper",
                 )}
               >
@@ -351,14 +351,14 @@ export function HistoryExperience() {
                     "font-display pointer-events-none absolute right-6 bottom-0 text-[clamp(180px,24vw,360px)] leading-[0.75] font-bold tracking-[0.02em] text-transparent select-none",
                     era.highlight
                       ? "[-webkit-text-stroke:2px_rgba(255,255,255,0.12)]"
-                      : "[-webkit-text-stroke:2px_rgba(20,51,143,0.12)]",
+                      : "[-webkit-text-stroke:2px_rgba(11,11,12,0.10)]",
                   )}
                 >
                   {era.navLabel}
                 </p>
 
                 {era.photos.length > 0 ? (
-                  <div className="relative mx-auto grid h-full w-full max-w-[1120px] grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-center gap-14 px-6">
+                  <div className="relative mx-auto grid h-full w-full max-w-[1280px] grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-center gap-14 px-8">
                     <EraCopy era={era} />
                     <EraPhotos
                       photos={era.photos}
@@ -366,7 +366,7 @@ export function HistoryExperience() {
                     />
                   </div>
                 ) : (
-                  <div className="relative mx-auto grid h-full w-full max-w-[1120px] items-center px-6">
+                  <div className="relative mx-auto grid h-full w-full max-w-[1280px] items-center px-8">
                     <div
                       className={cn(
                         "max-w-[780px]",
@@ -390,20 +390,20 @@ export function HistoryExperience() {
             key={era.id}
             id={era.id}
             className={cn(
-              "scroll-mt-36",
-              era.highlight ? "bg-[#14338F] text-white" : "bg-paper",
+              "scroll-mt-28",
+              era.highlight ? "bg-ink text-white" : "bg-paper",
             )}
           >
-            <div className="mx-auto w-full max-w-[1120px] px-4 py-14 sm:px-6">
+            <div className="team-shell py-14">
               <EraCopy era={era} />
               {era.photos.length > 0 ? (
-                <div className="mt-8 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto pb-2">
+                <div className="no-scrollbar mt-8 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto pb-2">
                   {era.photos.map((src) => (
                     <div
                       key={src}
                       className={cn(
-                        "relative aspect-[3/2] w-72 shrink-0 snap-start overflow-hidden rounded-xl border",
-                        era.highlight ? "border-gold/40" : "border-line",
+                        "relative aspect-[3/2] w-72 shrink-0 snap-start overflow-hidden border",
+                        era.highlight ? "border-white/25" : "border-line",
                       )}
                     >
                       <Image
@@ -424,7 +424,7 @@ export function HistoryExperience() {
 
       {/* Continue exploring — roster & staff */}
       <section className="border-line bg-paper-soft border-t">
-        <div className="mx-auto grid w-full max-w-[1120px] gap-4 px-4 py-16 sm:grid-cols-2 sm:px-6 md:py-20">
+        <div className="team-shell grid gap-4 py-16 sm:grid-cols-2 md:py-20">
           {[
             { href: routes.site.roster, label: "Тоглогчид" },
             { href: routes.site.management, label: "Удирдлага" },
@@ -432,13 +432,13 @@ export function HistoryExperience() {
             <Link
               key={href}
               href={href}
-              className="group border-line bg-paper hover:border-brand-2 flex min-h-11 items-center justify-between rounded-xl border px-6 py-5 transition-colors"
+              className="group border-line bg-paper hover:border-ink flex min-h-11 items-center justify-between border px-6 py-5 transition-colors"
             >
               <span className="font-display text-ink text-lg font-semibold tracking-[0.06em] uppercase">
                 {label}
               </span>
               <ArrowRight
-                className="text-brand-2 size-5 transition-transform group-hover:translate-x-0.5"
+                className="text-ink size-5 transition-transform group-hover:translate-x-1"
                 aria-hidden="true"
               />
             </Link>
@@ -455,7 +455,7 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
       <p
         className={cn(
           "text-[11px] font-semibold tracking-[0.28em] uppercase",
-          era.highlight ? "text-gold" : "text-brand-2",
+          era.highlight ? "text-white/60" : "text-mute",
         )}
       >
         {era.entries[0].period}
@@ -481,7 +481,7 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
           era.centered
             ? undefined
             : cn(
-                "ml-2 border-l-2 pl-6",
+                "ml-1 border-l pl-6",
                 era.highlight ? "border-white/20" : "border-line",
               ),
         )}
@@ -494,11 +494,17 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute rounded-full",
+                    "absolute",
                     highlight
-                      ? "bg-gold top-1 -left-[31px] size-3.5 ring-4 ring-[color:rgb(200_150_46/0.18)]"
-                      : "bg-brand-2 top-1.5 -left-[29px] size-2.5 ring-4",
-                    era.highlight ? "ring-[#14338F]" : "ring-paper",
+                      ? "top-1 -left-[27px] size-3"
+                      : "top-1.5 -left-[25px] size-2.5",
+                    era.highlight
+                      ? highlight
+                        ? "bg-paper"
+                        : "bg-white/60"
+                      : highlight
+                        ? "bg-ink"
+                        : "bg-mute/60",
                   )}
                 />
               )}
@@ -506,19 +512,18 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
                 <p
                   className={cn(
                     "font-display text-lg font-bold tracking-[0.02em]",
-                    era.highlight
-                      ? highlight
-                        ? "text-gold"
-                        : "text-white"
-                      : highlight
-                        ? "text-gold"
-                        : "text-ink",
+                    era.highlight ? "text-white" : "text-ink",
                   )}
                 >
                   {entry.period}
                 </p>
                 {entry.highlightLabel ? (
-                  <span className="border-gold/40 text-gold rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-[0.12em] uppercase">
+                  <span
+                    className={cn(
+                      "px-2.5 py-0.5 text-[11px] font-semibold tracking-[0.12em] uppercase",
+                      era.highlight ? "bg-paper text-ink" : "bg-ink text-paper",
+                    )}
+                  >
                     {entry.highlightLabel}
                   </span>
                 ) : null}
@@ -528,7 +533,7 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
                   className={cn(
                     "mt-1 max-w-xl leading-[1.6]",
                     large ? "text-base" : "text-sm",
-                    era.highlight ? "text-white/80" : "text-mute",
+                    era.highlight ? "text-white/75" : "text-mute",
                     era.centered && "mx-auto",
                   )}
                 >
@@ -543,13 +548,13 @@ function EraCopy({ era, large }: { era: Era; large?: boolean }) {
                       className={cn(
                         "flex max-w-xl gap-2 leading-[1.6]",
                         large ? "text-base" : "text-sm",
-                        era.highlight ? "text-white/80" : "text-mute",
+                        era.highlight ? "text-white/75" : "text-mute",
                       )}
                     >
                       <span
                         className={cn(
-                          "mt-2 size-1.5 shrink-0 rounded-full",
-                          era.highlight ? "bg-gold/70" : "bg-brand-2/60",
+                          "mt-2 size-1.5 shrink-0",
+                          era.highlight ? "bg-white/50" : "bg-mute/50",
                         )}
                         aria-hidden="true"
                       />
@@ -578,11 +583,11 @@ function EraPhotos({
   photos: string[];
   highlight: boolean;
 }) {
-  const border = highlight ? "border-gold/40" : "border-line";
+  const border = highlight ? "border-white/25" : "border-line";
   const card = (src: string, sizes: string) => (
     <div
       className={cn(
-        "shadow-card relative aspect-[3/2] w-full overflow-hidden rounded-xl border",
+        "relative aspect-[3/2] w-full overflow-hidden border",
         border,
       )}
     >

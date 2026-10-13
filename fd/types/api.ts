@@ -4,6 +4,8 @@ export type Role = "USER" | "ADMIN";
 export interface User {
   id: string;
   email: string;
+  /** Named staff login (manager / editor / edumanager); null for plain accounts. */
+  username: null | string;
   name: string | null;
   role: Role;
   isActive: boolean;

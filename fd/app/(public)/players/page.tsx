@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { PageHero } from "@/components/team/page-hero";
 import { RosterBrowser } from "@/components/team/roster-browser";
-import type { RosterPlayer } from "@/components/team/player-card";
+import type { RosterPlayer } from "@/components/team/roster-utils";
 import { playerProfiles, players } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -41,6 +41,17 @@ export default function RosterPage() {
         breadcrumb="Тоглогчид"
         subtitle={players.subtitle}
         title={players.title}
+        controls={
+          <div
+            aria-label="Улирал"
+            className="border-ink flex h-11 items-center gap-6 border px-4 text-sm font-semibold"
+          >
+            2026–2027
+            <span aria-hidden="true" className="text-mute">
+              ▾
+            </span>
+          </div>
+        }
       />
 
       <RosterBrowser players={roster} subtitle={players.subtitle} />

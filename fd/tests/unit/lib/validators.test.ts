@@ -5,20 +5,20 @@ import { loginSchema, registerSchema } from "@/lib/validators/auth";
 /** The form validation shared in spirit with bd/src/validators. */
 describe("auth validators", () => {
   describe("loginSchema", () => {
-    it("accepts a valid login", () => {
+    it("accepts a valid username login", () => {
       const parsed = loginSchema.parse({
-        email: "Ada@Example.com",
-        password: "Password123!",
+        identifier: "manager",
+        password: "9876",
       });
       expect(parsed).toEqual({
-        email: "Ada@Example.com",
-        password: "Password123!",
+        identifier: "manager",
+        password: "9876",
       });
     });
 
-    it("rejects a malformed email", () => {
+    it("rejects an empty identifier", () => {
       const result = loginSchema.safeParse({
-        email: "not-an-email",
+        identifier: "   ",
         password: "Password123!",
       });
       expect(result.success).toBe(false);

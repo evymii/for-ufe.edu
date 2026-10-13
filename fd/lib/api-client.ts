@@ -89,11 +89,8 @@ async function request<T>(
     path !== REFRESH_PATH &&
     (body?.error?.code === "UNAUTHORIZED" || body === null)
   ) {
-    const refreshed = await rawRequest<AuthPayload>(REFRESH_PATH, {
-      method: "POST",
-    });
-    if (refreshed?.success && refreshed.data) {
-      accessToken = refreshed.data.accessToken;
+    const refreshed = await refreshSession().catch(() => null);
+    if (refreshed) {
       return request<T>(path, init, false);
     }
   }
@@ -113,6 +110,11 @@ export const api = {
       method: "POST",
       body: payload === undefined ? undefined : JSON.stringify(payload),
     }),
+  put: <T>(path: string, payload?: unknown) =>
+    request<T>(path, {
+      method: "PUT",
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+    }),
   patch: <T>(path: string, payload?: unknown) =>
     request<T>(path, {
       method: "PATCH",
@@ -121,12 +123,27 @@ export const api = {
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
 };
 
+/** Single-flight refresh: concurrent callers (React effect double-mounts,
+ *  parallel requests recovering from the same expired token) share ONE
+ *  network call. Without this, two simultaneous rotations of the same
+ *  refresh cookie conflict server-side (Mongo transaction P2034) and the
+ *  loser would kill the session. */
+let refreshInFlight: null | Promise<AuthPayload> = null;
+
 /** Exchanges the httpOnly refresh cookie for a fresh access token + user. */
 export async function refreshSession(): Promise<AuthPayload> {
-  const body = await rawRequest<AuthPayload>(REFRESH_PATH, { method: "POST" });
-  if (!body?.success || !body.data) {
-    throw new ApiClientError(401, "UNAUTHORIZED", "Session expired");
-  }
-  accessToken = body.data.accessToken;
-  return body.data;
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = (async () => {
+    const body = await rawRequest<AuthPayload>(REFRESH_PATH, {
+      method: "POST",
+    });
+    if (!body?.success || !body.data) {
+      throw new ApiClientError(401, "UNAUTHORIZED", "Session expired");
+    }
+    accessToken = body.data.accessToken;
+    return body.data;
+  })().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
 }

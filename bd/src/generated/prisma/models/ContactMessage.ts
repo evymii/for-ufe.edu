@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -179,7 +179,7 @@ export type ContactMessageGroupByOutputType = {
   _max: ContactMessageMaxAggregateOutputType | null
 }
 
-export type GetContactMessageGroupByPayload<T extends ContactMessageGroupByArgs> = Prisma.PrismaPromise<
+type GetContactMessageGroupByPayload<T extends ContactMessageGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ContactMessageGroupByOutputType, T['by']> &
       {
@@ -198,7 +198,7 @@ export type ContactMessageWhereInput = {
   AND?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
   OR?: Prisma.ContactMessageWhereInput[]
   NOT?: Prisma.ContactMessageWhereInput | Prisma.ContactMessageWhereInput[]
-  id?: Prisma.UuidFilter<"ContactMessage"> | string
+  id?: Prisma.StringFilter<"ContactMessage"> | string
   name?: Prisma.StringFilter<"ContactMessage"> | string
   email?: Prisma.StringFilter<"ContactMessage"> | string
   phone?: Prisma.StringNullableFilter<"ContactMessage"> | string | null
@@ -212,8 +212,8 @@ export type ContactMessageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
-  subject?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  subject?: Prisma.SortOrder
   message?: Prisma.SortOrder
   isRead?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -237,8 +237,8 @@ export type ContactMessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
-  subject?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  subject?: Prisma.SortOrder
   message?: Prisma.SortOrder
   isRead?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -251,7 +251,7 @@ export type ContactMessageScalarWhereWithAggregatesInput = {
   AND?: Prisma.ContactMessageScalarWhereWithAggregatesInput | Prisma.ContactMessageScalarWhereWithAggregatesInput[]
   OR?: Prisma.ContactMessageScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ContactMessageScalarWhereWithAggregatesInput | Prisma.ContactMessageScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"ContactMessage"> | string
+  id?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   name?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   email?: Prisma.StringWithAggregatesFilter<"ContactMessage"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"ContactMessage"> | string | null
@@ -284,7 +284,6 @@ export type ContactMessageUncheckedCreateInput = {
 }
 
 export type ContactMessageUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -295,7 +294,6 @@ export type ContactMessageUpdateInput = {
 }
 
 export type ContactMessageUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -317,7 +315,6 @@ export type ContactMessageCreateManyInput = {
 }
 
 export type ContactMessageUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -328,7 +325,6 @@ export type ContactMessageUpdateManyMutationInput = {
 }
 
 export type ContactMessageUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -384,27 +380,7 @@ export type ContactMessageSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
 }, ExtArgs["result"]["contactMessage"]>
 
-export type ContactMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
-  subject?: boolean
-  message?: boolean
-  isRead?: boolean
-  createdAt?: boolean
-}, ExtArgs["result"]["contactMessage"]>
 
-export type ContactMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
-  subject?: boolean
-  message?: boolean
-  isRead?: boolean
-  createdAt?: boolean
-}, ExtArgs["result"]["contactMessage"]>
 
 export type ContactMessageSelectScalar = {
   id?: boolean
@@ -549,30 +525,6 @@ export interface ContactMessageDelegate<ExtArgs extends runtime.Types.Extensions
   createMany<T extends ContactMessageCreateManyArgs>(args?: Prisma.SelectSubset<T, ContactMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many ContactMessages and returns the data saved in the database.
-   * @param {ContactMessageCreateManyAndReturnArgs} args - Arguments to create many ContactMessages.
-   * @example
-   * // Create many ContactMessages
-   * const contactMessage = await prisma.contactMessage.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many ContactMessages and only return the `id`
-   * const contactMessageWithIdOnly = await prisma.contactMessage.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends ContactMessageCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ContactMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a ContactMessage.
    * @param {ContactMessageDeleteArgs} args - Arguments to delete one ContactMessage.
    * @example
@@ -637,36 +589,6 @@ export interface ContactMessageDelegate<ExtArgs extends runtime.Types.Extensions
   updateMany<T extends ContactMessageUpdateManyArgs>(args: Prisma.SelectSubset<T, ContactMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more ContactMessages and returns the data updated in the database.
-   * @param {ContactMessageUpdateManyAndReturnArgs} args - Arguments to update many ContactMessages.
-   * @example
-   * // Update many ContactMessages
-   * const contactMessage = await prisma.contactMessage.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more ContactMessages and only return the `id`
-   * const contactMessageWithIdOnly = await prisma.contactMessage.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends ContactMessageUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ContactMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one ContactMessage.
    * @param {ContactMessageUpsertArgs} args - Arguments to update or create a ContactMessage.
    * @example
@@ -684,6 +606,29 @@ export interface ContactMessageDelegate<ExtArgs extends runtime.Types.Extensions
    * })
    */
   upsert<T extends ContactMessageUpsertArgs>(args: Prisma.SelectSubset<T, ContactMessageUpsertArgs<ExtArgs>>): Prisma.Prisma__ContactMessageClient<runtime.Types.Result.GetResult<Prisma.$ContactMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more ContactMessages that matches the filter.
+   * @param {ContactMessageFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const contactMessage = await prisma.contactMessage.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.ContactMessageFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a ContactMessage.
+   * @param {ContactMessageAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const contactMessage = await prisma.contactMessage.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.ContactMessageAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1038,11 +983,6 @@ export type ContactMessageFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` ContactMessages.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of ContactMessages.
-   */
   distinct?: Prisma.ContactMessageScalarFieldEnum | Prisma.ContactMessageScalarFieldEnum[]
 }
 
@@ -1072,26 +1012,6 @@ export type ContactMessageCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many ContactMessages.
    */
   data: Prisma.ContactMessageCreateManyInput | Prisma.ContactMessageCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * ContactMessage createManyAndReturn
- */
-export type ContactMessageCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ContactMessage
-   */
-  select?: Prisma.ContactMessageSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ContactMessage
-   */
-  omit?: Prisma.ContactMessageOmit<ExtArgs> | null
-  /**
-   * The data used to create many ContactMessages.
-   */
-  data: Prisma.ContactMessageCreateManyInput | Prisma.ContactMessageCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1120,32 +1040,6 @@ export type ContactMessageUpdateArgs<ExtArgs extends runtime.Types.Extensions.In
  * ContactMessage updateMany
  */
 export type ContactMessageUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update ContactMessages.
-   */
-  data: Prisma.XOR<Prisma.ContactMessageUpdateManyMutationInput, Prisma.ContactMessageUncheckedUpdateManyInput>
-  /**
-   * Filter which ContactMessages to update
-   */
-  where?: Prisma.ContactMessageWhereInput
-  /**
-   * Limit how many ContactMessages to update.
-   */
-  limit?: number
-}
-
-/**
- * ContactMessage updateManyAndReturn
- */
-export type ContactMessageUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ContactMessage
-   */
-  select?: Prisma.ContactMessageSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the ContactMessage
-   */
-  omit?: Prisma.ContactMessageOmit<ExtArgs> | null
   /**
    * The data used to update ContactMessages.
    */
@@ -1216,6 +1110,34 @@ export type ContactMessageDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many ContactMessages to delete.
    */
   limit?: number
+}
+
+/**
+ * ContactMessage findRaw
+ */
+export type ContactMessageFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * ContactMessage aggregateRaw
+ */
+export type ContactMessageAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

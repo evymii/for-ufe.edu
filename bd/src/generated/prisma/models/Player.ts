@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -339,7 +339,7 @@ export type PlayerGroupByOutputType = {
   _max: PlayerMaxAggregateOutputType | null
 }
 
-export type GetPlayerGroupByPayload<T extends PlayerGroupByArgs> = Prisma.PrismaPromise<
+type GetPlayerGroupByPayload<T extends PlayerGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PlayerGroupByOutputType, T['by']> &
       {
@@ -358,7 +358,7 @@ export type PlayerWhereInput = {
   AND?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
   OR?: Prisma.PlayerWhereInput[]
   NOT?: Prisma.PlayerWhereInput | Prisma.PlayerWhereInput[]
-  id?: Prisma.UuidFilter<"Player"> | string
+  id?: Prisma.StringFilter<"Player"> | string
   name?: Prisma.StringFilter<"Player"> | string
   slug?: Prisma.StringFilter<"Player"> | string
   number?: Prisma.IntNullableFilter<"Player"> | number | null
@@ -386,21 +386,21 @@ export type PlayerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  number?: Prisma.SortOrderInput | Prisma.SortOrder
+  number?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  position?: Prisma.SortOrderInput | Prisma.SortOrder
-  heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
-  weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
-  birthYear?: Prisma.SortOrderInput | Prisma.SortOrder
-  hometown?: Prisma.SortOrderInput | Prisma.SortOrder
-  photo?: Prisma.SortOrderInput | Prisma.SortOrder
-  actionPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
-  bio?: Prisma.SortOrderInput | Prisma.SortOrder
-  academicYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
+  heightCm?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrder
+  birthYear?: Prisma.SortOrder
+  hometown?: Prisma.SortOrder
+  photo?: Prisma.SortOrder
+  actionPhoto?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
+  academicYear?: Prisma.SortOrder
   isCaptain?: Prisma.SortOrder
-  ppg?: Prisma.SortOrderInput | Prisma.SortOrder
-  rpg?: Prisma.SortOrderInput | Prisma.SortOrder
-  apg?: Prisma.SortOrderInput | Prisma.SortOrder
+  ppg?: Prisma.SortOrder
+  rpg?: Prisma.SortOrder
+  apg?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -439,21 +439,21 @@ export type PlayerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  number?: Prisma.SortOrderInput | Prisma.SortOrder
+  number?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  position?: Prisma.SortOrderInput | Prisma.SortOrder
-  heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
-  weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
-  birthYear?: Prisma.SortOrderInput | Prisma.SortOrder
-  hometown?: Prisma.SortOrderInput | Prisma.SortOrder
-  photo?: Prisma.SortOrderInput | Prisma.SortOrder
-  actionPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
-  bio?: Prisma.SortOrderInput | Prisma.SortOrder
-  academicYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
+  heightCm?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrder
+  birthYear?: Prisma.SortOrder
+  hometown?: Prisma.SortOrder
+  photo?: Prisma.SortOrder
+  actionPhoto?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
+  academicYear?: Prisma.SortOrder
   isCaptain?: Prisma.SortOrder
-  ppg?: Prisma.SortOrderInput | Prisma.SortOrder
-  rpg?: Prisma.SortOrderInput | Prisma.SortOrder
-  apg?: Prisma.SortOrderInput | Prisma.SortOrder
+  ppg?: Prisma.SortOrder
+  rpg?: Prisma.SortOrder
+  apg?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -469,7 +469,7 @@ export type PlayerScalarWhereWithAggregatesInput = {
   AND?: Prisma.PlayerScalarWhereWithAggregatesInput | Prisma.PlayerScalarWhereWithAggregatesInput[]
   OR?: Prisma.PlayerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PlayerScalarWhereWithAggregatesInput | Prisma.PlayerScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"Player"> | string
+  id?: Prisma.StringWithAggregatesFilter<"Player"> | string
   name?: Prisma.StringWithAggregatesFilter<"Player"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Player"> | string
   number?: Prisma.IntNullableWithAggregatesFilter<"Player"> | number | null
@@ -544,7 +544,6 @@ export type PlayerUncheckedCreateInput = {
 }
 
 export type PlayerUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -569,7 +568,6 @@ export type PlayerUpdateInput = {
 }
 
 export type PlayerUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -619,7 +617,6 @@ export type PlayerCreateManyInput = {
 }
 
 export type PlayerUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -644,7 +641,6 @@ export type PlayerUpdateManyMutationInput = {
 }
 
 export type PlayerUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -771,6 +767,7 @@ export type NullableIntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+  unset?: boolean
 }
 
 export type NullableFloatFieldUpdateOperationsInput = {
@@ -779,6 +776,7 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+  unset?: boolean
 }
 
 
@@ -808,55 +806,7 @@ export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
 }, ExtArgs["result"]["player"]>
 
-export type PlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  slug?: boolean
-  number?: boolean
-  role?: boolean
-  position?: boolean
-  heightCm?: boolean
-  weightKg?: boolean
-  birthYear?: boolean
-  hometown?: boolean
-  photo?: boolean
-  actionPhoto?: boolean
-  bio?: boolean
-  academicYear?: boolean
-  isCaptain?: boolean
-  ppg?: boolean
-  rpg?: boolean
-  apg?: boolean
-  sortOrder?: boolean
-  isPublic?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["player"]>
 
-export type PlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  name?: boolean
-  slug?: boolean
-  number?: boolean
-  role?: boolean
-  position?: boolean
-  heightCm?: boolean
-  weightKg?: boolean
-  birthYear?: boolean
-  hometown?: boolean
-  photo?: boolean
-  actionPhoto?: boolean
-  bio?: boolean
-  academicYear?: boolean
-  isCaptain?: boolean
-  ppg?: boolean
-  rpg?: boolean
-  apg?: boolean
-  sortOrder?: boolean
-  isPublic?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["player"]>
 
 export type PlayerSelectScalar = {
   id?: boolean
@@ -1029,30 +979,6 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
   createMany<T extends PlayerCreateManyArgs>(args?: Prisma.SelectSubset<T, PlayerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many Players and returns the data saved in the database.
-   * @param {PlayerCreateManyAndReturnArgs} args - Arguments to create many Players.
-   * @example
-   * // Create many Players
-   * const player = await prisma.player.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many Players and only return the `id`
-   * const playerWithIdOnly = await prisma.player.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends PlayerCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, PlayerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a Player.
    * @param {PlayerDeleteArgs} args - Arguments to delete one Player.
    * @example
@@ -1117,36 +1043,6 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
   updateMany<T extends PlayerUpdateManyArgs>(args: Prisma.SelectSubset<T, PlayerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more Players and returns the data updated in the database.
-   * @param {PlayerUpdateManyAndReturnArgs} args - Arguments to update many Players.
-   * @example
-   * // Update many Players
-   * const player = await prisma.player.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more Players and only return the `id`
-   * const playerWithIdOnly = await prisma.player.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends PlayerUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, PlayerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlayerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one Player.
    * @param {PlayerUpsertArgs} args - Arguments to update or create a Player.
    * @example
@@ -1164,6 +1060,29 @@ export interface PlayerDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    */
   upsert<T extends PlayerUpsertArgs>(args: Prisma.SelectSubset<T, PlayerUpsertArgs<ExtArgs>>): Prisma.Prisma__PlayerClient<runtime.Types.Result.GetResult<Prisma.$PlayerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more Players that matches the filter.
+   * @param {PlayerFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const player = await prisma.player.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.PlayerFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a Player.
+   * @param {PlayerAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const player = await prisma.player.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.PlayerAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1532,11 +1451,6 @@ export type PlayerFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Skip the first `n` Players.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of Players.
-   */
   distinct?: Prisma.PlayerScalarFieldEnum | Prisma.PlayerScalarFieldEnum[]
 }
 
@@ -1566,26 +1480,6 @@ export type PlayerCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Players.
    */
   data: Prisma.PlayerCreateManyInput | Prisma.PlayerCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * Player createManyAndReturn
- */
-export type PlayerCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Player
-   */
-  select?: Prisma.PlayerSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Player
-   */
-  omit?: Prisma.PlayerOmit<ExtArgs> | null
-  /**
-   * The data used to create many Players.
-   */
-  data: Prisma.PlayerCreateManyInput | Prisma.PlayerCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1614,32 +1508,6 @@ export type PlayerUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
  * Player updateMany
  */
 export type PlayerUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update Players.
-   */
-  data: Prisma.XOR<Prisma.PlayerUpdateManyMutationInput, Prisma.PlayerUncheckedUpdateManyInput>
-  /**
-   * Filter which Players to update
-   */
-  where?: Prisma.PlayerWhereInput
-  /**
-   * Limit how many Players to update.
-   */
-  limit?: number
-}
-
-/**
- * Player updateManyAndReturn
- */
-export type PlayerUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Player
-   */
-  select?: Prisma.PlayerSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the Player
-   */
-  omit?: Prisma.PlayerOmit<ExtArgs> | null
   /**
    * The data used to update Players.
    */
@@ -1710,6 +1578,34 @@ export type PlayerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Players to delete.
    */
   limit?: number
+}
+
+/**
+ * Player findRaw
+ */
+export type PlayerFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * Player aggregateRaw
+ */
+export type PlayerAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

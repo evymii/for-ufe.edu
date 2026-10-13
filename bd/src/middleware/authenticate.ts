@@ -20,6 +20,12 @@ export const authenticate: RequestHandler = asyncHandler(async (req, _res, next)
   if (!user?.isActive) {
     throw ApiError.unauthorized('Authentication required');
   }
-  req.user = { email: user.email, id: user.id, role: user.role };
+  // MongoDB stores roles as plain strings — narrow to the union, failing
+  // closed (non-admin) on anything unexpected.
+  req.user = {
+    email: user.email,
+    id: user.id,
+    role: user.role === 'ADMIN' ? 'ADMIN' : 'USER',
+  };
   next();
 });

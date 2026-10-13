@@ -21,7 +21,7 @@ type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 interface AuthState {
   user: User | null;
   status: AuthStatus;
-  login: (email: string, password: string) => Promise<User>;
+  login: (identifier: string, password: string) => Promise<User>;
   register: (input: {
     name: string;
     email: string;
@@ -71,8 +71,8 @@ export function AuthProvider({
     };
   }, [hasSession]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const payload = await authService.login({ email, password });
+  const login = useCallback(async (identifier: string, password: string) => {
+    const payload = await authService.login({ identifier, password });
     setUserState(payload.user);
     setStatus("authenticated");
     return payload.user;

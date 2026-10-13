@@ -23,6 +23,12 @@ export async function me(req: Request, res: Response): Promise<void> {
   ok(res, { user });
 }
 
+export async function pinLogin(req: Request, res: Response): Promise<void> {
+  const result = await authService.loginWithPin(req.body.code);
+  setAuthCookies(res, result.user, result.refreshToken);
+  ok(res, { accessToken: result.accessToken, user: result.user });
+}
+
 export async function refresh(req: Request, res: Response): Promise<void> {
   const result = await authService.refresh(req.cookies?.[REFRESH_TOKEN_COOKIE]);
   setAuthCookies(res, result.user, result.refreshToken);

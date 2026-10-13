@@ -52,10 +52,14 @@ export async function getAlbumBySlug(req: Request, res: Response): Promise<void>
 }
 
 // ── Media albums ─────────────────────────────────────────────────────────────
-export async function listAlbums(_req: Request, res: Response): Promise<void> {
+export async function listAlbums(req: Request, res: Response): Promise<void> {
+  const category = req.query.category as string | undefined;
   const items = await prisma.mediaAlbum.findMany({
     orderBy: { sortOrder: 'asc' },
-    where: { isPublished: true },
+    where: {
+      isPublished: true,
+      ...(category ? { category } : {}),
+    },
   });
   ok(res, { items });
 }

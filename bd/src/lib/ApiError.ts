@@ -32,8 +32,16 @@ export class ApiError extends Error {
     return new ApiError(404, 'NOT_FOUND', message);
   }
 
+  static payloadTooLarge(message = 'Payload too large'): ApiError {
+    return new ApiError(413, 'FILE_TOO_LARGE', message);
+  }
+
   static serviceUnavailable(message = 'Service temporarily unavailable'): ApiError {
     return new ApiError(503, 'SERVICE_UNAVAILABLE', message);
+  }
+
+  static tooManyRequests(message = 'Too many requests'): ApiError {
+    return new ApiError(429, 'RATE_LIMITED', message);
   }
 
   static unauthorized(message = 'Unauthorized'): ApiError {

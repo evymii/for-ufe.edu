@@ -14,8 +14,14 @@ export const passwordField = z
   .min(8, "Нууц үг дор хаяж 8 тэмдэгт байх ёстой")
   .max(72, "Нууц үг хамгийн ихдээ 72 тэмдэгт байна");
 
+/** Staff logins are by USERNAME (manager / editor / edumanager) — the
+ *  backend falls back to email for registered accounts. */
 export const loginSchema = z.object({
-  email: emailField,
+  identifier: z
+    .string()
+    .trim()
+    .min(1, "Нэвтрэх нэр заавал шаардлагатай")
+    .max(255, "Нэвтрэх нэр хэт урт байна"),
   password: z.string().min(1, "Нууц үг заавал шаардлагатай").max(72),
 });
 

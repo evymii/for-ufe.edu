@@ -1,6 +1,7 @@
 import {
   BarChart3,
   LayoutDashboard,
+  Newspaper,
   Settings,
   UserCircle,
   Users,
@@ -24,5 +25,6 @@ export const userNav: NavItem[] = [
 export const adminNav: NavItem[] = [
   { href: routes.admin.dashboard, label: "Dashboard", icon: BarChart3 },
   { href: routes.admin.users, label: "Users", icon: Users },
+  { href: routes.admin.content, label: "Content", icon: Newspaper },
   { href: routes.admin.settings, label: "Settings", icon: Wrench },
 ];

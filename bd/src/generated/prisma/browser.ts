@@ -58,10 +58,45 @@ export type Partner = Prisma.PartnerModel
  */
 export type MediaAlbum = Prisma.MediaAlbumModel
 /**
+ * Model Executive
+ * 
+ */
+export type Executive = Prisma.ExecutiveModel
+/**
+ * Model Video
+ * 
+ */
+export type Video = Prisma.VideoModel
+/**
+ * Model ShopProduct
+ * 
+ */
+export type ShopProduct = Prisma.ShopProductModel
+/**
+ * Model NewsletterSubscriber
+ * 
+ */
+export type NewsletterSubscriber = Prisma.NewsletterSubscriberModel
+/**
  * Model SiteContent
  * 
  */
 export type SiteContent = Prisma.SiteContentModel
+/**
+ * Model ContentBlock
+ * 
+ */
+export type ContentBlock = Prisma.ContentBlockModel
+/**
+ * Model Media
+ * 
+ */
+export type Media = Prisma.MediaModel
+/**
+ * Model ContentHistory
+ * 
+ */
+export type ContentHistory = Prisma.ContentHistoryModel
 /**
  * Model ContactMessage
  * 

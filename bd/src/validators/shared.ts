@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 /** Route param schemas */
 export const idParamSchema = z.object({
-  id: z.uuid('id must be a valid UUID'),
+  // MongoDB ObjectId (24 hex chars) — Prisma generates these for every model.
+  id: z.string().regex(/^[0-9a-f]{24}$/, 'id must be a valid id'),
 });
 
 /** Shared password policy (mirrored by the frontend forms in spirit). */

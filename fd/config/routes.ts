@@ -4,10 +4,17 @@ export const routes = {
   login: "/login",
   register: "/register",
   site: {
+    cityEdition: "/city-edition",
     contact: "/contact",
+    fanClub: "/fan-club",
+    frontOffice: "/front-office",
     history: "/history",
     management: "/staff",
+    newsletter: "/newsletter",
+    photos: "/photos",
     roster: "/players",
+    schedule: "/schedule",
+    videos: "/videos",
   },
   user: {
     dashboard: "/dashboard",
@@ -15,6 +22,7 @@ export const routes = {
     settings: "/settings",
   },
   admin: {
+    content: "/admin/content",
     dashboard: "/admin",
     users: "/admin/users",
     settings: "/admin/settings",

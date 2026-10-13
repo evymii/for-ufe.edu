@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-import type * as runtime from "@prisma/client/runtime/client"
+import type * as runtime from "@prisma/client/runtime/library"
 import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
@@ -38,6 +38,7 @@ export type MediaAlbumMinAggregateOutputType = {
   id: string | null
   title: string | null
   slug: string | null
+  category: string | null
   coverImage: string | null
   eventDate: Date | null
   sortOrder: number | null
@@ -50,6 +51,7 @@ export type MediaAlbumMaxAggregateOutputType = {
   id: string | null
   title: string | null
   slug: string | null
+  category: string | null
   coverImage: string | null
   eventDate: Date | null
   sortOrder: number | null
@@ -62,6 +64,7 @@ export type MediaAlbumCountAggregateOutputType = {
   id: number
   title: number
   slug: number
+  category: number
   coverImage: number
   images: number
   eventDate: number
@@ -85,6 +88,7 @@ export type MediaAlbumMinAggregateInputType = {
   id?: true
   title?: true
   slug?: true
+  category?: true
   coverImage?: true
   eventDate?: true
   sortOrder?: true
@@ -97,6 +101,7 @@ export type MediaAlbumMaxAggregateInputType = {
   id?: true
   title?: true
   slug?: true
+  category?: true
   coverImage?: true
   eventDate?: true
   sortOrder?: true
@@ -109,6 +114,7 @@ export type MediaAlbumCountAggregateInputType = {
   id?: true
   title?: true
   slug?: true
+  category?: true
   coverImage?: true
   images?: true
   eventDate?: true
@@ -209,6 +215,7 @@ export type MediaAlbumGroupByOutputType = {
   id: string
   title: string
   slug: string
+  category: string
   coverImage: string | null
   images: runtime.JsonValue
   eventDate: Date | null
@@ -223,7 +230,7 @@ export type MediaAlbumGroupByOutputType = {
   _max: MediaAlbumMaxAggregateOutputType | null
 }
 
-export type GetMediaAlbumGroupByPayload<T extends MediaAlbumGroupByArgs> = Prisma.PrismaPromise<
+type GetMediaAlbumGroupByPayload<T extends MediaAlbumGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MediaAlbumGroupByOutputType, T['by']> &
       {
@@ -242,9 +249,10 @@ export type MediaAlbumWhereInput = {
   AND?: Prisma.MediaAlbumWhereInput | Prisma.MediaAlbumWhereInput[]
   OR?: Prisma.MediaAlbumWhereInput[]
   NOT?: Prisma.MediaAlbumWhereInput | Prisma.MediaAlbumWhereInput[]
-  id?: Prisma.UuidFilter<"MediaAlbum"> | string
+  id?: Prisma.StringFilter<"MediaAlbum"> | string
   title?: Prisma.StringFilter<"MediaAlbum"> | string
   slug?: Prisma.StringFilter<"MediaAlbum"> | string
+  category?: Prisma.StringFilter<"MediaAlbum"> | string
   coverImage?: Prisma.StringNullableFilter<"MediaAlbum"> | string | null
   images?: Prisma.JsonFilter<"MediaAlbum">
   eventDate?: Prisma.DateTimeNullableFilter<"MediaAlbum"> | Date | string | null
@@ -258,9 +266,10 @@ export type MediaAlbumOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   images?: Prisma.SortOrder
-  eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventDate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -274,6 +283,7 @@ export type MediaAlbumWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.MediaAlbumWhereInput[]
   NOT?: Prisma.MediaAlbumWhereInput | Prisma.MediaAlbumWhereInput[]
   title?: Prisma.StringFilter<"MediaAlbum"> | string
+  category?: Prisma.StringFilter<"MediaAlbum"> | string
   coverImage?: Prisma.StringNullableFilter<"MediaAlbum"> | string | null
   images?: Prisma.JsonFilter<"MediaAlbum">
   eventDate?: Prisma.DateTimeNullableFilter<"MediaAlbum"> | Date | string | null
@@ -287,9 +297,10 @@ export type MediaAlbumOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   images?: Prisma.SortOrder
-  eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventDate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -305,9 +316,10 @@ export type MediaAlbumScalarWhereWithAggregatesInput = {
   AND?: Prisma.MediaAlbumScalarWhereWithAggregatesInput | Prisma.MediaAlbumScalarWhereWithAggregatesInput[]
   OR?: Prisma.MediaAlbumScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MediaAlbumScalarWhereWithAggregatesInput | Prisma.MediaAlbumScalarWhereWithAggregatesInput[]
-  id?: Prisma.UuidWithAggregatesFilter<"MediaAlbum"> | string
+  id?: Prisma.StringWithAggregatesFilter<"MediaAlbum"> | string
   title?: Prisma.StringWithAggregatesFilter<"MediaAlbum"> | string
   slug?: Prisma.StringWithAggregatesFilter<"MediaAlbum"> | string
+  category?: Prisma.StringWithAggregatesFilter<"MediaAlbum"> | string
   coverImage?: Prisma.StringNullableWithAggregatesFilter<"MediaAlbum"> | string | null
   images?: Prisma.JsonWithAggregatesFilter<"MediaAlbum">
   eventDate?: Prisma.DateTimeNullableWithAggregatesFilter<"MediaAlbum"> | Date | string | null
@@ -321,8 +333,9 @@ export type MediaAlbumCreateInput = {
   id?: string
   title: string
   slug: string
+  category?: string
   coverImage?: string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue
   eventDate?: Date | string | null
   sortOrder?: number
   isPublished?: boolean
@@ -334,8 +347,9 @@ export type MediaAlbumUncheckedCreateInput = {
   id?: string
   title: string
   slug: string
+  category?: string
   coverImage?: string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue
   eventDate?: Date | string | null
   sortOrder?: number
   isPublished?: boolean
@@ -344,11 +358,11 @@ export type MediaAlbumUncheckedCreateInput = {
 }
 
 export type MediaAlbumUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue | runtime.InputJsonValue
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -357,11 +371,11 @@ export type MediaAlbumUpdateInput = {
 }
 
 export type MediaAlbumUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue | runtime.InputJsonValue
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -373,8 +387,9 @@ export type MediaAlbumCreateManyInput = {
   id?: string
   title: string
   slug: string
+  category?: string
   coverImage?: string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue
   eventDate?: Date | string | null
   sortOrder?: number
   isPublished?: boolean
@@ -383,11 +398,11 @@ export type MediaAlbumCreateManyInput = {
 }
 
 export type MediaAlbumUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue | runtime.InputJsonValue
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -396,11 +411,11 @@ export type MediaAlbumUpdateManyMutationInput = {
 }
 
 export type MediaAlbumUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
   coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  images?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  images?: runtime.InputJsonValue | runtime.InputJsonValue
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -412,6 +427,7 @@ export type MediaAlbumCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   images?: Prisma.SortOrder
   eventDate?: Prisma.SortOrder
@@ -429,6 +445,7 @@ export type MediaAlbumMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   eventDate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -441,6 +458,7 @@ export type MediaAlbumMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   coverImage?: Prisma.SortOrder
   eventDate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
@@ -459,6 +477,7 @@ export type MediaAlbumSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   title?: boolean
   slug?: boolean
+  category?: boolean
   coverImage?: boolean
   images?: boolean
   eventDate?: boolean
@@ -468,36 +487,13 @@ export type MediaAlbumSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   updatedAt?: boolean
 }, ExtArgs["result"]["mediaAlbum"]>
 
-export type MediaAlbumSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  title?: boolean
-  slug?: boolean
-  coverImage?: boolean
-  images?: boolean
-  eventDate?: boolean
-  sortOrder?: boolean
-  isPublished?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["mediaAlbum"]>
 
-export type MediaAlbumSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
-  title?: boolean
-  slug?: boolean
-  coverImage?: boolean
-  images?: boolean
-  eventDate?: boolean
-  sortOrder?: boolean
-  isPublished?: boolean
-  createdAt?: boolean
-  updatedAt?: boolean
-}, ExtArgs["result"]["mediaAlbum"]>
 
 export type MediaAlbumSelectScalar = {
   id?: boolean
   title?: boolean
   slug?: boolean
+  category?: boolean
   coverImage?: boolean
   images?: boolean
   eventDate?: boolean
@@ -507,7 +503,7 @@ export type MediaAlbumSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MediaAlbumOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "coverImage" | "images" | "eventDate" | "sortOrder" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["mediaAlbum"]>
+export type MediaAlbumOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "slug" | "category" | "coverImage" | "images" | "eventDate" | "sortOrder" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["mediaAlbum"]>
 
 export type $MediaAlbumPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MediaAlbum"
@@ -516,6 +512,7 @@ export type $MediaAlbumPayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: string
     title: string
     slug: string
+    category: string
     coverImage: string | null
     images: runtime.JsonValue
     eventDate: Date | null
@@ -641,30 +638,6 @@ export interface MediaAlbumDelegate<ExtArgs extends runtime.Types.Extensions.Int
   createMany<T extends MediaAlbumCreateManyArgs>(args?: Prisma.SelectSubset<T, MediaAlbumCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Create many MediaAlbums and returns the data saved in the database.
-   * @param {MediaAlbumCreateManyAndReturnArgs} args - Arguments to create many MediaAlbums.
-   * @example
-   * // Create many MediaAlbums
-   * const mediaAlbum = await prisma.mediaAlbum.createManyAndReturn({
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Create many MediaAlbums and only return the `id`
-   * const mediaAlbumWithIdOnly = await prisma.mediaAlbum.createManyAndReturn({
-   *   select: { id: true },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  createManyAndReturn<T extends MediaAlbumCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, MediaAlbumCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaAlbumPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Delete a MediaAlbum.
    * @param {MediaAlbumDeleteArgs} args - Arguments to delete one MediaAlbum.
    * @example
@@ -729,36 +702,6 @@ export interface MediaAlbumDelegate<ExtArgs extends runtime.Types.Extensions.Int
   updateMany<T extends MediaAlbumUpdateManyArgs>(args: Prisma.SelectSubset<T, MediaAlbumUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
-   * Update zero or more MediaAlbums and returns the data updated in the database.
-   * @param {MediaAlbumUpdateManyAndReturnArgs} args - Arguments to update many MediaAlbums.
-   * @example
-   * // Update many MediaAlbums
-   * const mediaAlbum = await prisma.mediaAlbum.updateManyAndReturn({
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * 
-   * // Update zero or more MediaAlbums and only return the `id`
-   * const mediaAlbumWithIdOnly = await prisma.mediaAlbum.updateManyAndReturn({
-   *   select: { id: true },
-   *   where: {
-   *     // ... provide filter here
-   *   },
-   *   data: [
-   *     // ... provide data here
-   *   ]
-   * })
-   * Note, that providing `undefined` is treated as the value not being there.
-   * Read more here: https://pris.ly/d/null-undefined
-   * 
-   */
-  updateManyAndReturn<T extends MediaAlbumUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, MediaAlbumUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaAlbumPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-  /**
    * Create or update one MediaAlbum.
    * @param {MediaAlbumUpsertArgs} args - Arguments to update or create a MediaAlbum.
    * @example
@@ -776,6 +719,29 @@ export interface MediaAlbumDelegate<ExtArgs extends runtime.Types.Extensions.Int
    * })
    */
   upsert<T extends MediaAlbumUpsertArgs>(args: Prisma.SelectSubset<T, MediaAlbumUpsertArgs<ExtArgs>>): Prisma.Prisma__MediaAlbumClient<runtime.Types.Result.GetResult<Prisma.$MediaAlbumPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+  /**
+   * Find zero or more MediaAlbums that matches the filter.
+   * @param {MediaAlbumFindRawArgs} args - Select which filters you would like to apply.
+   * @example
+   * const mediaAlbum = await prisma.mediaAlbum.findRaw({
+   *   filter: { age: { $gt: 25 } }
+   * })
+   */
+  findRaw(args?: Prisma.MediaAlbumFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  /**
+   * Perform aggregation operations on a MediaAlbum.
+   * @param {MediaAlbumAggregateRawArgs} args - Select which aggregations you would like to apply.
+   * @example
+   * const mediaAlbum = await prisma.mediaAlbum.aggregateRaw({
+   *   pipeline: [
+   *     { $match: { status: "registered" } },
+   *     { $group: { _id: "$country", total: { $sum: 1 } } }
+   *   ]
+   * })
+   */
+  aggregateRaw(args?: Prisma.MediaAlbumAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -949,6 +915,7 @@ export interface MediaAlbumFieldRefs {
   readonly id: Prisma.FieldRef<"MediaAlbum", 'String'>
   readonly title: Prisma.FieldRef<"MediaAlbum", 'String'>
   readonly slug: Prisma.FieldRef<"MediaAlbum", 'String'>
+  readonly category: Prisma.FieldRef<"MediaAlbum", 'String'>
   readonly coverImage: Prisma.FieldRef<"MediaAlbum", 'String'>
   readonly images: Prisma.FieldRef<"MediaAlbum", 'Json'>
   readonly eventDate: Prisma.FieldRef<"MediaAlbum", 'DateTime'>
@@ -1132,11 +1099,6 @@ export type MediaAlbumFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` MediaAlbums.
    */
   skip?: number
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-   * 
-   * Filter by unique combinations of MediaAlbums.
-   */
   distinct?: Prisma.MediaAlbumScalarFieldEnum | Prisma.MediaAlbumScalarFieldEnum[]
 }
 
@@ -1166,26 +1128,6 @@ export type MediaAlbumCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many MediaAlbums.
    */
   data: Prisma.MediaAlbumCreateManyInput | Prisma.MediaAlbumCreateManyInput[]
-  skipDuplicates?: boolean
-}
-
-/**
- * MediaAlbum createManyAndReturn
- */
-export type MediaAlbumCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the MediaAlbum
-   */
-  select?: Prisma.MediaAlbumSelectCreateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the MediaAlbum
-   */
-  omit?: Prisma.MediaAlbumOmit<ExtArgs> | null
-  /**
-   * The data used to create many MediaAlbums.
-   */
-  data: Prisma.MediaAlbumCreateManyInput | Prisma.MediaAlbumCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1214,32 +1156,6 @@ export type MediaAlbumUpdateArgs<ExtArgs extends runtime.Types.Extensions.Intern
  * MediaAlbum updateMany
  */
 export type MediaAlbumUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The data used to update MediaAlbums.
-   */
-  data: Prisma.XOR<Prisma.MediaAlbumUpdateManyMutationInput, Prisma.MediaAlbumUncheckedUpdateManyInput>
-  /**
-   * Filter which MediaAlbums to update
-   */
-  where?: Prisma.MediaAlbumWhereInput
-  /**
-   * Limit how many MediaAlbums to update.
-   */
-  limit?: number
-}
-
-/**
- * MediaAlbum updateManyAndReturn
- */
-export type MediaAlbumUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the MediaAlbum
-   */
-  select?: Prisma.MediaAlbumSelectUpdateManyAndReturn<ExtArgs> | null
-  /**
-   * Omit specific fields from the MediaAlbum
-   */
-  omit?: Prisma.MediaAlbumOmit<ExtArgs> | null
   /**
    * The data used to update MediaAlbums.
    */
@@ -1310,6 +1226,34 @@ export type MediaAlbumDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many MediaAlbums to delete.
    */
   limit?: number
+}
+
+/**
+ * MediaAlbum findRaw
+ */
+export type MediaAlbumFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   */
+  filter?: runtime.InputJsonValue
+  /**
+   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
+}
+
+/**
+ * MediaAlbum aggregateRaw
+ */
+export type MediaAlbumAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+   */
+  pipeline?: runtime.InputJsonValue[]
+  /**
+   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+   */
+  options?: runtime.InputJsonValue
 }
 
 /**

@@ -16,6 +16,16 @@ export const publicNav = [
   { href: "/", label: "Нүүр" },
   { href: "/history", label: "Түүх" },
   { href: "/players", label: "Тоглогчид" },
-  { href: "/staff", label: "Удирдлага" },
+  { href: "/front-office", label: "Удирдлага" },
+  { href: "/schedule", label: "Хуваарь" },
+  { href: "/photos", label: "Фото" },
+  { href: "/videos", label: "Видео" },
+  { href: "/fan-club", label: "Фэн клаб" },
+] as const;
+
+/** Secondary destinations surfaced in the footer instead of the header. */
+export const secondaryNav = [
+  { href: "/city-edition", label: "Хотын загвар" },
+  { href: "/newsletter", label: "Фэнэйд мэдээ" },
   { href: "/contact", label: "Холбоо барих" },
 ] as const;

@@ -8,9 +8,7 @@ import { env } from './env.js';
 function isLocalOrigin(origin: string): boolean {
   try {
     const { hostname } = new URL(origin);
-    return (
-      hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
-    );
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
   } catch {
     return false;
   }
@@ -22,11 +20,7 @@ export const corsOptions: CorsOptions = {
   maxAge: 600,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   origin(origin, callback) {
-    if (
-      !origin ||
-      env.CORS_ORIGINS.includes(origin) ||
-      isLocalOrigin(origin)
-    ) {
+    if (!origin || env.CORS_ORIGINS.includes(origin) || isLocalOrigin(origin)) {
       callback(null, true);
     } else {
       // Unknown origin: serve the request, but without CORS headers.

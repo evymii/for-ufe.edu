@@ -34,10 +34,10 @@ export function getSetCookies(res: Response): string[] {
   return Array.isArray(header) ? (header as string[]) : [header as string];
 }
 
-export async function login(email: string, password: string): Promise<Session> {
-  const res = await request(app).post(`${API}/user/auth/login`).send({ email, password });
+export async function login(identifier: string, password: string): Promise<Session> {
+  const res = await request(app).post(`${API}/user/auth/login`).send({ identifier, password });
   if (res.status !== 200) {
-    throw new Error(`login failed for ${email}: ${res.status} ${JSON.stringify(res.body)}`);
+    throw new Error(`login failed for ${identifier}: ${res.status} ${JSON.stringify(res.body)}`);
   }
   return { accessToken: res.body.data.accessToken as string, cookies: cookieHeader(res) };
 }

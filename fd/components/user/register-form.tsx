@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -70,91 +71,95 @@ export function RegisterForm() {
         <CardTitle className="text-xl">Бүртгэл үүсгэх</CardTitle>
         <CardDescription>Хэдхэн мэдээлэл оруулаад дуусгана.</CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit} noValidate>
-        <CardContent className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Нэр</FormLabel>
-                <FormControl>
-                  <Input
-                    autoComplete="name"
-                    placeholder="Таны нэр"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Имэйл</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    autoComplete="email"
-                    placeholder="ta@imeil.mn"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Нууц үг</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="Дор хаяж 8 тэмдэгт"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Нууц үг давтах</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="Нууц үгээ давтана уу"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-        <CardFooter className="mt-4 flex flex-col gap-3">
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <UserPlus aria-hidden="true" />
-            )}
-            {submitting ? "Бүртгэл үүсгэж байна…" : "Бүртгэл үүсгэх"}
-          </Button>
-        </CardFooter>
-      </form>
+      {/* FormProvider — FormItem/FormLabel/FormControl read the form context
+          (getFieldState); without it they crash at render. */}
+      <Form {...form}>
+        <form onSubmit={handleSubmit} noValidate>
+          <CardContent className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Нэр</FormLabel>
+                  <FormControl>
+                    <Input
+                      autoComplete="name"
+                      placeholder="Таны нэр"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Имэйл</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      autoComplete="email"
+                      placeholder="ta@imeil.mn"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Нууц үг</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="new-password"
+                      placeholder="Дор хаяж 8 тэмдэгт"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Нууц үг давтах</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="new-password"
+                      placeholder="Нууц үгээ давтана уу"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="mt-4 flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <UserPlus aria-hidden="true" />
+              )}
+              {submitting ? "Бүртгэл үүсгэж байна…" : "Бүртгэл үүсгэх"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   );
 }

@@ -4,10 +4,14 @@ import { Router } from 'express';
 
 import * as collections from '../../controllers/content/collections.controller.js';
 import * as contact from '../../controllers/content/contact.controller.js';
+import * as executives from '../../controllers/content/executives.controller.js';
 import * as games from '../../controllers/content/games.controller.js';
 import * as news from '../../controllers/content/news.controller.js';
+import * as newsletter from '../../controllers/content/newsletter.controller.js';
 import * as players from '../../controllers/content/players.controller.js';
+import * as shop from '../../controllers/content/shop.controller.js';
 import * as siteContent from '../../controllers/content/site-content.controller.js';
+import * as videos from '../../controllers/content/videos.controller.js';
 import { asyncHandler } from '../../lib/asyncHandler.js';
 import { authenticate } from '../../middleware/authenticate.js';
 import { requireRole } from '../../middleware/requireRole.js';
@@ -16,26 +20,38 @@ import {
   contactReadSchema,
   createAlbumSchema,
   createContactSchema,
+  createExecutiveSchema,
   createGameSchema,
   createNewsSchema,
   createPartnerSchema,
   createPlayerSchema,
+  createShopProductSchema,
   createStandingSchema,
+  createVideoSchema,
   idParamSchema,
+  listAlbumsQuerySchema,
+  listExecutivesQuerySchema,
   listGamesQuerySchema,
   listNewsQuerySchema,
   listPlayersQuerySchema,
+  listShopQuerySchema,
+  listVideosQuerySchema,
+  newsletterSubscribeSchema,
   pageParamSchema,
   sectionParamSchema,
   siteContentPutSchema,
   slugParamSchema,
   updateAlbumSchema,
+  updateExecutiveSchema,
   updateGameSchema,
   updateNewsSchema,
   updatePartnerSchema,
   updatePlayerSchema,
+  updateShopProductSchema,
   updateStandingSchema,
+  updateVideoSchema,
 } from '../../validators/content/content.validators.js';
+import { blocksRouter } from './blocks.routes.js';
 
 /**
  * Team site content surface, mounted at /api/v1/content.
@@ -49,6 +65,9 @@ import {
 const adminWrite = [authenticate, requireRole('ADMIN')] as unknown as RequestHandler[];
 
 export const contentRouter = Router();
+
+// ── Content blocks (live-editable site text, SSE updates) ────────────────────
+contentRouter.use('/blocks', blocksRouter);
 
 // ── News (мэдээ) ─────────────────────────────────────────────────────────────
 contentRouter.get('/news', validate({ query: listNewsQuerySchema }), asyncHandler(news.listNews));
@@ -174,7 +193,11 @@ contentRouter.delete(
 );
 
 // ── Media albums (галерей) ───────────────────────────────────────────────────
-contentRouter.get('/media', asyncHandler(collections.listAlbums));
+contentRouter.get(
+  '/media',
+  validate({ query: listAlbumsQuerySchema }),
+  asyncHandler(collections.listAlbums),
+);
 contentRouter.get(
   '/media/slug/:slug',
   validate({ params: slugParamSchema }),
@@ -197,6 +220,104 @@ contentRouter.delete(
   ...adminWrite,
   validate({ params: idParamSchema }),
   asyncHandler(collections.deleteAlbum),
+);
+
+// ── Executives (front office) ────────────────────────────────────────────────
+contentRouter.get(
+  '/executives',
+  validate({ query: listExecutivesQuerySchema }),
+  asyncHandler(executives.listExecutives),
+);
+contentRouter.post(
+  '/executives',
+  ...adminWrite,
+  validate({ body: createExecutiveSchema }),
+  asyncHandler(executives.createExecutive),
+);
+contentRouter.patch(
+  '/executives/:id',
+  ...adminWrite,
+  validate({ body: updateExecutiveSchema, params: idParamSchema }),
+  asyncHandler(executives.updateExecutive),
+);
+contentRouter.delete(
+  '/executives/:id',
+  ...adminWrite,
+  validate({ params: idParamSchema }),
+  asyncHandler(executives.deleteExecutive),
+);
+
+// ── Videos (видео сан) ───────────────────────────────────────────────────────
+contentRouter.get(
+  '/videos',
+  validate({ query: listVideosQuerySchema }),
+  asyncHandler(videos.listVideos),
+);
+contentRouter.get(
+  '/videos/slug/:slug',
+  validate({ params: slugParamSchema }),
+  asyncHandler(videos.getVideoBySlug),
+);
+contentRouter.post(
+  '/videos',
+  ...adminWrite,
+  validate({ body: createVideoSchema }),
+  asyncHandler(videos.createVideo),
+);
+contentRouter.patch(
+  '/videos/:id',
+  ...adminWrite,
+  validate({ body: updateVideoSchema, params: idParamSchema }),
+  asyncHandler(videos.updateVideo),
+);
+contentRouter.delete(
+  '/videos/:id',
+  ...adminWrite,
+  validate({ params: idParamSchema }),
+  asyncHandler(videos.deleteVideo),
+);
+
+// ── Shop products (фэн клаб) ─────────────────────────────────────────────────
+contentRouter.get(
+  '/shop',
+  validate({ query: listShopQuerySchema }),
+  asyncHandler(shop.listShopProducts),
+);
+contentRouter.post(
+  '/shop',
+  ...adminWrite,
+  validate({ body: createShopProductSchema }),
+  asyncHandler(shop.createShopProduct),
+);
+contentRouter.patch(
+  '/shop/:id',
+  ...adminWrite,
+  validate({ body: updateShopProductSchema, params: idParamSchema }),
+  asyncHandler(shop.updateShopProduct),
+);
+contentRouter.delete(
+  '/shop/:id',
+  ...adminWrite,
+  validate({ params: idParamSchema }),
+  asyncHandler(shop.deleteShopProduct),
+);
+
+// ── Newsletter (захиалга) ────────────────────────────────────────────────────
+contentRouter.post(
+  '/newsletter/subscribe',
+  validate({ body: newsletterSubscribeSchema }),
+  asyncHandler(newsletter.subscribeNewsletter),
+);
+contentRouter.get(
+  '/newsletter/subscribers',
+  ...adminWrite,
+  asyncHandler(newsletter.listSubscribers),
+);
+contentRouter.delete(
+  '/newsletter/:id',
+  ...adminWrite,
+  validate({ params: idParamSchema }),
+  asyncHandler(newsletter.deleteSubscriber),
 );
 
 // ── Site content (singleton copy) ────────────────────────────────────────────

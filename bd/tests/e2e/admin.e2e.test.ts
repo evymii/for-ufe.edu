@@ -109,7 +109,7 @@ describe('PATCH /api/v1/admin/users/:id/status', () => {
 
     const blockedLogin = await request(app)
       .post(`${API}/user/auth/login`)
-      .send({ email: target.email, password: target.password });
+      .send({ identifier: target.email, password: target.password });
     expect(blockedLogin.status).toBe(401);
 
     const reactivate = await request(app)
@@ -137,7 +137,7 @@ describe('PATCH /api/v1/admin/users/:id/status', () => {
     const session = await login(admin.email, admin.password);
 
     const res = await request(app)
-      .patch(`${API}/admin/users/00000000-0000-4000-8000-000000000000/status`)
+      .patch(`${API}/admin/users/ffffffffffffffffffffffff/status`)
       .set('Authorization', `Bearer ${session.accessToken}`)
       .send({ isActive: false });
 

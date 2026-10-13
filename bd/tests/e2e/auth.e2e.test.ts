@@ -50,7 +50,7 @@ describe('POST /api/v1/user/auth/register', () => {
   it('rejects an invalid body with the validation envelope', async () => {
     const res = await request(app)
       .post(`${API}/user/auth/register`)
-      .send({ email: 'not-an-email', password: 'short' });
+      .send({ identifier: '', password: 'short' });
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe('VALIDATION_ERROR');
@@ -67,7 +67,7 @@ describe('POST /api/v1/user/auth/login', () => {
 
     const res = await request(app)
       .post(`${API}/user/auth/login`)
-      .send({ email, password: 'Password123!' });
+      .send({ identifier: email, password: 'Password123!' });
 
     expect(res.status).toBe(200);
     expect(res.body.data.user.email).toBe(email);
@@ -80,10 +80,10 @@ describe('POST /api/v1/user/auth/login', () => {
 
     const wrongPassword = await request(app)
       .post(`${API}/user/auth/login`)
-      .send({ email, password: 'WrongPassword1!' });
+      .send({ identifier: email, password: 'WrongPassword1!' });
     const unknownEmail = await request(app)
       .post(`${API}/user/auth/login`)
-      .send({ email: `ghost-${randomUUID()}@ufeedu.test`, password: 'WrongPassword1!' });
+      .send({ identifier: `ghost-${randomUUID()}@ufeedu.test`, password: 'WrongPassword1!' });
 
     expect(wrongPassword.status).toBe(401);
     expect(unknownEmail.status).toBe(401);
