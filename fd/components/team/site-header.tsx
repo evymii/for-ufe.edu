@@ -44,37 +44,53 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40">
       {/* Utility bar — always visible; heights never change on scroll */}
       <div className="bg-ink text-paper hidden overflow-hidden md:block">
-        <div className="team-shell flex h-10 items-center justify-between">
-          <a
-            href="https://ufe.edu.mn"
-            target="_blank"
-            rel="noreferrer"
-            className="team-focus text-[12px] font-medium tracking-[0.12em] uppercase transition-opacity hover:opacity-70"
+        <div className="w-full overflow-hidden">
+          <div
+            className="utility-ticker flex h-10 items-center"
+            aria-label={`${siteConfig.university} · AUBL 2026–2027`}
           >
-            {siteConfig.university}
-          </a>
-          <span className="text-[12px] font-medium tracking-[0.12em] text-white/60 uppercase">
-            AUBL 2026–2027
-          </span>
+            <div className="utility-ticker__track flex">
+              {[false, true].map((duplicate) => (
+                <div
+                  key={String(duplicate)}
+                  aria-hidden={duplicate || undefined}
+                  className="utility-ticker__group flex shrink-0 items-center justify-between"
+                >
+                  <a
+                    href="https://ufe.edu.mn"
+                    target="_blank"
+                    rel="noreferrer"
+                    tabIndex={duplicate ? -1 : undefined}
+                    className="team-focus text-[12px] font-medium tracking-[0.12em] uppercase transition-opacity hover:opacity-70"
+                  >
+                    {siteConfig.university}
+                  </a>
+                  <span className="text-[12px] font-medium tracking-[0.12em] text-white/60 uppercase">
+                    AUBL 2026–2027
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Main nav — constant 72px; solid sticky, no height animation */}
       <div className="border-line bg-paper flex items-center border-b">
-        <div className="team-shell relative flex h-[72px] w-full items-center justify-between gap-6">
+        <div className="team-shell flex h-[72px] w-full items-center justify-between gap-3 sm:gap-6">
           <Link
             href={routes.home}
-            className="team-focus flex shrink-0 items-center gap-3"
+            className="team-focus flex min-w-0 shrink-0 items-center gap-2 sm:gap-3"
             aria-label={`${siteConfig.name} — нүүр хуудас`}
           >
             <span className="bg-ink text-paper flex size-10 items-center justify-center rounded-full md:size-12">
               <BallMark className="size-5 md:size-6" />
             </span>
-            <span className="flex flex-col leading-none">
-              <span className="font-display text-ink text-lg font-bold tracking-[0.04em] uppercase">
+            <span className="flex min-w-0 flex-col leading-none">
+              <span className="font-display text-ink text-base font-bold tracking-[0.04em] uppercase sm:text-lg">
                 СЭЗИС
               </span>
-              <span className="text-mute hidden text-[10px] font-medium tracking-[0.22em] uppercase sm:block">
+              <span className="text-mute hidden max-w-[132px] truncate text-[9px] font-medium tracking-[0.16em] uppercase sm:block lg:max-w-[144px]">
                 {siteConfig.headerSubtitle}
               </span>
             </span>
@@ -82,7 +98,7 @@ export function SiteHeader() {
 
           <nav
             aria-label="Үндсэн цэс"
-            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 lg:flex xl:gap-7"
+            className="hidden min-w-0 flex-1 items-center justify-center gap-4 lg:flex xl:gap-6"
           >
             {publicNav.map((item) => (
               <Link
@@ -90,7 +106,7 @@ export function SiteHeader() {
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
-                  "font-display nav-underline team-focus flex h-full items-center text-sm font-semibold tracking-[0.06em] uppercase transition-colors",
+                  "font-display nav-underline team-focus flex h-full shrink-0 items-center px-1 text-sm font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-colors",
                   isActive(item.href) ? "text-ink" : "text-mute hover:text-ink",
                 )}
               >

@@ -7,12 +7,11 @@ import { TeamButton } from "@/components/team/button";
 import { WaveField } from "@/components/team/wave-field";
 import { routes } from "@/config/routes";
 import { hero, history } from "@/content/site";
-import { cn } from "@/lib/utils";
 
 // ── Hero carousel ───────────────────────────────────────────────────────────
-// 640px ink panel: wave-field texture, bottom gradient, 72px condensed
-// headline. Three crossfading slides (600ms), autoplay every 6s — paused on
-// hover/focus — with 80×3 progress bars and 44px arrow controls.
+// Responsive ink panel: wave-field texture, bottom gradient, condensed
+// headline. Three horizontally sliding panels autoplay every 8s with 80×3
+// progress bars and 44px arrow controls.
 
 /** Abstract three-bar team mark (two cut bars framing a slanted middle bar). */
 function TeamMark({ className }: { className?: string }) {
@@ -61,11 +60,10 @@ const slides: Slide[] = [
   },
 ];
 
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 8000;
 
 export function Hero() {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
   const parallaxRef = useRef<HTMLDivElement>(null);
 
@@ -75,10 +73,9 @@ export function Hero() {
   }, []);
 
   useEffect(() => {
-    if (paused) return;
     const timer = window.setTimeout(() => go(index + 1), AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [index, paused, go, progressKey]);
+  }, [index, go, progressKey]);
 
   // Parallax: the texture layer drifts at 0.4× scroll speed while the hero
   // is on screen (skipped under prefers-reduced-motion).
@@ -100,11 +97,7 @@ export function Hero() {
   return (
     <section
       aria-label={hero.title}
-      className="bg-ink relative flex h-[560px] items-end overflow-hidden text-white md:h-[640px]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      className="bg-ink relative flex min-h-[680px] items-end overflow-hidden text-white sm:min-h-[640px]"
       onKeyDown={(event) => {
         if (event.key === "ArrowRight") go(index + 1);
         if (event.key === "ArrowLeft") go(index - 1);
@@ -118,48 +111,61 @@ export function Hero() {
         className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,.85),rgba(0,0,0,0)_60%)]"
       />
 
-      <div className="team-shell relative w-full pb-14 md:pb-16">
-        <div className="flex min-h-[240px] max-w-[780px] flex-col md:min-h-[280px]">
+      <div className="team-shell relative w-full pb-8 sm:pb-14 md:pb-16">
+        <div className="hero-slides grid">
           {slides.map((slide, slideIndex) => (
             <div
               key={slide.headline}
               aria-hidden={slideIndex !== index}
-              className={cn(
-                "flex flex-col gap-4 transition-opacity duration-[600ms] ease-out",
+              inert={slideIndex !== index}
+              data-position={
                 slideIndex === index
-                  ? "opacity-100"
-                  : "pointer-events-none absolute inset-0 opacity-0",
-              )}
+                  ? "active"
+                  : slideIndex === (index - 1 + slides.length) % slides.length
+                    ? "before"
+                    : slideIndex === (index + 1) % slides.length
+                      ? "after"
+                      : "outside"
+              }
+              className="hero-slide"
             >
-              <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
-                {slide.kicker}
-              </p>
-              <h1 className="font-display text-[clamp(40px,7vw,72px)] leading-[0.98] font-bold tracking-[0.02em] uppercase">
-                {slide.headline}
-              </h1>
-              <p className="max-w-[560px] text-base leading-[1.5] text-white/70">
-                {slide.subline}
-              </p>
+              <div className="team-shell flex h-full w-full">
+                <div className="flex h-full max-w-[780px] flex-col gap-4">
+                  <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
+                    {slide.kicker}
+                  </p>
+                  <h1 className="font-display text-[clamp(36px,8vw,72px)] leading-[0.98] font-bold tracking-[0.02em] uppercase sm:text-[clamp(40px,7vw,72px)]">
+                    {slide.headline}
+                  </h1>
+                  <p className="max-w-[560px] text-base leading-[1.5] text-white/70">
+                    {slide.subline}
+                  </p>
+                  <div className="mt-auto flex flex-wrap items-center gap-3 pt-8 sm:gap-6">
+                    <TeamButton
+                      variant="dark"
+                      href={slide.primary.href}
+                      className="px-4 text-[12px] sm:px-6 sm:text-sm"
+                    >
+                      {slide.primary.label}
+                    </TeamButton>
+                    {slide.secondary ? (
+                      <TeamButton
+                        variant="dark-outline"
+                        href={slide.secondary.href}
+                        className="px-4 text-[12px] sm:px-6 sm:text-sm"
+                      >
+                        {slide.secondary.label}
+                      </TeamButton>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
-
-          <div className="mt-8 flex flex-wrap items-center gap-6">
-            <TeamButton variant="dark" href={slides[index]!.primary.href}>
-              {slides[index]!.primary.label}
-            </TeamButton>
-            {slides[index]!.secondary ? (
-              <TeamButton
-                variant="dark-outline"
-                href={slides[index]!.secondary!.href}
-              >
-                {slides[index]!.secondary!.label}
-              </TeamButton>
-            ) : null}
-          </div>
         </div>
 
         {/* Controls: progress bars + 44px arrows */}
-        <div className="mt-10 flex items-center justify-between gap-6">
+        <div className="mt-8 flex items-center justify-between gap-4 sm:mt-10">
           <div
             className="flex items-center gap-2"
             role="tablist"
@@ -182,7 +188,6 @@ export function Hero() {
                       className="absolute inset-0 origin-left bg-white"
                       style={{
                         animation: `hero-progress ${AUTOPLAY_MS}ms linear forwards`,
-                        animationPlayState: paused ? "paused" : "running",
                       }}
                     />
                   ) : slideIndex < index ? (

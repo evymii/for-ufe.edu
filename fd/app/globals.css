@@ -227,6 +227,58 @@
   transform: scaleX(1);
 }
 
+/* Hero slides move horizontally within a shared viewport for a true carousel. */
+.hero-slides {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+}
+.hero-slide {
+  grid-area: 1 / 1;
+  display: flex;
+  width: 100%;
+  opacity: 0;
+  transform: translate3d(110%, 0, 0);
+  transition:
+    opacity 700ms ease-in-out,
+    transform 700ms cubic-bezier(0.76, 0, 0.24, 1);
+}
+.hero-slide[data-position="active"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.hero-slide[data-position="before"] {
+  transform: translate3d(-110%, 0, 0);
+}
+.hero-slide[data-position="outside"] {
+  transform: translate3d(220%, 0, 0);
+}
+
+/* Duplicate the utility-bar message so its left-to-right loop has no gap. */
+.utility-ticker {
+  --ticker-duration: 32s;
+  overflow: hidden;
+}
+.utility-ticker__track {
+  width: 200%;
+  flex: 0 0 200%;
+  animation: utility-ticker-scroll var(--ticker-duration) linear infinite;
+}
+.utility-ticker__group {
+  width: 50%;
+  flex: 0 0 50%;
+  padding-inline: 24px;
+}
+@keyframes utility-ticker-scroll {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* Route-change entrance: 8px rise + fade over 240ms, ease-out. */
 @keyframes page-rise {
   from {
