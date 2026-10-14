@@ -86,6 +86,9 @@ model Player {
   ppg          Float?
   rpg          Float?
   apg          Float?
+  // Display-only roster-card extras (yearsOnTeam, major, motto, achievements…)
+  // edited as JSON in the admin panel. See PlayerProfileExtras in fd/types.
+  profile      Json?
   sortOrder    Int      @default(0)
   isPublic     Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -163,16 +166,19 @@ model MediaAlbum {
 }
 
 // Front office — executive profiles grouped by tab (ownership / basketball
-// operations / business / coaches).
+// operations / business / coaches). The STAFF group powers the /staff page's
+// team-staff cards (coaches, captain) with richer bio sections.
 model Executive {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   slug      String   @unique
-  group     String   @default("COACHES") // OWNERSHIP | OPERATIONS | BUSINESS | COACHES
+  group     String   @default("COACHES") // OWNERSHIP | OPERATIONS | BUSINESS | COACHES | STAFF
   title     String
   photo     String?
   bio       String?
   bullets   String[] @default([])
+  // Optional bio-drawer detail sections: [{ heading, text?, list? }]
+  sections  Json?
   sortOrder Int      @default(0)
   isPublic  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -230,6 +236,23 @@ model NewsletterSubscriber {
   createdAt DateTime @default(now())
 
   @@index([createdAt])
+}
+
+// Shop orders (фэн клаб). Items are a JSON snapshot of the purchased
+// products so history survives product edits/deletion.
+model Order {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerName String
+  phone        String
+  email        String?
+  note         String?
+  items        Json     @default("[]") // [{ name, price, qty }]
+  total        Int      @default(0) // MNT
+  status       String   @default("NEW") // NEW | CONFIRMED | SHIPPED | DONE | CANCELLED
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 // Editable marketing copy, addressed by page/section (JSON blobs).

@@ -23,9 +23,12 @@ export const SITE_CONTENT_PAGES = {
   'fan-club': ['page'],
   footer: ['social'],
   'front-office': ['hero'],
-  home: ['fanmail', 'hero'],
+  general: ['brand', 'contact'],
+  history: ['page'],
+  home: ['fanmail', 'hero', 'news', 'stats', 'thanks'],
   newsletter: ['page'],
   photos: ['hero'],
+  players: ['page'],
   schedule: ['hero'],
   videos: ['hero'],
 } as const satisfies Record<string, readonly string[]>;

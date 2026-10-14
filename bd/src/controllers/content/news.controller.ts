@@ -4,6 +4,7 @@ import type { ListNewsQuery } from '../../validators/content/content.validators.
 
 import { ApiError } from '../../lib/ApiError.js';
 import { prisma } from '../../lib/prisma.js';
+import { wantsHiddenRows } from '../../middleware/optionalAuth.js';
 import { compact } from '../../utils/content-payloads.js';
 import { ok } from '../../utils/http.js';
 
@@ -39,7 +40,7 @@ export async function listNews(req: Request, res: Response): Promise<void> {
     orderBy: { publishedAt: 'desc' },
     take: query.limit ?? 50,
     where: {
-      isPublished: true,
+      ...(wantsHiddenRows(req, query) ? {} : { isPublished: true }),
       ...(query.category ? { category: query.category } : {}),
       ...(query.featured === undefined ? {} : { isFeatured: query.featured }),
     },

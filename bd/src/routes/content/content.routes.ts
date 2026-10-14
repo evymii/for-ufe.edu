@@ -14,6 +14,8 @@ import * as siteContent from '../../controllers/content/site-content.controller.
 import * as videos from '../../controllers/content/videos.controller.js';
 import { asyncHandler } from '../../lib/asyncHandler.js';
 import { authenticate } from '../../middleware/authenticate.js';
+import { optionalAuth } from '../../middleware/optionalAuth.js';
+import { publicReadCache } from '../../middleware/publicReadCache.js';
 import { requireRole } from '../../middleware/requireRole.js';
 import { validate } from '../../middleware/validate.js';
 import {
@@ -66,6 +68,10 @@ const adminWrite = [authenticate, requireRole('ADMIN')] as unknown as RequestHan
 
 export const contentRouter = Router();
 
+// Public GETs (no Authorization header) are browser/CDN-cacheable for 60s;
+// writes and authed reads are never cached.
+contentRouter.use(publicReadCache);
+
 // ── Content blocks (live-editable site text, SSE updates) ────────────────────
 contentRouter.use('/blocks', blocksRouter);
 
@@ -98,6 +104,7 @@ contentRouter.delete(
 // ── Players (багийн бүрэлдэхүүн) ─────────────────────────────────────────────
 contentRouter.get(
   '/players',
+  optionalAuth,
   validate({ query: listPlayersQuerySchema }),
   asyncHandler(players.listPlayers),
 );
@@ -195,6 +202,7 @@ contentRouter.delete(
 // ── Media albums (галерей) ───────────────────────────────────────────────────
 contentRouter.get(
   '/media',
+  optionalAuth,
   validate({ query: listAlbumsQuerySchema }),
   asyncHandler(collections.listAlbums),
 );
@@ -225,6 +233,7 @@ contentRouter.delete(
 // ── Executives (front office) ────────────────────────────────────────────────
 contentRouter.get(
   '/executives',
+  optionalAuth,
   validate({ query: listExecutivesQuerySchema }),
   asyncHandler(executives.listExecutives),
 );
@@ -250,6 +259,7 @@ contentRouter.delete(
 // ── Videos (видео сан) ───────────────────────────────────────────────────────
 contentRouter.get(
   '/videos',
+  optionalAuth,
   validate({ query: listVideosQuerySchema }),
   asyncHandler(videos.listVideos),
 );
@@ -280,6 +290,7 @@ contentRouter.delete(
 // ── Shop products (фэн клаб) ─────────────────────────────────────────────────
 contentRouter.get(
   '/shop',
+  optionalAuth,
   validate({ query: listShopQuerySchema }),
   asyncHandler(shop.listShopProducts),
 );

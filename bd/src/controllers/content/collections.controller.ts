@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 
 import { ApiError } from '../../lib/ApiError.js';
 import { prisma } from '../../lib/prisma.js';
+import { wantsHiddenRows } from '../../middleware/optionalAuth.js';
 import { compact } from '../../utils/content-payloads.js';
 import { ok } from '../../utils/http.js';
 
@@ -54,10 +55,13 @@ export async function getAlbumBySlug(req: Request, res: Response): Promise<void>
 // ── Media albums ─────────────────────────────────────────────────────────────
 export async function listAlbums(req: Request, res: Response): Promise<void> {
   const category = req.query.category as string | undefined;
+  const includeHidden = wantsHiddenRows(req, {
+    includeHidden: req.query.includeHidden === 'true',
+  });
   const items = await prisma.mediaAlbum.findMany({
     orderBy: { sortOrder: 'asc' },
     where: {
-      isPublished: true,
+      ...(includeHidden ? {} : { isPublished: true }),
       ...(category ? { category } : {}),
     },
   });

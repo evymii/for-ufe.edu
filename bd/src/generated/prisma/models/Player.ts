@@ -117,6 +117,7 @@ export type PlayerCountAggregateOutputType = {
   ppg: number
   rpg: number
   apg: number
+  profile: number
   sortOrder: number
   isPublic: number
   createdAt: number
@@ -216,6 +217,7 @@ export type PlayerCountAggregateInputType = {
   ppg?: true
   rpg?: true
   apg?: true
+  profile?: true
   sortOrder?: true
   isPublic?: true
   createdAt?: true
@@ -328,6 +330,7 @@ export type PlayerGroupByOutputType = {
   ppg: number | null
   rpg: number | null
   apg: number | null
+  profile: runtime.JsonValue | null
   sortOrder: number
   isPublic: boolean
   createdAt: Date
@@ -376,6 +379,7 @@ export type PlayerWhereInput = {
   ppg?: Prisma.FloatNullableFilter<"Player"> | number | null
   rpg?: Prisma.FloatNullableFilter<"Player"> | number | null
   apg?: Prisma.FloatNullableFilter<"Player"> | number | null
+  profile?: Prisma.JsonNullableFilter<"Player">
   sortOrder?: Prisma.IntFilter<"Player"> | number
   isPublic?: Prisma.BoolFilter<"Player"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Player"> | Date | string
@@ -401,6 +405,7 @@ export type PlayerOrderByWithRelationInput = {
   ppg?: Prisma.SortOrder
   rpg?: Prisma.SortOrder
   apg?: Prisma.SortOrder
+  profile?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -429,6 +434,7 @@ export type PlayerWhereUniqueInput = Prisma.AtLeast<{
   ppg?: Prisma.FloatNullableFilter<"Player"> | number | null
   rpg?: Prisma.FloatNullableFilter<"Player"> | number | null
   apg?: Prisma.FloatNullableFilter<"Player"> | number | null
+  profile?: Prisma.JsonNullableFilter<"Player">
   sortOrder?: Prisma.IntFilter<"Player"> | number
   isPublic?: Prisma.BoolFilter<"Player"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Player"> | Date | string
@@ -454,6 +460,7 @@ export type PlayerOrderByWithAggregationInput = {
   ppg?: Prisma.SortOrder
   rpg?: Prisma.SortOrder
   apg?: Prisma.SortOrder
+  profile?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -487,6 +494,7 @@ export type PlayerScalarWhereWithAggregatesInput = {
   ppg?: Prisma.FloatNullableWithAggregatesFilter<"Player"> | number | null
   rpg?: Prisma.FloatNullableWithAggregatesFilter<"Player"> | number | null
   apg?: Prisma.FloatNullableWithAggregatesFilter<"Player"> | number | null
+  profile?: Prisma.JsonNullableWithAggregatesFilter<"Player">
   sortOrder?: Prisma.IntWithAggregatesFilter<"Player"> | number
   isPublic?: Prisma.BoolWithAggregatesFilter<"Player"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Player"> | Date | string
@@ -512,6 +520,7 @@ export type PlayerCreateInput = {
   ppg?: number | null
   rpg?: number | null
   apg?: number | null
+  profile?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -537,6 +546,7 @@ export type PlayerUncheckedCreateInput = {
   ppg?: number | null
   rpg?: number | null
   apg?: number | null
+  profile?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -561,6 +571,7 @@ export type PlayerUpdateInput = {
   ppg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   rpg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   apg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  profile?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,6 +596,7 @@ export type PlayerUncheckedUpdateInput = {
   ppg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   rpg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   apg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  profile?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -610,6 +622,7 @@ export type PlayerCreateManyInput = {
   ppg?: number | null
   rpg?: number | null
   apg?: number | null
+  profile?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -634,6 +647,7 @@ export type PlayerUpdateManyMutationInput = {
   ppg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   rpg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   apg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  profile?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -658,6 +672,7 @@ export type PlayerUncheckedUpdateManyInput = {
   ppg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   rpg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   apg?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  profile?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -683,6 +698,7 @@ export type PlayerCountOrderByAggregateInput = {
   ppg?: Prisma.SortOrder
   rpg?: Prisma.SortOrder
   apg?: Prisma.SortOrder
+  profile?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -800,6 +816,7 @@ export type PlayerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   ppg?: boolean
   rpg?: boolean
   apg?: boolean
+  profile?: boolean
   sortOrder?: boolean
   isPublic?: boolean
   createdAt?: boolean
@@ -827,13 +844,14 @@ export type PlayerSelectScalar = {
   ppg?: boolean
   rpg?: boolean
   apg?: boolean
+  profile?: boolean
   sortOrder?: boolean
   isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "number" | "role" | "position" | "heightCm" | "weightKg" | "birthYear" | "hometown" | "photo" | "actionPhoto" | "bio" | "academicYear" | "isCaptain" | "ppg" | "rpg" | "apg" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
+export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "number" | "role" | "position" | "heightCm" | "weightKg" | "birthYear" | "hometown" | "photo" | "actionPhoto" | "bio" | "academicYear" | "isCaptain" | "ppg" | "rpg" | "apg" | "profile" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
 
 export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Player"
@@ -857,6 +875,7 @@ export type $PlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     ppg: number | null
     rpg: number | null
     apg: number | null
+    profile: runtime.JsonValue | null
     sortOrder: number
     isPublic: boolean
     createdAt: Date
@@ -1271,6 +1290,7 @@ export interface PlayerFieldRefs {
   readonly ppg: Prisma.FieldRef<"Player", 'Float'>
   readonly rpg: Prisma.FieldRef<"Player", 'Float'>
   readonly apg: Prisma.FieldRef<"Player", 'Float'>
+  readonly profile: Prisma.FieldRef<"Player", 'Json'>
   readonly sortOrder: Prisma.FieldRef<"Player", 'Int'>
   readonly isPublic: Prisma.FieldRef<"Player", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Player", 'DateTime'>

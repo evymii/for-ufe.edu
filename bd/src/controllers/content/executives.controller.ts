@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import type { ListExecutivesQuery } from '../../validators/content/content.validators.js';
 
 import { prisma } from '../../lib/prisma.js';
+import { wantsHiddenRows } from '../../middleware/optionalAuth.js';
 import { compact } from '../../utils/content-payloads.js';
 import { ok } from '../../utils/http.js';
 
@@ -23,7 +24,10 @@ export async function listExecutives(req: Request, res: Response): Promise<void>
   const query = req.query as unknown as ListExecutivesQuery;
   const items = await prisma.executive.findMany({
     orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
-    where: { isPublic: true, ...(query.group ? { group: query.group } : {}) },
+    where: {
+      ...(wantsHiddenRows(req, query) ? {} : { isPublic: true }),
+      ...(query.group ? { group: query.group } : {}),
+    },
   });
   ok(res, { items });
 }

@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import type { ListShopQuery } from '../../validators/content/content.validators.js';
 
 import { prisma } from '../../lib/prisma.js';
+import { wantsHiddenRows } from '../../middleware/optionalAuth.js';
 import { compact } from '../../utils/content-payloads.js';
 import { ok } from '../../utils/http.js';
 
@@ -23,7 +24,10 @@ export async function listShopProducts(req: Request, res: Response): Promise<voi
   const query = req.query as unknown as ListShopQuery;
   const items = await prisma.shopProduct.findMany({
     orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
-    where: { isVisible: true, ...(query.category ? { category: query.category } : {}) },
+    where: {
+      ...(wantsHiddenRows(req, query) ? {} : { isVisible: true }),
+      ...(query.category ? { category: query.category } : {}),
+    },
   });
   ok(res, { items });
 }

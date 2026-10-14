@@ -4,6 +4,7 @@ import type { ListPlayersQuery } from '../../validators/content/content.validato
 
 import { ApiError } from '../../lib/ApiError.js';
 import { prisma } from '../../lib/prisma.js';
+import { wantsHiddenRows } from '../../middleware/optionalAuth.js';
 import { compact } from '../../utils/content-payloads.js';
 import { ok } from '../../utils/http.js';
 
@@ -34,7 +35,7 @@ export async function listPlayers(req: Request, res: Response): Promise<void> {
   const items = await prisma.player.findMany({
     orderBy: [{ sortOrder: 'asc' }, { number: 'asc' }],
     where: {
-      isPublic: true,
+      ...(wantsHiddenRows(req, query) ? {} : { isPublic: true }),
       ...(query.role ? { role: query.role } : {}),
     },
   });

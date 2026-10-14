@@ -105,6 +105,11 @@ export type ShopProduct = Prisma.ShopProductModel
  */
 export type NewsletterSubscriber = Prisma.NewsletterSubscriberModel
 /**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel
+/**
  * Model SiteContent
  * 
  */

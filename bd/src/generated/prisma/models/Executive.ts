@@ -71,6 +71,7 @@ export type ExecutiveCountAggregateOutputType = {
   photo: number
   bio: number
   bullets: number
+  sections: number
   sortOrder: number
   isPublic: number
   createdAt: number
@@ -124,6 +125,7 @@ export type ExecutiveCountAggregateInputType = {
   photo?: true
   bio?: true
   bullets?: true
+  sections?: true
   sortOrder?: true
   isPublic?: true
   createdAt?: true
@@ -226,6 +228,7 @@ export type ExecutiveGroupByOutputType = {
   photo: string | null
   bio: string | null
   bullets: string[]
+  sections: runtime.JsonValue | null
   sortOrder: number
   isPublic: boolean
   createdAt: Date
@@ -264,6 +267,7 @@ export type ExecutiveWhereInput = {
   photo?: Prisma.StringNullableFilter<"Executive"> | string | null
   bio?: Prisma.StringNullableFilter<"Executive"> | string | null
   bullets?: Prisma.StringNullableListFilter<"Executive">
+  sections?: Prisma.JsonNullableFilter<"Executive">
   sortOrder?: Prisma.IntFilter<"Executive"> | number
   isPublic?: Prisma.BoolFilter<"Executive"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Executive"> | Date | string
@@ -279,6 +283,7 @@ export type ExecutiveOrderByWithRelationInput = {
   photo?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   bullets?: Prisma.SortOrder
+  sections?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -297,6 +302,7 @@ export type ExecutiveWhereUniqueInput = Prisma.AtLeast<{
   photo?: Prisma.StringNullableFilter<"Executive"> | string | null
   bio?: Prisma.StringNullableFilter<"Executive"> | string | null
   bullets?: Prisma.StringNullableListFilter<"Executive">
+  sections?: Prisma.JsonNullableFilter<"Executive">
   sortOrder?: Prisma.IntFilter<"Executive"> | number
   isPublic?: Prisma.BoolFilter<"Executive"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Executive"> | Date | string
@@ -312,6 +318,7 @@ export type ExecutiveOrderByWithAggregationInput = {
   photo?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   bullets?: Prisma.SortOrder
+  sections?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -335,6 +342,7 @@ export type ExecutiveScalarWhereWithAggregatesInput = {
   photo?: Prisma.StringNullableWithAggregatesFilter<"Executive"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"Executive"> | string | null
   bullets?: Prisma.StringNullableListFilter<"Executive">
+  sections?: Prisma.JsonNullableWithAggregatesFilter<"Executive">
   sortOrder?: Prisma.IntWithAggregatesFilter<"Executive"> | number
   isPublic?: Prisma.BoolWithAggregatesFilter<"Executive"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Executive"> | Date | string
@@ -350,6 +358,7 @@ export type ExecutiveCreateInput = {
   photo?: string | null
   bio?: string | null
   bullets?: Prisma.ExecutiveCreatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -365,6 +374,7 @@ export type ExecutiveUncheckedCreateInput = {
   photo?: string | null
   bio?: string | null
   bullets?: Prisma.ExecutiveCreatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -379,6 +389,7 @@ export type ExecutiveUpdateInput = {
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bullets?: Prisma.ExecutiveUpdatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,6 +404,7 @@ export type ExecutiveUncheckedUpdateInput = {
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bullets?: Prisma.ExecutiveUpdatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,6 +420,7 @@ export type ExecutiveCreateManyInput = {
   photo?: string | null
   bio?: string | null
   bullets?: Prisma.ExecutiveCreatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | null
   sortOrder?: number
   isPublic?: boolean
   createdAt?: Date | string
@@ -422,6 +435,7 @@ export type ExecutiveUpdateManyMutationInput = {
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bullets?: Prisma.ExecutiveUpdatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -436,6 +450,7 @@ export type ExecutiveUncheckedUpdateManyInput = {
   photo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bullets?: Prisma.ExecutiveUpdatebulletsInput | string[]
+  sections?: runtime.InputJsonValue | runtime.InputJsonValue | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -451,6 +466,7 @@ export type ExecutiveCountOrderByAggregateInput = {
   photo?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   bullets?: Prisma.SortOrder
+  sections?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -513,6 +529,7 @@ export type ExecutiveSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   photo?: boolean
   bio?: boolean
   bullets?: boolean
+  sections?: boolean
   sortOrder?: boolean
   isPublic?: boolean
   createdAt?: boolean
@@ -530,13 +547,14 @@ export type ExecutiveSelectScalar = {
   photo?: boolean
   bio?: boolean
   bullets?: boolean
+  sections?: boolean
   sortOrder?: boolean
   isPublic?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExecutiveOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "group" | "title" | "photo" | "bio" | "bullets" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["executive"]>
+export type ExecutiveOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "group" | "title" | "photo" | "bio" | "bullets" | "sections" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["executive"]>
 
 export type $ExecutivePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Executive"
@@ -550,6 +568,7 @@ export type $ExecutivePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     photo: string | null
     bio: string | null
     bullets: string[]
+    sections: runtime.JsonValue | null
     sortOrder: number
     isPublic: boolean
     createdAt: Date
@@ -954,6 +973,7 @@ export interface ExecutiveFieldRefs {
   readonly photo: Prisma.FieldRef<"Executive", 'String'>
   readonly bio: Prisma.FieldRef<"Executive", 'String'>
   readonly bullets: Prisma.FieldRef<"Executive", 'String[]'>
+  readonly sections: Prisma.FieldRef<"Executive", 'Json'>
   readonly sortOrder: Prisma.FieldRef<"Executive", 'Int'>
   readonly isPublic: Prisma.FieldRef<"Executive", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Executive", 'DateTime'>

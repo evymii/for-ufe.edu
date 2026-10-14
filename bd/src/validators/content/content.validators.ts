@@ -30,9 +30,10 @@ const optionalFloat = (min: number, max: number) =>
     z.number().min(min).max(max).optional(),
   );
 
-const optionalDate = z
-  .union([z.literal(''), z.undefined(), z.coerce.date()])
-  .transform((value) => (value === '' ? undefined : value));
+const optionalDate = z.preprocess(
+  (value) => (value === '' ? undefined : value),
+  z.coerce.date().optional(),
+);
 
 const boolFlag = z.preprocess((value) => {
   if (value === 'true' || value === 1 || value === '1') return true;
@@ -78,11 +79,25 @@ export const createNewsSchema = z.object(newsFields);
 export const listNewsQuerySchema = z.object({
   category: z.string().trim().min(1).max(60).optional(),
   featured: boolFlag.optional(),
+  // ADMIN-only: include unpublished rows (requires a valid admin bearer).
+  includeHidden: boolFlag.optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
 });
 
 // ── Players ──────────────────────────────────────────────────────────────────
 export const playerRoleEnum = z.enum(['COACH', 'PLAYER', 'STAFF']);
+
+/** Roster-card display extras stored as the Player.profile JSON blob. */
+const playerProfileSchema = z.object({
+  achievements: z.array(text(300)).max(30).optional(),
+  major: optionalText(80),
+  motto: optionalText(160),
+  pregame: optionalText(300),
+  reason: optionalText(160),
+  roleLabel: optionalText(80),
+  yearsOnTeam: optionalText(40),
+  yearsPlaying: optionalText(40),
+});
 
 const playerFields = {
   academicYear: optionalText(40),
@@ -99,6 +114,7 @@ const playerFields = {
   photo: optionalText(600),
   position: optionalText(60),
   ppg: optionalFloat(0, 60),
+  profile: playerProfileSchema.nullish(),
   role: playerRoleEnum.optional(),
   rpg: optionalFloat(0, 30),
   slug: text(140),
@@ -109,6 +125,7 @@ const playerFields = {
 export const createPlayerSchema = z.object(playerFields);
 
 export const listPlayersQuerySchema = z.object({
+  includeHidden: boolFlag.optional(), // ADMIN-only
   role: playerRoleEnum.optional(),
 });
 
@@ -191,10 +208,29 @@ export const createAlbumSchema = z.object(albumFields);
 
 export const listAlbumsQuerySchema = z.object({
   category: albumCategoryEnum.optional(),
+  includeHidden: boolFlag.optional(), // ADMIN-only
 });
 
-// ── Executives (front office tabs) ───────────────────────────────────────────
-export const executiveGroupEnum = z.enum(['BUSINESS', 'COACHES', 'OPERATIONS', 'OWNERSHIP']);
+// ── Executives (front office tabs + /staff team-staff cards) ─────────────────
+export const executiveGroupEnum = z.enum([
+  'BUSINESS',
+  'COACHES',
+  'OPERATIONS',
+  'OWNERSHIP',
+  'STAFF',
+]);
+
+/** Bio-drawer detail sections on the /staff cards. */
+const staffSectionsSchema = z
+  .array(
+    z.object({
+      heading: text(80),
+      list: z.array(text(300)).max(20).optional(),
+      text: optionalText(2000),
+    }),
+  )
+  .max(12)
+  .nullish();
 
 const executiveFields = {
   bio: optionalText(5000),
@@ -203,6 +239,7 @@ const executiveFields = {
   isPublic: optionalBool,
   name: text(120),
   photo: optionalText(600),
+  sections: staffSectionsSchema,
   slug: text(140),
   sortOrder: optionalInt(0, 9999),
   title: text(160),
@@ -212,6 +249,7 @@ export const createExecutiveSchema = z.object(executiveFields);
 
 export const listExecutivesQuerySchema = z.object({
   group: executiveGroupEnum.optional(),
+  includeHidden: boolFlag.optional(), // ADMIN-only
 });
 
 // ── Videos ───────────────────────────────────────────────────────────────────
@@ -228,7 +266,8 @@ const videoFields = {
   thumbnail: optionalText(600),
   title: text(200),
   videoUrl: optionalText(600),
-  youtubeId: optionalText(20),
+  // Accepts a full URL too — the controller normalizes it to the 11-char ID.
+  youtubeId: optionalText(600),
 };
 
 export const createVideoSchema = z.object(videoFields);
@@ -236,6 +275,7 @@ export const createVideoSchema = z.object(videoFields);
 export const listVideosQuerySchema = z.object({
   category: videoCategoryEnum.optional(),
   featured: boolFlag.optional(),
+  includeHidden: boolFlag.optional(), // ADMIN-only
   limit: z.coerce.number().int().min(1).max(100).optional(),
 });
 
@@ -260,6 +300,7 @@ export const createShopProductSchema = z.object(shopFields);
 
 export const listShopQuerySchema = z.object({
   category: shopCategoryEnum.optional(),
+  includeHidden: boolFlag.optional(), // ADMIN-only
 });
 
 // ── Newsletter (public signup + admin inbox) ─────────────────────────────────

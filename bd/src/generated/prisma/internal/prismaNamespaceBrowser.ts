@@ -61,6 +61,7 @@ export const ModelName = {
   Video: 'Video',
   ShopProduct: 'ShopProduct',
   NewsletterSubscriber: 'NewsletterSubscriber',
+  Order: 'Order',
   SiteContent: 'SiteContent',
   ContentBlock: 'ContentBlock',
   Media: 'Media',
@@ -140,6 +141,7 @@ export const PlayerScalarFieldEnum = {
   ppg: 'ppg',
   rpg: 'rpg',
   apg: 'apg',
+  profile: 'profile',
   sortOrder: 'sortOrder',
   isPublic: 'isPublic',
   createdAt: 'createdAt',
@@ -229,6 +231,7 @@ export const ExecutiveScalarFieldEnum = {
   photo: 'photo',
   bio: 'bio',
   bullets: 'bullets',
+  sections: 'sections',
   sortOrder: 'sortOrder',
   isPublic: 'isPublic',
   createdAt: 'createdAt',
@@ -287,6 +290,22 @@ export const NewsletterSubscriberScalarFieldEnum = {
 } as const
 
 export type NewsletterSubscriberScalarFieldEnum = (typeof NewsletterSubscriberScalarFieldEnum)[keyof typeof NewsletterSubscriberScalarFieldEnum]
+
+
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  customerName: 'customerName',
+  phone: 'phone',
+  email: 'email',
+  note: 'note',
+  items: 'items',
+  total: 'total',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
 export const SiteContentScalarFieldEnum = {
