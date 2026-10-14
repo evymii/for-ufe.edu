@@ -65,7 +65,7 @@ export default async function RosterPage() {
         controls={
           <div
             aria-label="Улирал"
-            className="border-ink flex h-11 items-center gap-6 border px-4 text-sm font-semibold"
+            className="border-ink text-ink flex h-11 items-center gap-6 border px-4 text-sm font-semibold"
           >
             2026–2027
             <span aria-hidden="true" className="text-mute">

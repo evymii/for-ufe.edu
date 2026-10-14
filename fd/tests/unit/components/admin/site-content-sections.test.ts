@@ -122,17 +122,6 @@ describe("site-content registry", () => {
     expect(timeline[0].bullets).toEqual([]);
   });
 
-  it("maps newsletter interests (object or key form) to valid keys", () => {
-    const def = findSection("newsletter/page")!;
-    const objectForm = normalizeSectionData(def, {
-      interests: [{ key: "recaps" }, { key: "nope" }, "tickets", "tickets"],
-    });
-    expect(objectForm.interests).toEqual(["recaps", "tickets"]);
-
-    const empty = normalizeSectionData(def, { interests: [] });
-    expect(empty.interests).toEqual(["recaps", "tickets", "community", "shop"]);
-  });
-
   it("normalizes non-string junk in lists out of the editor", () => {
     const def = findSection("contact/info")!;
     const data = normalizeSectionData(def, {

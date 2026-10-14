@@ -35,8 +35,6 @@ export interface ListFieldDef extends BaseFieldDef {
   max?: number;
   /** Allow an empty array (no default snap-back) — for optional bullets. */
   allowEmpty?: boolean;
-  /** Values constrained to the newsletter interest keys. */
-  itemKind?: "interestKey";
   newItem?: () => string;
 }
 
@@ -71,7 +69,7 @@ export interface SiteSectionDef {
   preview?: { breadcrumb: string; title: string };
   /**
    * Pointer link to the CMS tab that manages this section's live rows
-   * (news cards, shop products, inbox…) — no duplicated editing here.
+   * (news cards, shop products…) — no duplicated editing here.
    */
   related?: { label: string; tab: string };
 }
@@ -92,9 +90,7 @@ export const CONSUMED_SECTION_PAIRS: Array<[string, string]> = [
   ["home", "thanks"],
   ["history", "page"],
   ["players", "page"],
-  ["city-edition", "page"],
   ["fan-club", "page"],
-  ["newsletter", "page"],
   ["contact", "info"],
   ["schedule", "hero"],
   ["media", "hero"],
@@ -270,93 +266,6 @@ export const SITE_CONTENT_PAGES: SitePageDef[] = [
     ],
   },
   {
-    key: "city-edition",
-    label: "Хотын загвар",
-    sections: [
-      {
-        page: "city-edition",
-        section: "page",
-        title: "Хотын загварын хуудас",
-        description:
-          "Хотын загварын өмсгөлийн бүхэн — танилцуулга, өнгөний сонголт, бүлгүүд, дэлгэрэнгүй карт, дэлгүүрийн блок.",
-        fields: [
-          text("kicker", "Киккер", { help: "Дээд жижиг шошго." }),
-          text("editionName", "Загварын нэр"),
-          text("year", "Он"),
-          area("story", "Танилцуулга", { max: 700, rows: 4 }),
-          {
-            kind: "list",
-            key: "colorways",
-            label: "Өнгөнүүд (HEX)",
-            itemLabel: "Өнгө",
-            min: 1,
-            max: 6,
-            help: "HEX утга оруулна (ж.нь. #F2F2F0).",
-            newItem: () => "#000000",
-          },
-          {
-            kind: "list",
-            key: "colorwayNames",
-            label: "Өнгөний нэрс",
-            itemLabel: "Нэр",
-            min: 1,
-            max: 6,
-            help: "Дээрх өнгөтэй ижил дарааллаар.",
-            newItem: () => "",
-          },
-          {
-            kind: "url",
-            key: "jerseyImage",
-            label: "Өмсгөлийн зургийн URL",
-            help: "Хоосон бол заагдмал загвар харагдана.",
-          } as StringFieldDef,
-          {
-            kind: "cards",
-            key: "chapters",
-            label: "Бүлгүүд",
-            titleKey: "title",
-            itemLabel: "Бүлэг",
-            min: 2,
-            max: 4,
-            help: "Нийтийн хуудсанд дор хаяж 2 бүлэг харагдана.",
-            newItem: () => ({ title: "Шинэ бүлэг", text: "" }),
-            fields: [
-              text("title", "Гарчиг"),
-              area("text", "Тайлбар", { max: 700 }),
-            ],
-          },
-          {
-            kind: "list",
-            key: "chapterImages",
-            label: "Бүлгийн зургийн URL",
-            itemLabel: "URL",
-            max: 4,
-            allowEmpty: true,
-            help: "Бүлэг бүрийн зураг — бүлгийн дараалалтай таарна.",
-            newItem: () => "",
-          },
-          {
-            kind: "cards",
-            key: "details",
-            label: "Дэлгэрэнгүй картууд",
-            titleKey: "title",
-            itemLabel: "Карт",
-            min: 4,
-            max: 6,
-            help: "Нийтийн хуудсанд дор хаяж 4 карт харагдана.",
-            newItem: () => ({ title: "Шинэ карт", text: "" }),
-            fields: [
-              text("title", "Гарчиг"),
-              area("text", "Тайлбар", { max: 300 }),
-            ],
-          },
-          text("shopTitle", "Дэлгүүрийн гарчиг"),
-          text("shopButton", "Дэлгүүрийн товч"),
-        ],
-      },
-    ],
-  },
-  {
     key: "fan-club",
     label: "Мерч",
     sections: [
@@ -392,56 +301,15 @@ export const SITE_CONTENT_PAGES: SitePageDef[] = [
     ],
   },
   {
-    key: "newsletter",
-    label: "Фэнэйд мэдээ",
-    sections: [
-      {
-        page: "newsletter",
-        section: "page",
-        title: "Фэнэйд мэдээний хуудас",
-        description:
-          "Бүртгэлийн формын бичвэр. Ирсэн захиалгууд «Захиалга» таб дотор харагдана.",
-        related: { label: "Захиалгууд харах", tab: "subscribers" },
-        fields: [
-          text("kicker", "Киккер"),
-          text("title", "Гарчиг"),
-          text("cta", "Товчны бичиг"),
-          area("consent", "Зөвшөөрлийн бичвэр", { max: 400, rows: 3 }),
-          {
-            kind: "list",
-            key: "benefits",
-            label: "Ашигууд",
-            itemLabel: "Мөр",
-            min: 1,
-            max: 8,
-            newItem: () => "",
-          },
-          {
-            kind: "list",
-            key: "interests",
-            label: "Сонирхлын түлхүүрүүд",
-            itemLabel: "Түлхүүр",
-            min: 1,
-            max: 4,
-            itemKind: "interestKey",
-            help: "Боломжит утгууд: recaps, tickets, community, shop. Шошгын бичиг кодод тогтмол.",
-            newItem: () => "recaps",
-          },
-        ],
-      },
-    ],
-  },
-  {
     key: "contact",
     label: "Холбоо барих",
     sections: [
       {
         page: "contact",
         section: "info",
-        title: "Холбоо барих ба хөлийн хэсэг",
+        title: "Хөлийн хэсгийн холбооны мэдээлэл",
         description:
-          "Бүх хуудасны хөлийн хэсэгт болон Холбоо барих хуудаснд харагдана. Формын зурвасууд «Холбоо» таб дотор.",
-        related: { label: "Зурвасууд харах", tab: "inbox" },
+          "Бүх хуудасны хөлийн хэсэгт харагдах хаяг, утас, имэйл болон вэбийн мэдээлэл.",
         fields: [
           text("address", "Хаяг"),
           text("email", "Имэйл"),
@@ -493,7 +361,15 @@ export const SITE_CONTENT_PAGES: SitePageDef[] = [
         description:
           "Нэгдсэн Медиа хуудасны нүүр бичвэр. Зургийн цомогууд «Галерей» таб дотор, бичлэгүүд «Бичлэгүүд» таб дотор удирдагдана.",
         preview: { breadcrumb: "Медиа", title: "Медиа" },
-        fields: [area("intro", "Тайлбар", { max: 400 })],
+        fields: [
+          area("intro", "Тайлбар", { max: 400 }),
+          {
+            kind: "url",
+            key: "poster",
+            label: "Постерийн URL",
+            help: "Онцлох видеоны дүрс гарч иртэл харагдана. Хоосон бол заагдмал зураг.",
+          } as StringFieldDef,
+        ],
       },
       heroSection(
         "front-office",
@@ -526,8 +402,6 @@ function heroSection(
 
 // ── Normalization (stored blob → never-empty editing state) ─────────────────
 
-const INTEREST_KEYS = ["recaps", "tickets", "community", "shop"] as const;
-
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -544,22 +418,6 @@ function toObjectArray(value: unknown): Record<string, unknown>[] {
 
 function nonEmptyString(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-function normalizeInterestKeys(value: unknown): string[] {
-  const raw = Array.isArray(value) ? value : [];
-  const keys = raw
-    .map((item) =>
-      typeof item === "string"
-        ? item
-        : isPlainObject(item) && typeof item.key === "string"
-          ? item.key
-          : null,
-    )
-    .filter((key): key is (typeof INTEREST_KEYS)[number] =>
-      (INTEREST_KEYS as readonly string[]).includes(String(key)),
-    );
-  return [...new Set(keys)];
 }
 
 function normalizeFields(
@@ -581,13 +439,6 @@ function normalizeFields(
         break;
       }
       case "list": {
-        if (field.itemKind === "interestKey") {
-          const stored = normalizeInterestKeys(raw[field.key]);
-          out[field.key] = stored.length
-            ? stored
-            : normalizeInterestKeys(fallback[field.key]);
-          break;
-        }
         let items = toStringArray(raw[field.key]);
         if (!items.length && !field.allowEmpty) {
           items = toStringArray(fallback[field.key]);

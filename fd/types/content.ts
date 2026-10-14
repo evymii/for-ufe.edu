@@ -161,17 +161,3 @@ export interface ContactInfo {
   webUrl: string;
   slogan: string;
 }
-
-export interface NewsletterInterest {
-  key: "recaps" | "tickets" | "community" | "shop";
-  label: string;
-}
-
-export interface NewsletterCopy {
-  kicker: string;
-  title: string;
-  benefits: string[];
-  consent: string;
-  cta: string;
-  interests: NewsletterInterest[];
-}

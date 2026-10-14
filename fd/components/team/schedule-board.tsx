@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 
 import { FilterPills } from "@/components/team/filter-pills";
-import { routes } from "@/config/routes";
 import type { GameRow } from "@/types/content";
 import { cn } from "@/lib/utils";
 
@@ -285,14 +283,7 @@ function GameRowItem({
               >
                 Тасалбар
               </a>
-            ) : (
-              <Link
-                href={routes.site.contact}
-                className="font-display team-focus border-ink hover:bg-ink hover:text-paper inline-flex h-10 items-center rounded-full border px-5 text-[13px] font-semibold tracking-[0.06em] uppercase transition-colors"
-              >
-                Тасалбар
-              </Link>
-            )}
+            ) : null}
           </div>
         )}
       </div>

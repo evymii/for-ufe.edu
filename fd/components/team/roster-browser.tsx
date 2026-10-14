@@ -183,8 +183,8 @@ function Pagination({
             className={cn(
               "team-focus font-display flex size-10 items-center justify-center border text-sm font-semibold transition-colors",
               item === page
-                ? "border-accent-blue bg-accent-blue text-paper"
-                : "border-accent-blue/25 text-mute hover:border-accent-blue hover:text-accent-blue",
+                ? "border-ink bg-ink/5 text-ink"
+                : "border-line text-mute hover:border-ink hover:text-ink",
             )}
           >
             {item}

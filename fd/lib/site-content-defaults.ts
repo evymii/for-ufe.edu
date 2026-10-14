@@ -1,9 +1,7 @@
 import {
-  cityEditionFallback,
   fanClubFallback,
   frontOfficeHeroFallback,
   mediaHeroFallback,
-  newsletterFallback,
   scheduleHeroFallback,
 } from "@/content/pages";
 import {
@@ -29,10 +27,6 @@ export function siteContentDefault(
   section: string,
 ): Record<string, unknown> | null {
   const defaults: Record<string, Record<string, unknown> | undefined> = {
-    "city-edition/page": cityEditionFallback as unknown as Record<
-      string,
-      unknown
-    >,
     "contact/info": {
       address: contact.address,
       email: contact.email,
@@ -64,7 +58,6 @@ export function siteContentDefault(
       paragraphTwo: thanks.paragraphTwo,
       sponsors: thanks.sponsors.map((sponsor) => sponsor),
     },
-    "newsletter/page": { ...newsletterFallback },
     "media/hero": { ...mediaHeroFallback },
     "players/page": { subtitle: players.subtitle, title: players.title },
     "schedule/hero": { ...scheduleHeroFallback },

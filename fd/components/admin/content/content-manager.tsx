@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/shared/page-header";
 import {
@@ -10,31 +9,12 @@ import {
 } from "@/components/admin/content/resource-panel";
 import { SiteContentEditor } from "@/components/admin/content/site-content/site-content-editor";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  useContactInbox,
-  useDeleteContactMessage,
-  useDeleteSubscriber,
-  useMarkContactRead,
-  useSubscribers,
-} from "@/hooks/use-content-admin";
-import { ApiClientError } from "@/lib/api-client";
-import type { ContactMessageRow } from "@/services/admin/content.service";
 
 /**
  * The CMS surface for the public team site: one tab per content
- * collection (schedule, front office, gallery, videos, shop), the
- * newsletter inbox, and a JSON editor for page copy (city edition, fan
- * club, newsletter + hero intros).
+ * collection (schedule, front office, gallery, videos, shop) and the
+ * structured page-copy editor (home, history, fan club + hero intros).
  */
 
 const EXECUTIVE_GROUPS = [
@@ -133,7 +113,7 @@ const RESOURCES: ResourceConfig[] = [
         required: true,
         full: true,
       },
-      { name: "coverImage", label: "Нүүр зургийн URL", type: "url" },
+      { name: "coverImage", label: "Нүүр зураг", type: "image" },
       {
         name: "tags",
         label: "Шошгууд",
@@ -185,8 +165,8 @@ const RESOURCES: ResourceConfig[] = [
       },
       { name: "heightCm", label: "Өндөр (см)", type: "number" },
       { name: "hometown", label: "Төрсөн газар", type: "text" },
-      { name: "photo", label: "Зурагны URL", type: "url" },
-      { name: "actionPhoto", label: "Тоглолтын зураг", type: "url" },
+      { name: "photo", label: "Зураг", type: "image" },
+      { name: "actionPhoto", label: "Тоглолтын зураг", type: "image" },
       { name: "bio", label: "Танилцуулга", type: "textarea", full: true },
       { name: "academicYear", label: "Курс", type: "text" },
       { name: "isCaptain", label: "Багийн ахлагч", type: "checkbox" },
@@ -310,7 +290,7 @@ const RESOURCES: ResourceConfig[] = [
         type: "select",
         options: EXECUTIVE_GROUPS,
       },
-      { name: "photo", label: "Зурагны URL", type: "url" },
+      { name: "photo", label: "Зураг", type: "image" },
       { name: "sortOrder", label: "Дараалал", type: "number" },
       { name: "bio", label: "Танилцуулга", type: "textarea", full: true },
       {
@@ -346,7 +326,7 @@ const RESOURCES: ResourceConfig[] = [
         placeholder: "b-purevdorj",
       },
       { name: "title", label: "Албан тушаал", type: "text", required: true },
-      { name: "photo", label: "Зурагны URL", type: "url" },
+      { name: "photo", label: "Зураг", type: "image" },
       { name: "sortOrder", label: "Дараалал", type: "number" },
       { name: "bio", label: "Товч танилцуулга", type: "textarea", full: true },
       {
@@ -411,7 +391,7 @@ const RESOURCES: ResourceConfig[] = [
         type: "select",
         options: ALBUM_CATEGORIES,
       },
-      { name: "coverImage", label: "Нүүр зургийн URL", type: "url" },
+      { name: "coverImage", label: "Нүүр зураг", type: "image" },
       { name: "eventDate", label: "Арга хэмжээний огноо", type: "datetime" },
       { name: "sortOrder", label: "Дараалал", type: "number" },
       {
@@ -473,7 +453,7 @@ const RESOURCES: ResourceConfig[] = [
         type: "text",
         placeholder: "dQw4w9WgXcQ",
       },
-      { name: "thumbnail", label: "Нүүр зургийн URL", type: "url" },
+      { name: "thumbnail", label: "Нүүр зураг", type: "image" },
       { name: "durationSec", label: "Хугацаа (секунд)", type: "number" },
       { name: "isFeatured", label: "Онцлох болгох", type: "checkbox" },
       { name: "sortOrder", label: "Дараалал", type: "number" },
@@ -516,7 +496,7 @@ const RESOURCES: ResourceConfig[] = [
       },
       { name: "price", label: "Үнэ (₮)", type: "number", required: true },
       { name: "compareAtPrice", label: "Хуучин үнэ (₮)", type: "number" },
-      { name: "image", label: "Зургийн URL", type: "url" },
+      { name: "image", label: "Зураг", type: "image" },
       { name: "url", label: "Гадаад холбоос", type: "url" },
       {
         name: "sizes",
@@ -535,14 +515,14 @@ const RESOURCES: ResourceConfig[] = [
 
 export function ContentManager() {
   // Controlled so the page-copy editor's pointer links can hop straight
-  // to the panel that owns a section's live rows (news, shop, inbox…).
+  // to the panel that owns a section's live rows (news, shop…).
   const [cmsTab, setCmsTab] = useState("games");
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Агуулга"
-        description="Нийтийн хуудсуудын агуулга — мэдээ, тоглогчид, хуваарь, удирдлага, ажилтан, галерей, видео, дэлгүүр, холбоо ба хуудасны текст. Хадгалсны дараа нийтийн хуудас шууд шинэчлэгдэнэ."
+        description="Нийтийн хуудсуудын агуулга — мэдээ, тоглогчид, хуваарь, удирдлага, ажилтан, галерей, видео, дэлгүүр ба хуудасны текст. Хадгалсны дараа нийтийн хуудас шууд шинэчлэгдэнэ."
       />
       <Tabs value={cmsTab} onValueChange={setCmsTab}>
         <TabsList className="flex h-auto flex-wrap justify-start">
@@ -551,8 +531,6 @@ export function ContentManager() {
               {resource.title}
             </TabsTrigger>
           ))}
-          <TabsTrigger value="inbox">Холбоо</TabsTrigger>
-          <TabsTrigger value="subscribers">Захиалга</TabsTrigger>
           <TabsTrigger value="page-copy">Хуудасны текст</TabsTrigger>
         </TabsList>
         {RESOURCES.map((resource) => (
@@ -560,12 +538,6 @@ export function ContentManager() {
             <ResourcePanel config={resource} />
           </TabsContent>
         ))}
-        <TabsContent value="inbox">
-          <InboxPanel />
-        </TabsContent>
-        <TabsContent value="subscribers">
-          <SubscribersPanel />
-        </TabsContent>
         <TabsContent value="page-copy">
           <div className="space-y-4">
             <PageHeader
@@ -576,200 +548,6 @@ export function ContentManager() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-function SubscribersPanel() {
-  const { data, isPending, isError, error } = useSubscribers();
-  const remove = useDeleteSubscriber();
-
-  return (
-    <div className="space-y-4">
-      <PageHeader
-        title="Мэдээний захиалга"
-        description="Фэнэйд мэдээ хуудаснаас бүртгүүлсэн имэйл хаягууд."
-      />
-      {isPending ? (
-        <p className="text-muted-foreground text-sm">Ачаалж байна…</p>
-      ) : isError ? (
-        <p className="text-destructive text-sm" role="alert">
-          {error instanceof ApiClientError
-            ? error.message
-            : "Ачаалахад алдаа гарлаа."}
-        </p>
-      ) : (data?.items.length ?? 0) === 0 ? (
-        <p className="text-muted-foreground py-10 text-center text-sm">
-          Одоогоор бүртгэл байхгүй.
-        </p>
-      ) : (
-        <div className="space-y-2">
-          <p className="text-muted-foreground text-sm">
-            Нийт {data?.pagination.total} бүртгэл
-          </p>
-          <div className="border-border/60 overflow-x-auto rounded-lg border">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/40 text-muted-foreground">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium">Имэйл</th>
-                  <th className="px-3 py-2 text-left font-medium">Нэр</th>
-                  <th className="px-3 py-2 text-left font-medium">Сонирхол</th>
-                  <th className="px-3 py-2 text-left font-medium">Огноо</th>
-                  <th className="px-3 py-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {data?.items.map((row) => (
-                  <tr key={row.id} className="border-border/60 border-t">
-                    <td className="px-3 py-2">{row.email}</td>
-                    <td className="text-muted-foreground px-3 py-2">
-                      {row.firstName ?? "—"}
-                    </td>
-                    <td className="text-muted-foreground px-3 py-2">
-                      {row.interests.join(", ") || "—"}
-                    </td>
-                    <td className="text-muted-foreground px-3 py-2">
-                      {new Date(row.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={`${row.email} устгах`}
-                        onClick={() => remove.mutate(row.id)}
-                      >
-                        <Trash2
-                          className="text-destructive size-4"
-                          aria-hidden="true"
-                        />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** Contact-form inbox: unread count, read/unread toggle, delete. */
-function InboxPanel() {
-  const { data, isPending, isError, error } = useContactInbox();
-  const markRead = useMarkContactRead();
-  const remove = useDeleteContactMessage();
-  const [open, setOpen] = useState<ContactMessageRow | null>(null);
-
-  return (
-    <div className="space-y-4">
-      <PageHeader
-        title="Холбоо барих — зурвас"
-        description="/public contact хуудасны формын ирсэн зурвасууд."
-      />
-      {isPending ? (
-        <p className="text-muted-foreground text-sm">Ачаалж байна…</p>
-      ) : isError ? (
-        <p className="text-destructive text-sm" role="alert">
-          {error instanceof ApiClientError
-            ? error.message
-            : "Ачаалахад алдаа гарлаа."}
-        </p>
-      ) : (data?.items.length ?? 0) === 0 ? (
-        <p className="text-muted-foreground py-10 text-center text-sm">
-          Одоогоор зурвас байхгүй.
-        </p>
-      ) : (
-        <div className="space-y-2">
-          <p className="text-muted-foreground text-sm">
-            Уншаагүй {data?.unread ?? 0} · нийт {data?.items.length ?? 0}
-          </p>
-          <div className="border-border/60 overflow-x-auto rounded-lg border">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/40 text-muted-foreground">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium">Нэр</th>
-                  <th className="px-3 py-2 text-left font-medium">Имэйл</th>
-                  <th className="px-3 py-2 text-left font-medium">Сэдэв</th>
-                  <th className="px-3 py-2 text-left font-medium">Огноо</th>
-                  <th className="px-3 py-2 text-left font-medium">Төлөв</th>
-                  <th className="px-3 py-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {data?.items.map((row) => (
-                  <tr key={row.id} className="border-border/60 border-t">
-                    <td className="px-3 py-2">{row.name}</td>
-                    <td className="text-muted-foreground px-3 py-2">
-                      {row.email}
-                    </td>
-                    <td className="max-w-[200px] truncate px-3 py-2">
-                      {row.subject ?? "—"}
-                    </td>
-                    <td className="text-muted-foreground px-3 py-2">
-                      {new Date(row.createdAt).toLocaleString()}
-                    </td>
-                    <td className="px-3 py-2">
-                      <Badge variant={row.isRead ? "outline" : "secondary"}>
-                        {row.isRead ? "Уншсан" : "Шинэ"}
-                      </Badge>
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setOpen(row);
-                            if (!row.isRead)
-                              markRead.mutate({ id: row.id, isRead: true });
-                          }}
-                        >
-                          Харах
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`${row.name} устгах`}
-                          onClick={() => remove.mutate(row.id)}
-                        >
-                          <Trash2
-                            className="text-destructive size-4"
-                            aria-hidden="true"
-                          />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      <Dialog
-        open={open !== null}
-        onOpenChange={(isOpen) => !isOpen && setOpen(null)}
-      >
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{open?.subject ?? "Зурвас"}</DialogTitle>
-            <DialogDescription>
-              {open?.name} · {open?.email}
-              {open?.phone ? ` · ${open.phone}` : ""}
-            </DialogDescription>
-          </DialogHeader>
-          <p className="text-sm whitespace-pre-wrap">{open?.message}</p>
-          <DialogFooter>
-            <Button variant="outline" asChild>
-              <a href={`mailto:${open?.email ?? ""}`}>Хариулах</a>
-            </Button>
-            <Button onClick={() => setOpen(null)}>Хаах</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

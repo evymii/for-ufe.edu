@@ -128,7 +128,7 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
         >
           {String(player.number).padStart(2, "0")}
         </span>
-        <span className="border-ink bg-paper absolute top-3 left-3 z-10 border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
+        <span className="border-ink bg-paper text-ink absolute top-3 left-3 z-10 border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
           {basePosition(player.position)}
         </span>
         {player.role ? (

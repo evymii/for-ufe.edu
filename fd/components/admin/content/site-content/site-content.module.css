@@ -35,7 +35,7 @@
 
 /* Editor + preview pair: stacked below 1280px; two columns above, with
    the preview column sticking under the toolbar while the editor
-   scrolls (spec: 1.12fr editor / 0.88fr preview, sticky at 88px). */
+   scrolls (40% editor / 60% preview, sticky at 88px). */
 .pair {
   display: grid;
   gap: 1.25rem;
@@ -44,7 +44,7 @@
 
 @media (min-width: 1280px) {
   .pair {
-    grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+    grid-template-columns: minmax(0, 2fr) minmax(340px, 3fr);
   }
   .previewCol {
     position: sticky;

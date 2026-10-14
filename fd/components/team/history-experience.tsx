@@ -44,6 +44,13 @@ interface Era {
 }
 
 /**
+ * Photos found in public/images/tuuh/<folder>/, keyed by folder name and
+ * discovered on the server — dropping an image into a folder is all it takes
+ * for it to appear (same auto-detection as player/staff cutouts).
+ */
+export type TuuhPhotos = Record<string, string[]>;
+
+/**
  * Lookup of timeline entries keyed by period: CMS-edited entries (from the
  * site-content history/page blob) layered over the static defaults, so an
  * admin can reword any era without the era structure needing every entry.
@@ -64,15 +71,41 @@ function makeLookup(
   };
 }
 
-const photo = (year: number) => `/images/tuuh/${year}/${year}.png`;
+/**
+ * Which archive folders each era draws its photos from (folders may be empty
+ * on disk — the era then renders text-only until photos are uploaded). An era
+ * shows at most two photos; everything also lands in the moments gallery.
+ */
+const ERA_FOLDERS: Record<string, string[]> = {
+  "1992": [],
+  "1996": ["1996"],
+  "1997-2006": ["1997-2000", "2006"],
+  "2017-2018": ["2018"],
+  "2018-2019": ["2019"],
+  "2019-2020": ["2020"],
+  "2021-2022": ["2021"],
+  "2022-2023": ["2022"],
+  "2023-2024": ["2023"],
+  "2024-2025": ["2024"],
+  "2025-2026": ["2025"],
+  "2026-2027": ["2026"],
+};
 
-function buildEras(byPeriod: (period: string) => TimelineEntry): Era[] {
+const photosFor = (photos: TuuhPhotos, eraId: string): string[] =>
+  (ERA_FOLDERS[eraId] ?? [])
+    .flatMap((folder) => photos[folder] ?? [])
+    .slice(0, 2);
+
+function buildEras(
+  byPeriod: (period: string) => TimelineEntry,
+  photos: TuuhPhotos,
+): Era[] {
   return [
     {
       id: "1992",
       navLabel: "1992",
       title: "Аварга баг",
-      photos: [],
+      photos: photosFor(photos, "1992"),
       centered: true,
       entries: [byPeriod("1992")],
     },
@@ -80,70 +113,70 @@ function buildEras(byPeriod: (period: string) => TimelineEntry): Era[] {
       id: "1996",
       navLabel: "1996",
       title: "Үндсэн суурь",
-      photos: [photo(1996)],
+      photos: photosFor(photos, "1996"),
       entries: [byPeriod("1996")],
     },
     {
       id: "1997-2006",
       navLabel: "1997",
       title: "Медалийн жилүүд",
-      photos: [photo(2006)],
+      photos: photosFor(photos, "1997-2006"),
       entries: [byPeriod("1997–2006")],
     },
     {
       id: "2017-2018",
       navLabel: "2017",
       title: "Мөнгөн медаль",
-      photos: [photo(2018)],
+      photos: photosFor(photos, "2017-2018"),
       entries: [byPeriod("2017–2018")],
     },
     {
       id: "2018-2019",
       navLabel: "2018",
       title: "Elite 8",
-      photos: [photo(2019)],
+      photos: photosFor(photos, "2018-2019"),
       entries: [byPeriod("2018–2019")],
     },
     {
       id: "2019-2020",
       navLabel: "2019",
       title: "Elite 8",
-      photos: [photo(2020)],
+      photos: photosFor(photos, "2019-2020"),
       entries: [byPeriod("2019–2020")],
     },
     {
       id: "2021-2022",
       navLabel: "2021",
       title: "Шөвгийн дөрөв",
-      photos: [photo(2021)],
+      photos: photosFor(photos, "2021-2022"),
       entries: [byPeriod("2021–2022")],
     },
     {
       id: "2022-2023",
       navLabel: "2022",
       title: "Шөвгийн дөрөв",
-      photos: [photo(2022)],
+      photos: photosFor(photos, "2022-2023"),
       entries: [byPeriod("2022–2023")],
     },
     {
       id: "2023-2024",
       navLabel: "2023",
       title: "Sweet 16",
-      photos: [photo(2023)],
+      photos: photosFor(photos, "2023-2024"),
       entries: [byPeriod("2023–2024")],
     },
     {
       id: "2024-2025",
       navLabel: "2024",
       title: "Хүрэл медаль",
-      photos: [photo(2024)],
+      photos: photosFor(photos, "2024-2025"),
       entries: [byPeriod("2024–2025")],
     },
     {
       id: "2025-2026",
       navLabel: "2025",
       title: "Аварга",
-      photos: [photo(2025)],
+      photos: photosFor(photos, "2025-2026"),
       highlight: true,
       entries: [byPeriod("2025–2026")],
     },
@@ -151,7 +184,7 @@ function buildEras(byPeriod: (period: string) => TimelineEntry): Era[] {
       id: "2026-2027",
       navLabel: "2026",
       title: "AUBL",
-      photos: [],
+      photos: photosFor(photos, "2026-2027"),
       entries: [byPeriod("2026–2027")],
     },
   ];
@@ -183,8 +216,14 @@ function tweenScrollTo(target: number, instant: boolean) {
   step();
 }
 
-export function HistoryExperience({ entries }: { entries: TimelineEntry[] }) {
-  const eras = buildEras(makeLookup(entries));
+export function HistoryExperience({
+  entries,
+  photosByFolder,
+}: {
+  entries: TimelineEntry[];
+  photosByFolder: TuuhPhotos;
+}) {
+  const eras = buildEras(makeLookup(entries), photosByFolder);
   const [activeId, setActiveId] = useState(eras[0].id);
   const [distance, setDistance] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -322,7 +361,7 @@ export function HistoryExperience({ entries }: { entries: TimelineEntry[] }) {
                     className={cn(
                       "font-display team-focus flex h-14 shrink-0 border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
                       active
-                        ? "border-accent-blue text-accent-blue"
+                        ? "border-ink text-ink"
                         : "text-mute hover:text-ink border-transparent",
                     )}
                   >

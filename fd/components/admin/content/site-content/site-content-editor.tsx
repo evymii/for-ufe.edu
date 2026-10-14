@@ -34,13 +34,13 @@ import styles from "@/components/admin/content/site-content/site-content.module.
 /**
  * Structured page-copy CMS ("Хуудасны текст"): one tab per site page, each
  * section an editor + sticky live-preview pair. Layout follows the admin
- * CMS design spec — sticky blurred toolbar (page tabs + status + one
- * save), 1480px shell, 20px section rhythm — skinned with the public
- * team-site design rules (paper/ink tokens, condensed uppercase
- * headings, pill buttons, 2px ink focus rings). Fields are never blank —
- * a stored value always resolves to itself or the static default — and
- * one save persists every changed section of the active page, then
- * purges the public site-content ISR tag.
+ * CMS design spec — sticky blurred toolbar (page tabs on the CMS tab,
+ * status + one save everywhere), 1480px shell, 20px section rhythm —
+ * skinned with the public team-site design rules (paper/ink tokens,
+ * condensed uppercase headings, pill buttons, 2px ink focus rings). Fields
+ * are never blank — a stored value always resolves to itself or the static
+ * default — and one save persists every changed section of the active
+ * page, then purges the public site-content ISR tag.
  */
 
 interface PageCopyBody {
@@ -54,24 +54,24 @@ interface SectionState {
 }
 
 /** Per-route rendition for /admin/text/[page] — one page's sections,
- *  driven by the sidebar instead of the internal tab strip. */
+ *  driven by the sidebar; no page tabs, just the save toolbar. */
 export function PageContentEditor({ pageKey }: { pageKey: string }) {
   const pageDef = SITE_CONTENT_PAGES.find((page) => page.key === pageKey);
   if (!pageDef) {
     return (
       <p className="text-muted-foreground text-sm">
-        Энэ хуудсонд засварлах текст бүртгэгдээгүй.
+        Энэ хуудсанд засварлах текст бүртгэгдээгүй.
       </p>
     );
   }
-  return <PageSections key={pageDef.key} def={pageDef} onSelect={() => {}} />;
+  return <PageSections key={pageDef.key} def={pageDef} />;
 }
 
 export function SiteContentEditor({
   onOpenTab,
 }: {
   /** Switches the surrounding CMS tab (pointer links on sections whose
-      data lives in another panel — news, shop, inbox…). */
+      data lives in another panel — news, shop…). */
   onOpenTab?: (tab: string) => void;
 }) {
   const [tab, setTab] = useState(SITE_CONTENT_PAGES[0]?.key ?? "home");
@@ -100,7 +100,9 @@ function PageSections({
   onOpenTab,
 }: {
   def: SitePageDef;
-  onSelect: (tab: string) => void;
+  /** Renders the page-tab strip when provided (CMS tab); the per-route
+      /admin/text pages navigate via the sidebar, so they pass nothing. */
+  onSelect?: (tab: string) => void;
   onOpenTab?: (tab: string) => void;
 }) {
   const { user } = useAuth();
@@ -220,37 +222,40 @@ function PageSections({
 
   return (
     <div className={styles.stack}>
-      {/* Sticky toolbar: page tabs + status + the single save. Content
-          scrolling under it dissolves through the paper fade + blur. */}
+      {/* Sticky toolbar: page tabs (CMS tab only) + status + the single
+          save. Content scrolling under it dissolves through the paper
+          fade + blur. */}
       <div className={styles.toolbar}>
         <div className="flex min-h-10 flex-wrap items-center justify-between gap-x-6 gap-y-2">
-          <div
-            role="tablist"
-            aria-label="Агуулгын хуудас сонгох"
-            className="flex flex-wrap gap-2"
-          >
-            {SITE_CONTENT_PAGES.map((page) => {
-              const active = page.key === def.key;
-              return (
-                <button
-                  key={page.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => onSelect(page.key)}
-                  className={cn(
-                    "font-display team-focus inline-flex h-8 items-center rounded-full border px-3.5 text-[12px] font-semibold tracking-[0.06em] uppercase transition-colors",
-                    active
-                      ? "border-ink bg-ink text-paper"
-                      : "border-line bg-paper text-mute hover:border-ink hover:text-ink",
-                  )}
-                >
-                  {page.label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="flex min-h-10 items-center gap-3">
+          {onSelect ? (
+            <div
+              role="tablist"
+              aria-label="Агуулгын хуудас сонгох"
+              className="flex flex-wrap gap-2"
+            >
+              {SITE_CONTENT_PAGES.map((page) => {
+                const active = page.key === def.key;
+                return (
+                  <button
+                    key={page.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => onSelect(page.key)}
+                    className={cn(
+                      "font-display team-focus inline-flex h-8 items-center rounded-full border px-3.5 text-[12px] font-semibold tracking-[0.06em] uppercase transition-colors",
+                      active
+                        ? "border-ink bg-ink text-paper"
+                        : "border-line bg-paper text-mute hover:border-ink hover:text-ink",
+                    )}
+                  >
+                    {page.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+          <div className="ml-auto flex min-h-10 items-center gap-3">
             {message ? (
               <p
                 role="status"

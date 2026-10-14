@@ -75,7 +75,7 @@ const playerCard: CollectionConfig["card"] = {
         <MediaPill>{asText(row, "position")}</MediaPill>
       ) : null}
       {row.isCaptain ? (
-        <span className="rounded-full bg-[#133e87] px-2 py-0.5 text-[11px] font-semibold text-white">
+        <span className="bg-ink rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">
           Ахлагч
         </span>
       ) : null}
@@ -422,7 +422,7 @@ export function VideosManager() {
                 </MediaPill>
               ) : null}
               {row.isFeatured ? (
-                <span className="rounded-full bg-[#133e87] px-2 py-0.5 text-[11px] font-semibold text-white">
+                <span className="bg-ink rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">
                   Онцлох
                 </span>
               ) : null}
@@ -516,7 +516,7 @@ export function ShopManager() {
                 </MediaPill>
               ) : null}
               {asText(row, "badge") ? (
-                <span className="rounded-full bg-[#133e87] px-2 py-0.5 text-[11px] font-semibold text-white">
+                <span className="bg-ink rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">
                   {asText(row, "badge")}
                 </span>
               ) : null}
@@ -604,7 +604,7 @@ export function NewsManager() {
                 <MediaPill>{asText(row, "category")}</MediaPill>
               ) : null}
               {row.isFeatured ? (
-                <span className="rounded-full bg-[#133e87] px-2 py-0.5 text-[11px] font-semibold text-white">
+                <span className="bg-ink rounded-full px-2 py-0.5 text-[11px] font-semibold text-white">
                   Онцлох
                 </span>
               ) : null}

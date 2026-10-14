@@ -153,8 +153,8 @@ export async function getPageCopy(
 }
 
 /**
- * Contact details shared by /contact and the site footer: the contact/info
- * copy blob merged over the static defaults so missing keys keep rendering.
+ * Contact details for the site footer: the contact/info copy blob merged
+ * over the static defaults so missing keys keep rendering.
  */
 export async function getContactInfo(
   fallback: ContactInfo,

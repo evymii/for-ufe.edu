@@ -42,7 +42,9 @@ async function loginAsManager(page: import("@playwright/test").Page) {
   await expect(page).toHaveURL(/\/admin/);
 }
 
-/** The purge is fire-and-forget on the client, so retry the visit a bit. */
+/** The purge is fire-and-forget on the client, so retry the visit a bit.
+ *  Dev-server ISR regeneration can lag well behind the 60s window while
+ *  the server is busy compiling, so the budget is generous. */
 async function gotoUntilVisible(
   page: import("@playwright/test").Page,
   path: string,
@@ -54,7 +56,7 @@ async function gotoUntilVisible(
         await page.goto(path, { waitUntil: "domcontentloaded" });
         return (await page.getByText(text, { exact: false }).count()) > 0;
       },
-      { timeout: 15_000 },
+      { timeout: 45_000 },
     )
     .toBe(true);
 }

@@ -102,7 +102,7 @@ export function MediaBoard({
   const shown = filtered.slice(0, visible);
 
   return (
-    <div className="team-shell pb-16 md:pb-20">
+    <div className="team-shell pt-10 pb-16 md:pb-20">
       <FilterPills
         className="mt-6"
         label="Медианы төрөл"
@@ -146,7 +146,7 @@ export function MediaBoard({
           <button
             type="button"
             onClick={() => setVisible((count) => count + PAGE_SIZE)}
-            className="font-display team-focus hover:bg-ink hover:text-paper border-ink inline-flex h-12 items-center rounded-full border px-8 text-sm font-semibold tracking-[0.06em] uppercase transition-colors"
+            className="font-display team-focus hover:bg-ink/5 border-ink text-ink inline-flex h-12 items-center rounded-full border px-8 text-sm font-semibold tracking-[0.06em] uppercase transition-colors"
           >
             Дэлгэрэнгүй ачаалах
           </button>

@@ -32,7 +32,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_STYLES: Record<string, string> = {
   NEW: "bg-primary/10 text-primary",
-  CONFIRMED: "bg-blue-500/10 text-blue-600",
+  CONFIRMED: "bg-ink/10 text-ink",
   SHIPPED: "bg-amber-500/10 text-amber-600",
   DONE: "bg-emerald-500/10 text-emerald-600",
   CANCELLED: "bg-muted text-muted-foreground",

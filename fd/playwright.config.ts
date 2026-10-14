@@ -33,7 +33,9 @@ const frontendBase = process.env.FRONTEND_BASE_URL ?? "http://localhost:3000";
  */
 export default defineConfig({
   testDir: "tests/e2e",
-  timeout: 30_000,
+  // Generous budget: tests run against real dev servers, where the first
+  // visit to a route can pay a cold next dev compile inside the test.
+  timeout: 90_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
   workers: 1,

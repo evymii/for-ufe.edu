@@ -18,7 +18,6 @@ const nextConfig: NextConfig = {
       { source: "/player", destination: "/players", permanent: true },
       { source: "/tuuh", destination: "/history", permanent: true },
       { source: "/udirdlaga", destination: "/staff", permanent: true },
-      { source: "/holboo-barih", destination: "/contact", permanent: true },
     ];
   },
 };

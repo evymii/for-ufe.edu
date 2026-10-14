@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ export type FieldDef = {
     | "textarea"
     | "number"
     | "url"
+    | "image"
     | "datetime"
     | "select"
     | "checkbox"
@@ -51,6 +53,7 @@ export function FieldGrid({
             "flex flex-col gap-1.5",
             (field.full ||
               field.type === "textarea" ||
+              field.type === "image" ||
               field.type === "json") &&
               "sm:col-span-2",
           )}
@@ -101,6 +104,15 @@ function FieldControl({
   const shared = "placeholder:text-muted-foreground/60 bg-background text-sm";
 
   switch (field.type) {
+    case "image":
+      return (
+        <ImageUploadField
+          id={`field-${field.name}`}
+          value={String(value)}
+          placeholder={field.placeholder}
+          onChange={onChange}
+        />
+      );
     case "textarea":
       return (
         <textarea

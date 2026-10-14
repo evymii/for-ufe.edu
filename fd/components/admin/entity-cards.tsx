@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-// Card accents follow the admin card spec: navy #133e87, mid-blue #608bc1,
-// light-blue #cbdceb — sitting on the stock shadcn surfaces.
+// Card accents sit on the stock shadcn surfaces — monochrome ink/gray
+// like the rest of the admin palette.
 
 export type CardAspect = "1/1" | "16/10" | "4/3" | "4/5";
 
@@ -31,8 +31,8 @@ export type StatusTone = "amber" | "green" | "info" | "navy" | "neutral";
 const TONE_PILL: Record<StatusTone, string> = {
   amber: "bg-amber-100 text-amber-800",
   green: "bg-emerald-100 text-emerald-700",
-  info: "bg-[#dbeafe] text-[#133e87]",
-  navy: "bg-[#133e87] text-white",
+  info: "bg-ink/10 text-ink",
+  navy: "bg-ink text-white",
   neutral: "bg-muted text-muted-foreground",
 };
 
@@ -76,7 +76,7 @@ function OverlayActions({
           event.stopPropagation();
           onEdit();
         }}
-        className="bg-background/90 border-border flex size-7 items-center justify-center rounded-full border shadow-sm backdrop-blur transition-colors hover:border-[#608bc1]"
+        className="bg-background/90 border-border hover:border-ink flex size-7 items-center justify-center rounded-full border shadow-sm backdrop-blur transition-colors"
       >
         <Pencil className="size-3.5" aria-hidden="true" />
       </button>
@@ -127,7 +127,7 @@ export function EntityCard({
   children,
 }: EntityCardProps) {
   return (
-    <article className="group bg-card border-border relative flex flex-col overflow-hidden rounded-xl border shadow-[0_1px_2px_rgba(19,62,135,0.04)] transition-shadow focus-within:border-[#608bc1] hover:shadow-[0_8px_24px_rgba(19,62,135,0.08)]">
+    <article className="group bg-card border-border focus-within:border-ink relative flex flex-col overflow-hidden rounded-xl border shadow-[0_1px_2px_rgba(11,11,12,0.04)] transition-shadow hover:shadow-[0_8px_24px_rgba(11,11,12,0.08)]">
       <div
         className={cn(
           "bg-muted/40 relative overflow-hidden",
@@ -193,9 +193,9 @@ export function NewCardTile({
     <button
       type="button"
       onClick={onClick}
-      className="border-border group flex min-h-40 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-colors hover:border-[#608bc1] hover:bg-[#cbdceb]/25"
+      className="border-border group hover:border-ink hover:bg-ink/5 flex min-h-40 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-colors"
     >
-      <span className="flex size-10 items-center justify-center rounded-full bg-[#cbdceb] text-[#133e87] transition-colors group-hover:bg-[#608bc1] group-hover:text-white">
+      <span className="bg-ink/10 text-ink group-hover:bg-ink flex size-10 items-center justify-center rounded-full transition-colors group-hover:text-white">
         <Plus className="size-5" aria-hidden="true" />
       </span>
       <span className="text-card-foreground text-sm font-semibold">

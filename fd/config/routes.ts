@@ -4,11 +4,9 @@ export const routes = {
   login: "/login",
   register: "/register",
   site: {
-    contact: "/contact",
     fanClub: "/fan-club",
     history: "/history",
     management: "/staff",
-    newsletter: "/newsletter",
     media: "/media",
     roster: "/players",
     schedule: "/schedule",

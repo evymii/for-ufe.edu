@@ -6,16 +6,26 @@ import { ArrowLeft, ArrowRight, Download, Share2, X } from "lucide-react";
 
 import { TeamButton } from "@/components/team/button";
 import { Reveal } from "@/components/team/reveal";
+import type { TuuhPhotos } from "@/components/team/history-experience";
 import { routes } from "@/config/routes";
 
-/** Archive photos that exist on disk (public/images/tuuh/<year>/). */
-const MOMENTS: Array<{ year: number; src: string; alt: string }> = [
-  1996, 2006, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
-].map((year) => ({
-  year,
-  src: `/images/tuuh/${year}/${year}.png`,
-  alt: `СЭЗИС-ийн шигшээ багийн ${year} оны дурсамжийн зураг`,
-}));
+interface Moment {
+  /** Display label — the archive folder name (single year or year range). */
+  label: string;
+  src: string;
+}
+
+/** Archive photos discovered in public/images/tuuh/<folder>/, oldest first. */
+function buildMoments(photosByFolder: TuuhPhotos): Moment[] {
+  return Object.keys(photosByFolder)
+    .sort()
+    .flatMap((folder) =>
+      photosByFolder[folder].map((src) => ({
+        label: folder.replace("-", "–"),
+        src,
+      })),
+    );
+}
 
 /** Honour roll derived from the timeline: count + title + year span. */
 const HONORS = [
@@ -33,9 +43,12 @@ const HONORS = [
  */
 export function HistoryExtras({
   aubl,
+  photosByFolder,
 }: {
   aubl: { title: string; text: string };
+  photosByFolder: TuuhPhotos;
 }) {
+  const moments = buildMoments(photosByFolder);
   return (
     <>
       {/* Honour roll — dark cards, 140px count watermark */}
@@ -80,11 +93,11 @@ export function HistoryExtras({
                 Дурсамжийн зургууд
               </h2>
               <span className="text-mute text-[12px] font-semibold tracking-[0.12em] uppercase">
-                {MOMENTS.length} зураг
+                {moments.length} зураг
               </span>
             </div>
           </Reveal>
-          <MomentsGallery />
+          <MomentsGallery moments={moments} />
         </div>
       </section>
 
@@ -115,17 +128,20 @@ export function HistoryExtras({
   );
 }
 
-function MomentsGallery() {
+function MomentsGallery({ moments }: { moments: Moment[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const open = openIndex !== null;
 
-  const move = useCallback((delta: number) => {
-    setOpenIndex((current) =>
-      current === null
-        ? current
-        : (current + delta + MOMENTS.length) % MOMENTS.length,
-    );
-  }, []);
+  const move = useCallback(
+    (delta: number) => {
+      setOpenIndex((current) =>
+        current === null
+          ? current
+          : (current + delta + moments.length) % moments.length,
+      );
+    },
+    [moments.length],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -143,14 +159,14 @@ function MomentsGallery() {
     };
   }, [open, move]);
 
-  const active = openIndex !== null ? MOMENTS[openIndex] : null;
+  const active = openIndex !== null ? moments[openIndex] : null;
 
   const share = async () => {
     if (!active) return;
     const url = new URL(active.src, window.location.origin).href;
     if (navigator.share) {
       try {
-        await navigator.share({ title: `СЭЗИС — ${active.year}`, url });
+        await navigator.share({ title: `СЭЗИС — ${active.label}`, url });
       } catch {
         /* dismissed */
       }
@@ -162,26 +178,26 @@ function MomentsGallery() {
   return (
     <>
       <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
-        {MOMENTS.map((moment, index) => (
+        {moments.map((moment, index) => (
           <button
             key={moment.src}
             type="button"
             onClick={() => setOpenIndex(index)}
-            aria-label={`${moment.year} оны зургийг томруулах`}
+            aria-label={`${moment.label} оны зургийг томруулах`}
             className="team-focus group mb-6 block w-full break-inside-avoid text-left"
           >
             <div className="border-line relative overflow-hidden border">
               <div className="relative aspect-[3/2] w-full">
                 <Image
                   src={moment.src}
-                  alt={moment.alt}
+                  alt={`СЭЗИС-ийн шигшээ багийн ${moment.label} оны дурсамжийн зураг`}
                   fill
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                   className="object-cover transition-transform duration-[400ms] group-hover:scale-[1.04]"
                 />
               </div>
               <span className="bg-ink text-paper absolute bottom-3 left-3 px-2 py-1 text-[11px] font-semibold tracking-[0.12em] uppercase">
-                {moment.year}
+                {moment.label}
               </span>
             </div>
           </button>
@@ -193,16 +209,16 @@ function MomentsGallery() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={`${active.year} оны зураг`}
+          aria-label={`${active.label} оны зураг`}
           className="fixed inset-0 z-50 flex flex-col bg-[rgb(11_11_12/0.94)] p-4"
         >
           <div className="flex items-center justify-between text-white">
             <p className="font-display text-lg font-bold tracking-[0.08em] uppercase">
-              {active.year}
+              {active.label}
             </p>
             <div className="flex items-center gap-2">
               <span className="text-mute mr-2 text-[12px] tracking-[0.12em] uppercase">
-                {(openIndex ?? 0) + 1} / {MOMENTS.length}
+                {(openIndex ?? 0) + 1} / {moments.length}
               </span>
               <a
                 href={active.src}
@@ -235,7 +251,7 @@ function MomentsGallery() {
             <img
               key={active.src}
               src={active.src}
-              alt={active.alt}
+              alt={`СЭЗИС-ийн шигшээ багийн ${active.label} оны дурсамжийн зураг`}
               className="view-swap max-h-[76vh] max-w-full object-contain"
             />
           </div>

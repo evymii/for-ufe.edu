@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import fs from "node:fs";
 import Link from "next/link";
+import path from "node:path";
 import { ChevronDown } from "lucide-react";
 
 import { ParallaxLayer } from "@/components/team/parallax";
 import { WaveField } from "@/components/team/wave-field";
 import { TeamButton } from "@/components/team/button";
 import { HistoryExperience } from "@/components/team/history-experience";
+import type { TuuhPhotos } from "@/components/team/history-experience";
 import { HistoryExtras } from "@/components/team/history-extras";
 import { routes } from "@/config/routes";
 import { hero, history, type TimelineEntry } from "@/content/site";
@@ -20,6 +23,33 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
+
+/**
+ * Photos discovered in public/images/tuuh/<folder>/ at render time — dropping
+ * an image into a folder is all it takes for it to appear on that era's panel
+ * and in the moments gallery (no code change), same as player/staff cutouts.
+ */
+function tuuhPhotos(): TuuhPhotos {
+  const root = path.join(process.cwd(), "public", "images", "tuuh");
+  const byFolder: TuuhPhotos = {};
+  try {
+    for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const files = fs
+        .readdirSync(path.join(root, entry.name))
+        .filter((file) => /\.(png|jpe?g|webp|avif)$/i.test(file))
+        .sort();
+      if (files.length > 0) {
+        byFolder[entry.name] = files.map(
+          (file) => `/images/tuuh/${entry.name}/${file}`,
+        );
+      }
+    }
+  } catch {
+    // Missing archive folder — every era falls back to its text-only layout.
+  }
+  return byFolder;
+}
 
 /** Sanitizes the CMS-edited timeline array from the history/page blob. */
 function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
@@ -70,6 +100,7 @@ export default async function HistoryPage() {
       : null;
   const aubl = mergeCopy({ ...hero.aubl }, aublCopy);
   const entries = timelineEntries(pageCopy);
+  const photos = tuuhPhotos();
 
   return (
     <>
@@ -128,8 +159,8 @@ export default async function HistoryPage() {
 
       <div id="timeline" className="scroll-mt-32" aria-hidden="true" />
 
-      <HistoryExperience entries={entries} />
-      <HistoryExtras aubl={aubl} />
+      <HistoryExperience entries={entries} photosByFolder={photos} />
+      <HistoryExtras aubl={aubl} photosByFolder={photos} />
     </>
   );
 }

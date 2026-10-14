@@ -2,8 +2,6 @@
 
 import { Eye } from "lucide-react";
 
-import { CityEditionPage } from "@/components/team/city-edition";
-import type { CityEditionContent } from "@/components/team/city-edition";
 import { FanClubShop } from "@/components/team/fan-club-shop";
 import type { FanClubContent } from "@/components/team/fan-club-shop";
 import { Hero } from "@/components/team/hero";
@@ -11,22 +9,13 @@ import type { HeroCopy } from "@/components/team/hero";
 import { HistoryExperience } from "@/components/team/history-experience";
 import { NewsGrid } from "@/components/team/news-grid";
 import type { NewsItem } from "@/components/team/news-grid";
-import { NewsletterSignup } from "@/components/team/newsletter-signup";
 import { PageHero } from "@/components/team/page-hero";
 import { SiteFooter } from "@/components/team/site-footer";
-import {
-  cityEditionFallback,
-  fanClubFallback,
-  newsletterFallback,
-} from "@/content/pages";
+import { fanClubFallback } from "@/content/pages";
 import { contact, featuredNews, hero, history, timeline } from "@/content/site";
 import type { TimelineEntry } from "@/content/site";
 import { mergeCopy } from "@/lib/copy";
-import type {
-  ContactInfo,
-  NewsletterCopy,
-  ShopProductRow,
-} from "@/types/content";
+import type { ContactInfo, ShopProductRow } from "@/types/content";
 import type { SiteSectionDef } from "@/components/admin/content/site-content/sections";
 
 /**
@@ -45,14 +34,6 @@ export interface PreviewSupport {
   historyIntro: string;
 }
 
-/** Fixed interest labels, mirroring the newsletter page's mapping. */
-const INTEREST_LABELS: Record<string, string> = {
-  community: "Нийгмийн ажил",
-  recaps: "Тоглолтын дүгнэлт",
-  shop: "Дэлгүүр",
-  tickets: "Тасалбар",
-};
-
 export function SectionPreview({
   def,
   data,
@@ -63,9 +44,8 @@ export function SectionPreview({
   support: PreviewSupport;
 }) {
   return (
-    // Editorial preview frame: hairline border + the newsletter card's
-    // offset shadow, so the "live site artifact" reads like the public
-    // site's hero cards.
+    // Editorial preview frame: hairline border + the hero card's offset
+    // shadow, so the "live site artifact" reads like the public site.
     <div className="border-line bg-paper border shadow-[8px_8px_0_#E6E6E3]">
       <div className="border-line bg-paper-soft text-mute flex items-center gap-1.5 border-b px-3 py-2 text-[11px] font-semibold tracking-[0.12em] uppercase">
         <Eye className="size-3.5" aria-hidden="true" />
@@ -196,7 +176,9 @@ function PreviewBody({
               {copy.intro}
             </p>
           </section>
-          <HistoryExperience entries={entries} />
+          {/* Text-only render: era photos are discovered from disk on the
+              public page (client previews can't scan the archive). */}
+          <HistoryExperience entries={entries} photosByFolder={{}} />
         </>
       );
     }
@@ -208,8 +190,6 @@ function PreviewBody({
           subtitle={str(data.subtitle, "")}
         />
       );
-    case "city-edition/page":
-      return <CityEditionPage content={cityContent(data)} />;
     case "fan-club/page":
       return (
         <FanClubShop
@@ -217,8 +197,6 @@ function PreviewBody({
           content={fanClubContent(data)}
         />
       );
-    case "newsletter/page":
-      return <NewsletterSignup copy={newsletterCopy(data)} />;
     case "contact/info":
       return <SiteFooter info={contactInfo(data)} />;
     default:
@@ -275,41 +253,6 @@ function timelineEntries(data: Record<string, unknown>): TimelineEntry[] {
   return entries.length ? entries : [...timeline];
 }
 
-function cityContent(data: Record<string, unknown>): CityEditionContent {
-  const chapters = toArray(data.chapters)
-    .map((chapter) => ({
-      text: str(chapter.text, ""),
-      title: str(chapter.title, ""),
-    }))
-    .filter((chapter) => chapter.title);
-  const details = toArray(data.details)
-    .map((detail) => ({
-      text: str(detail.text, ""),
-      title: str(detail.title, ""),
-    }))
-    .filter((detail) => detail.title);
-  return {
-    chapterImages: strArray(
-      data.chapterImages,
-      cityEditionFallback.chapterImages,
-    ),
-    chapters: chapters.length >= 2 ? chapters : cityEditionFallback.chapters,
-    colorwayNames: strArray(
-      data.colorwayNames,
-      cityEditionFallback.colorwayNames,
-    ),
-    colorways: strArray(data.colorways, cityEditionFallback.colorways),
-    details: details.length >= 4 ? details : cityEditionFallback.details,
-    editionName: str(data.editionName, cityEditionFallback.editionName),
-    jerseyImage: str(data.jerseyImage, cityEditionFallback.jerseyImage),
-    kicker: str(data.kicker, cityEditionFallback.kicker),
-    shopButton: str(data.shopButton, cityEditionFallback.shopButton),
-    shopTitle: str(data.shopTitle, cityEditionFallback.shopTitle),
-    story: str(data.story, cityEditionFallback.story),
-    year: str(data.year, cityEditionFallback.year),
-  };
-}
-
 function fanClubContent(data: Record<string, unknown>): FanClubContent {
   return {
     cta: str(data.cta, fanClubFallback.cta),
@@ -317,36 +260,6 @@ function fanClubContent(data: Record<string, unknown>): FanClubContent {
     promos: strArray(data.promos, [...fanClubFallback.promos]),
     subtitle: str(data.subtitle, fanClubFallback.subtitle),
     title: str(data.title, fanClubFallback.title),
-  };
-}
-
-function newsletterCopy(data: Record<string, unknown>): NewsletterCopy {
-  const keys = Array.isArray(data.interests)
-    ? data.interests
-        .map((item) =>
-          typeof item === "string"
-            ? item
-            : typeof item === "object" && item !== null && "key" in item
-              ? String((item as { key: unknown }).key)
-              : "",
-        )
-        .filter((key): key is NewsletterCopy["interests"][number]["key"] =>
-          ["recaps", "tickets", "community", "shop"].includes(key),
-        )
-    : [];
-  return {
-    ...newsletterFallback,
-    benefits: strArray(data.benefits, [...newsletterFallback.benefits]),
-    consent: str(data.consent, newsletterFallback.consent),
-    cta: str(data.cta, newsletterFallback.cta),
-    interests: keys.length
-      ? keys.map((key) => ({
-          key,
-          label: INTEREST_LABELS[key] ?? key,
-        }))
-      : [...newsletterFallback.interests],
-    kicker: str(data.kicker, newsletterFallback.kicker),
-    title: str(data.title, newsletterFallback.title),
   };
 }
 

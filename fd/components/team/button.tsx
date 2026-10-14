@@ -23,8 +23,7 @@ export function TeamButton({
   const styles = cn(
     "font-display inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold tracking-[0.06em] uppercase transition-colors team-focus",
     variant === "solid" && "bg-ink text-paper hover:bg-brand-2",
-    variant === "outline" &&
-      "border border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-paper",
+    variant === "outline" && "border border-ink text-ink hover:bg-ink/5",
     variant === "dark" && "bg-paper text-ink hover:bg-mute hover:text-paper",
     variant === "dark-outline" &&
       "border border-paper text-paper hover:bg-paper hover:text-ink",

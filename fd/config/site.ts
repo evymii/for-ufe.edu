@@ -22,10 +22,3 @@ export const publicNav = [
   { href: "/front-office", label: "Удирдлага" },
   { href: "/sponsors", label: "Sponsors" },
 ] as const;
-
-/** Secondary destinations surfaced in the footer instead of the header. */
-export const secondaryNav = [
-  { href: "/city-edition", label: "Хотын загвар" },
-  { href: "/newsletter", label: "Фэнэйд мэдээ" },
-  { href: "/contact", label: "Холбоо барих" },
-] as const;

@@ -1,7 +1,6 @@
 import { Reveal } from "@/components/team/reveal";
 import { TeamButton } from "@/components/team/button";
-import { routes } from "@/config/routes";
-import { thanks } from "@/content/site";
+import { contact, thanks } from "@/content/site";
 
 /**
  * "Дэмжигч талууддаа талархал" — shared by /sponsors (soft band) and the
@@ -40,7 +39,7 @@ export function ThanksSection({ tone = "soft" }: { tone?: "paper" | "soft" }) {
             </p>
             <TeamButton
               variant="outline"
-              href={routes.site.contact}
+              href={`mailto:${contact.email}`}
               className="mt-5"
             >
               Холбоо барих

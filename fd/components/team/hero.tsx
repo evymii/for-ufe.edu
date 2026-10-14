@@ -62,7 +62,6 @@ function buildSlides(copy: HeroCopy, historyIntro: string): Slide[] {
       headline: copy.aubl.title,
       subline: copy.aubl.text,
       primary: { label: copy.ctaHistory, href: routes.site.history },
-      secondary: { label: "Холбоо барих", href: routes.site.contact },
     },
     {
       kicker: "Түүх · 1992–2026",

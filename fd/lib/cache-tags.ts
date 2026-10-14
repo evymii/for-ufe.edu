@@ -41,7 +41,7 @@ export function isAllowedTag(tag: string): tag is AllowedTag {
 /**
  * Admin REST endpoint base (without /api/v1) → public cache tag, for the
  * generic collection manager's post-save purge. Collections with no public
- * face (orders, subscribers) return null — nothing to purge.
+ * face (orders) return null — nothing to purge.
  */
 export function tagForEndpoint(endpoint: string): AllowedTag | null {
   const map: Record<string, AllowedTag> = {

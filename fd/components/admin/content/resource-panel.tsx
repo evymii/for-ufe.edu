@@ -240,8 +240,8 @@ export function ResourcePanel({ config }: { config: ResourceConfig }) {
 
       {/* Create / edit dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
+          <DialogHeader className="border-line shrink-0 border-b px-5 pt-4 pr-12 pb-3">
             <DialogTitle>
               {editing
                 ? `${config.singular} засах`
@@ -251,14 +251,16 @@ export function ResourcePanel({ config }: { config: ResourceConfig }) {
               Өөрчлөлтүүд шууд нийтлэгдэж, нийтийн хуудас дээр тусна.
             </DialogDescription>
           </DialogHeader>
-          <FieldGrid
-            fields={config.fields}
-            values={values}
-            onChange={(name, value) =>
-              setValues((current) => ({ ...current, [name]: value }))
-            }
-          />
-          <DialogFooter>
+          <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+            <FieldGrid
+              fields={config.fields}
+              values={values}
+              onChange={(name, value) =>
+                setValues((current) => ({ ...current, [name]: value }))
+              }
+            />
+          </div>
+          <DialogFooter className="mx-0 mb-0 rounded-none px-5">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Цуцах
             </Button>

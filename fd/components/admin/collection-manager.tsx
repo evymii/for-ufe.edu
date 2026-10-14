@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { LucideIcon } from "lucide-react";
-import { Image as ImageIcon, Loader2, Plus, Upload } from "lucide-react";
+import { Image as ImageIcon, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -14,6 +14,10 @@ import {
   SkeletonCardGrid,
   type StatusTone,
 } from "@/components/admin/entity-cards";
+import {
+  ImageUploadField,
+  ImagesUploadField,
+} from "@/components/admin/image-upload-field";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -218,78 +222,6 @@ function missingRequired(
     }
   }
   return null;
-}
-
-// ─── Image upload (Cloudinary via /admin/media) ─────────────────────────────
-
-function ImageField({
-  id,
-  value,
-  onChange,
-  placeholder,
-}: {
-  id: string;
-  value: string;
-  onChange: (next: string) => void;
-  placeholder?: string;
-}) {
-  const [uploading, setUploading] = useState(false);
-
-  const upload = async (file: File) => {
-    setUploading(true);
-    try {
-      const body = new FormData();
-      body.append("image", file);
-      body.append("alt", `upload-${file.name}`);
-      const result = await api.postForm<{
-        media: { url: string };
-      }>("/api/v1/admin/media", body);
-      onChange(result.media.url);
-      toast.success("Зураг хуулагдлаа");
-    } catch (error) {
-      toast.error(
-        error instanceof ApiClientError
-          ? error.message
-          : "Зураг хуулахад алдаа гарлаа",
-      );
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <Input
-        id={id}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder ?? "https://…"}
-      />
-      <Label
-        htmlFor={`${id}-file`}
-        className="flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border px-3 text-xs font-medium"
-      >
-        {uploading ? (
-          <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
-        ) : (
-          <Upload className="size-3.5" aria-hidden="true" />
-        )}
-        Хуулах
-        <input
-          id={`${id}-file`}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          disabled={uploading}
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) void upload(file);
-            event.target.value = "";
-          }}
-        />
-      </Label>
-    </div>
-  );
 }
 
 // ─── YouTube link field (paste URL or ID → live brand-free preview) ─────────
@@ -539,157 +471,172 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
       />
 
       <Dialog open={creating} onOpenChange={setCreating}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-xl">
-          <DialogHeader>
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
+          <DialogHeader className="border-line shrink-0 border-b px-5 pt-4 pr-12 pb-3">
             <DialogTitle>{editing ? "Засах" : "Шинээр нэмэх"}</DialogTitle>
             <DialogDescription>{config.title}</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-2">
-            {config.fields.map((field) => (
-              <div key={field.name} className="grid gap-1.5">
-                {field.type === "checkbox" ? (
-                  <label className="flex items-center gap-2 text-sm font-medium">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(form[field.name])}
-                      onChange={(event) =>
-                        setForm((prev) => ({
-                          ...prev,
-                          [field.name]: event.target.checked,
-                        }))
-                      }
-                    />
-                    {field.label}
-                  </label>
-                ) : (
-                  <>
-                    <Label htmlFor={`field-${field.name}`}>
+          <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+            <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">
+              {config.fields.map((field) => (
+                <div
+                  key={field.name}
+                  className={cn(
+                    "grid content-start gap-1.5",
+                    (field.type === "textarea" ||
+                      field.type === "images" ||
+                      field.type === "image" ||
+                      field.type === "youtube") &&
+                      "sm:col-span-2",
+                  )}
+                >
+                  {field.type === "checkbox" ? (
+                    <label className="flex items-center gap-2 text-sm font-medium">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(form[field.name])}
+                        onChange={(event) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            [field.name]: event.target.checked,
+                          }))
+                        }
+                      />
                       {field.label}
-                      {"required" in field && field.required ? " *" : ""}
-                    </Label>
-                    {field.type === "textarea" ? (
-                      <textarea
-                        id={`field-${field.name}`}
-                        className="border-input bg-background min-h-24 w-full rounded-md border px-3 py-2 text-sm"
-                        value={String(form[field.name] ?? "")}
-                        placeholder={
-                          "placeholder" in field ? field.placeholder : undefined
-                        }
-                        onChange={(event) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            [field.name]: event.target.value,
-                          }))
-                        }
-                      />
-                    ) : field.type === "images" ? (
-                      <textarea
-                        id={`field-${field.name}`}
-                        className="border-input bg-background min-h-24 w-full rounded-md border px-3 py-2 font-mono text-xs"
-                        value={String(form[field.name] ?? "")}
-                        placeholder={
-                          "placeholder" in field
-                            ? field.placeholder
-                            : "https://… (нэг URL нэг мөр)"
-                        }
-                        onChange={(event) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            [field.name]: event.target.value,
-                          }))
-                        }
-                      />
-                    ) : field.type === "select" ? (
-                      <select
-                        id={`field-${field.name}`}
-                        className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
-                        value={String(form[field.name] ?? "")}
-                        onChange={(event) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            [field.name]: event.target.value,
-                          }))
-                        }
-                      >
-                        <option value="">—</option>
-                        {field.options.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    ) : field.type === "image" ? (
-                      <ImageField
-                        id={`field-${field.name}`}
-                        value={String(form[field.name] ?? "")}
-                        placeholder={
-                          "placeholder" in field ? field.placeholder : undefined
-                        }
-                        onChange={(next) =>
-                          setForm((prev) => ({ ...prev, [field.name]: next }))
-                        }
-                      />
-                    ) : field.type === "youtube" ? (
-                      <YouTubeField
-                        id={`field-${field.name}`}
-                        value={String(form[field.name] ?? "")}
-                        placeholder={
-                          "placeholder" in field ? field.placeholder : undefined
-                        }
-                        onChange={(next) =>
-                          setForm((prev) => ({ ...prev, [field.name]: next }))
-                        }
-                        onIdResolved={
-                          field.autoPosterField
-                            ? (id) =>
-                                setForm((prev) => {
-                                  const current = String(
-                                    prev[field.autoPosterField as string] ?? "",
-                                  ).trim();
-                                  // Fill the poster only when empty or when
-                                  // it still holds a previous auto-fill —
-                                  // never clobber a custom upload.
-                                  if (current && !isYouTubeThumbUrl(current)) {
-                                    return prev;
-                                  }
-                                  return {
-                                    ...prev,
-                                    [field.autoPosterField as string]:
-                                      youTubeThumbUrl(id),
-                                  };
-                                })
-                            : undefined
-                        }
-                      />
-                    ) : (
-                      <Input
-                        id={`field-${field.name}`}
-                        type={field.type === "number" ? "number" : "text"}
-                        step={
-                          field.type === "number"
-                            ? "step" in field
-                              ? field.step
+                    </label>
+                  ) : (
+                    <>
+                      <Label htmlFor={`field-${field.name}`}>
+                        {field.label}
+                        {"required" in field && field.required ? " *" : ""}
+                      </Label>
+                      {field.type === "textarea" ? (
+                        <textarea
+                          id={`field-${field.name}`}
+                          className="border-input bg-background min-h-24 w-full rounded-md border px-3 py-2 text-sm"
+                          value={String(form[field.name] ?? "")}
+                          placeholder={
+                            "placeholder" in field
+                              ? field.placeholder
                               : undefined
-                            : undefined
-                        }
-                        value={String(form[field.name] ?? "")}
-                        placeholder={
-                          "placeholder" in field ? field.placeholder : undefined
-                        }
-                        onChange={(event) =>
-                          setForm((prev) => ({
-                            ...prev,
-                            [field.name]: event.target.value,
-                          }))
-                        }
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
+                          }
+                          onChange={(event) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              [field.name]: event.target.value,
+                            }))
+                          }
+                        />
+                      ) : field.type === "images" ? (
+                        <ImagesUploadField
+                          id={`field-${field.name}`}
+                          value={String(form[field.name] ?? "")}
+                          onChange={(next) =>
+                            setForm((prev) => ({ ...prev, [field.name]: next }))
+                          }
+                        />
+                      ) : field.type === "select" ? (
+                        <select
+                          id={`field-${field.name}`}
+                          className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
+                          value={String(form[field.name] ?? "")}
+                          onChange={(event) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              [field.name]: event.target.value,
+                            }))
+                          }
+                        >
+                          <option value="">—</option>
+                          {field.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : field.type === "image" ? (
+                        <ImageUploadField
+                          id={`field-${field.name}`}
+                          value={String(form[field.name] ?? "")}
+                          placeholder={
+                            "placeholder" in field
+                              ? field.placeholder
+                              : undefined
+                          }
+                          onChange={(next) =>
+                            setForm((prev) => ({ ...prev, [field.name]: next }))
+                          }
+                        />
+                      ) : field.type === "youtube" ? (
+                        <YouTubeField
+                          id={`field-${field.name}`}
+                          value={String(form[field.name] ?? "")}
+                          placeholder={
+                            "placeholder" in field
+                              ? field.placeholder
+                              : undefined
+                          }
+                          onChange={(next) =>
+                            setForm((prev) => ({ ...prev, [field.name]: next }))
+                          }
+                          onIdResolved={
+                            field.autoPosterField
+                              ? (id) =>
+                                  setForm((prev) => {
+                                    const current = String(
+                                      prev[field.autoPosterField as string] ??
+                                        "",
+                                    ).trim();
+                                    // Fill the poster only when empty or when
+                                    // it still holds a previous auto-fill —
+                                    // never clobber a custom upload.
+                                    if (
+                                      current &&
+                                      !isYouTubeThumbUrl(current)
+                                    ) {
+                                      return prev;
+                                    }
+                                    return {
+                                      ...prev,
+                                      [field.autoPosterField as string]:
+                                        youTubeThumbUrl(id),
+                                    };
+                                  })
+                              : undefined
+                          }
+                        />
+                      ) : (
+                        <Input
+                          id={`field-${field.name}`}
+                          type={field.type === "number" ? "number" : "text"}
+                          step={
+                            field.type === "number"
+                              ? "step" in field
+                                ? field.step
+                                : undefined
+                              : undefined
+                          }
+                          value={String(form[field.name] ?? "")}
+                          placeholder={
+                            "placeholder" in field
+                              ? field.placeholder
+                              : undefined
+                          }
+                          onChange={(event) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              [field.name]: event.target.value,
+                            }))
+                          }
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="mx-0 mb-0 rounded-none px-5">
             <Button variant="outline" onClick={() => setCreating(false)}>
               Болих
             </Button>

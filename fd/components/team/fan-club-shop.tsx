@@ -229,8 +229,8 @@ export function FanClubShop({
                       className={cn(
                         "font-display team-focus inline-flex h-9 min-w-10 items-center justify-center rounded-full border px-3 text-[13px] font-semibold transition-colors",
                         active
-                          ? "border-accent-blue bg-accent-blue text-paper"
-                          : "border-accent-blue/25 text-mute hover:border-accent-blue hover:text-accent-blue",
+                          ? "border-ink bg-ink/5 text-ink"
+                          : "border-line text-mute hover:border-ink hover:text-ink",
                       )}
                     >
                       {size}
@@ -368,7 +368,7 @@ function ProductCard({
             {product.sizes.map((size) => (
               <span
                 key={size}
-                className="border-ink/25 text-mute inline-flex h-7 items-center rounded-full border px-2.5 text-[12px] font-semibold"
+                className="border-ink/30 text-ink inline-flex h-7 items-center rounded-full border px-2.5 text-[12px] font-semibold"
               >
                 {size}
               </span>

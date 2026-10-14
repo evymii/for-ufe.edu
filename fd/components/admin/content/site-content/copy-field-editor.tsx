@@ -14,13 +14,13 @@ import type { CopyFieldDef } from "@/components/admin/content/site-content/secti
 
 /**
  * Structured renderer for one section's copy, skinned with the public
- * site's form rules (contact-form/newsletter patterns): eyebrow labels,
- * square-cornered hairline inputs with 2px ink focus outlines, pill
- * action buttons, editorial accordion cards. Strings become labelled
- * inputs, long strings textareas with live counters, arrays repeatable
- * rows / accordion cards with add, remove and reorder (drag handle, or
- * the arrow buttons as the keyboard path), and nested objects bordered
- * sub-panels. Every control patches one key of the section's data object.
+ * site's form rules: eyebrow labels, square-cornered hairline inputs
+ * with 2px ink focus outlines, pill action buttons, editorial accordion
+ * cards. Strings become labelled inputs, long strings textareas with
+ * live counters, arrays repeatable rows / accordion cards with add,
+ * remove and reorder (drag handle, or the arrow buttons as the keyboard
+ * path), and nested objects bordered sub-panels. Every control patches
+ * one key of the section's data object.
  */
 
 // ── Shared field primitives (user-side form styling) ─────────────────────────
@@ -320,7 +320,7 @@ function ListEditor({
           ))
         )}
       </div>
-      {field.itemKind !== "interestKey" && items.length >= 3 ? (
+      {items.length >= 3 ? (
         <BulkEditLines label={field.label} items={items} onChange={onChange} />
       ) : null}
       {field.help ? <FieldHelp>{field.help}</FieldHelp> : null}
