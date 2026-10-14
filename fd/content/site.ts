@@ -29,7 +29,7 @@ export const stats = [
 
 export const featuredNews = {
   label: "Онцлох мэдээ",
-  heading: "Түүхэн амжилт",
+  heading: "Сүүлийн мэдээ",
   lead: "2025–2026 он СЭЗИС-ийн сагсан бөмбөгийн шигшээ багийн түүхэнд шинэ хуудас нээсэн онцгой жил боллоо.",
   items: [
     {
@@ -148,7 +148,7 @@ export const timeline: TimelineEntry[] = [
 // ── Тоглогчид хуудас ────────────────────────────────────────────────────────
 
 export const players = {
-  title: "Тоглогчид",
+  title: "Roster",
   subtitle: "2026–2027 оны багийн бүрэлдэхүүн",
 } as const;
 

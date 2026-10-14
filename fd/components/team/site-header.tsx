@@ -41,8 +41,8 @@ export function SiteHeader() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-40">
-      {/* Utility bar — always visible; heights never change on scroll */}
+    <>
+      {/* Utility bar scrolls away; the navigation stays pinned. */}
       <div className="bg-ink text-paper hidden overflow-hidden md:block">
         <div className="w-full overflow-hidden">
           <div
@@ -75,38 +75,99 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Main nav — constant 72px; solid sticky, no height animation */}
-      <div className="border-line bg-paper flex items-center border-b">
-        <div className="team-shell flex h-[72px] w-full items-center justify-between gap-3 sm:gap-6">
-          <Link
-            href={routes.home}
-            className="team-focus flex min-w-0 shrink-0 items-center gap-2 sm:gap-3"
-            aria-label={`${siteConfig.name} — нүүр хуудас`}
-          >
-            <span className="bg-ink text-paper flex size-10 items-center justify-center rounded-full md:size-12">
-              <BallMark className="size-5 md:size-6" />
-            </span>
-            <span className="flex min-w-0 flex-col leading-none">
-              <span className="font-display text-ink text-base font-bold tracking-[0.04em] uppercase sm:text-lg">
-                СЭЗИС
+      <header className="border-line bg-paper sticky top-0 z-40 border-b">
+        {/* Main nav — constant 72px with no scroll-driven animation. */}
+        <div className="flex items-center">
+          <div className="team-shell flex h-[72px] w-full items-center justify-between gap-3 sm:gap-6">
+            <Link
+              href={routes.home}
+              className="team-focus flex min-w-0 shrink-0 items-center gap-2 sm:gap-3"
+              aria-label={`${siteConfig.name} — нүүр хуудас`}
+            >
+              <span className="bg-ink text-paper flex size-10 items-center justify-center rounded-full md:size-12">
+                <BallMark className="size-5 md:size-6" />
               </span>
-              <span className="text-mute hidden max-w-[132px] truncate text-[9px] font-medium tracking-[0.16em] uppercase sm:block lg:max-w-[144px]">
-                {siteConfig.headerSubtitle}
+              <span className="flex min-w-0 flex-col leading-none">
+                <span className="font-display text-ink text-base font-bold tracking-[0.04em] uppercase sm:text-lg">
+                  СЭЗИС
+                </span>
+                <span className="text-mute hidden max-w-[132px] truncate text-[9px] font-medium tracking-[0.16em] uppercase sm:block lg:max-w-[144px]">
+                  {siteConfig.headerSubtitle}
+                </span>
               </span>
-            </span>
-          </Link>
+            </Link>
 
+            <nav
+              aria-label="Үндсэн цэс"
+              className="hidden min-w-0 flex-1 items-center justify-center gap-4 lg:flex xl:gap-6"
+            >
+              {publicNav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={cn(
+                    "font-display nav-underline team-focus flex h-full shrink-0 items-center px-1 text-sm font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-colors",
+                    isActive(item.href)
+                      ? "text-ink"
+                      : "text-mute hover:text-ink",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex shrink-0 items-center gap-2">
+              {/* Auth is reachable by URL only — no public link, by design. */}
+              <button
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Цэс нээх"
+                aria-expanded={menuOpen}
+                className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:hidden"
+              >
+                <Menu className="size-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile drawer — full-screen panel sliding in from the right */}
+        <div
+          className={cn(
+            "bg-paper fixed inset-0 z-50 flex flex-col transition-transform duration-[280ms] ease-out lg:hidden",
+            menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
+          )}
+          aria-hidden={!menuOpen}
+        >
+          <div className="team-shell border-line flex h-14 items-center justify-between border-b">
+            <span className="font-display text-ink text-lg font-bold tracking-[0.04em] uppercase">
+              СЭЗИС
+            </span>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Цэс хаах"
+              tabIndex={menuOpen ? 0 : -1}
+              className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70"
+            >
+              <X className="size-6" />
+            </button>
+          </div>
           <nav
-            aria-label="Үндсэн цэс"
-            className="hidden min-w-0 flex-1 items-center justify-center gap-4 lg:flex xl:gap-6"
+            aria-label="Мобайл цэс"
+            className="team-shell flex flex-1 flex-col gap-1 overflow-y-auto py-8"
           >
             {publicNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMenuOpen(false)}
+                tabIndex={menuOpen ? 0 : -1}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
-                  "font-display nav-underline team-focus flex h-full shrink-0 items-center px-1 text-sm font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-colors",
+                  "font-display border-line flex min-h-14 items-center border-b text-[28px] font-semibold tracking-[0.02em] uppercase transition-colors",
                   isActive(item.href) ? "text-ink" : "text-mute hover:text-ink",
                 )}
               >
@@ -114,76 +175,19 @@ export function SiteHeader() {
               </Link>
             ))}
           </nav>
-
-          <div className="flex items-center gap-2">
-            {/* Auth is reachable by URL only — no public link, by design. */}
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Цэс нээх"
-              aria-expanded={menuOpen}
-              className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:hidden"
+          <div className="team-shell border-line flex flex-col gap-3 border-t py-6">
+            <a
+              href="https://ufe.edu.mn"
+              target="_blank"
+              rel="noreferrer"
+              tabIndex={menuOpen ? 0 : -1}
+              className="text-mute flex min-h-11 items-center text-[12px] tracking-[0.12em] uppercase"
             >
-              <Menu className="size-6" />
-            </button>
+              {siteConfig.university}
+            </a>
           </div>
         </div>
-      </div>
-
-      {/* Mobile drawer — full-screen panel sliding in from the right */}
-      <div
-        className={cn(
-          "bg-paper fixed inset-0 z-50 flex flex-col transition-transform duration-[280ms] ease-out lg:hidden",
-          menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
-        )}
-        aria-hidden={!menuOpen}
-      >
-        <div className="team-shell border-line flex h-14 items-center justify-between border-b">
-          <span className="font-display text-ink text-lg font-bold tracking-[0.04em] uppercase">
-            СЭЗИС
-          </span>
-          <button
-            type="button"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Цэс хаах"
-            tabIndex={menuOpen ? 0 : -1}
-            className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70"
-          >
-            <X className="size-6" />
-          </button>
-        </div>
-        <nav
-          aria-label="Мобайл цэс"
-          className="team-shell flex flex-1 flex-col gap-1 overflow-y-auto py-8"
-        >
-          {publicNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              tabIndex={menuOpen ? 0 : -1}
-              aria-current={isActive(item.href) ? "page" : undefined}
-              className={cn(
-                "font-display border-line flex min-h-14 items-center border-b text-[28px] font-semibold tracking-[0.02em] uppercase transition-colors",
-                isActive(item.href) ? "text-ink" : "text-mute hover:text-ink",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="team-shell border-line flex flex-col gap-3 border-t py-6">
-          <a
-            href="https://ufe.edu.mn"
-            target="_blank"
-            rel="noreferrer"
-            tabIndex={menuOpen ? 0 : -1}
-            className="text-mute flex min-h-11 items-center text-[12px] tracking-[0.12em] uppercase"
-          >
-            {siteConfig.university}
-          </a>
-        </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

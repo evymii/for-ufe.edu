@@ -6,10 +6,11 @@ import { PageHero } from "@/components/team/page-hero";
 import { RosterBrowser } from "@/components/team/roster-browser";
 import type { RosterPlayer } from "@/components/team/roster-utils";
 import { playerProfiles, players } from "@/content/site";
+import { getExecutives } from "@/lib/content";
 
 export const metadata: Metadata = {
   description:
-    "СЭЗИС-ийн сагсан бөмбөгийн шигшээ багийн бүрэлдэхүүн — тоглогчид, амжилтууд.",
+    "СЭЗИС-ийн сагсан бөмбөгийн багийн тоглогчид, дасгалжуулагчдын бүрэлдэхүүн.",
   title: players.title,
 };
 
@@ -29,7 +30,8 @@ function resolvePhoto(player: (typeof playerProfiles)[number]): null | string {
   return fs.existsSync(file) ? `/images/player/${player.number}.png` : null;
 }
 
-export default function RosterPage() {
+export default async function RosterPage() {
+  const executives = await getExecutives();
   const roster: RosterPlayer[] = playerProfiles.map((player) => ({
     ...player,
     photo: resolvePhoto(player),
@@ -38,7 +40,7 @@ export default function RosterPage() {
   return (
     <>
       <PageHero
-        breadcrumb="Тоглогчид"
+        breadcrumb="Roster"
         subtitle={players.subtitle}
         title={players.title}
         controls={
@@ -54,7 +56,10 @@ export default function RosterPage() {
         }
       />
 
-      <RosterBrowser players={roster} subtitle={players.subtitle} />
+      <RosterBrowser
+        coaches={executives.filter((member) => member.group === "COACHES")}
+        players={roster}
+      />
     </>
   );
 }

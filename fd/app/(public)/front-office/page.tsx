@@ -8,7 +8,7 @@ import { getExecutives, getPageCopy } from "@/lib/content";
 
 export const metadata: Metadata = {
   description:
-    "СЭЗИС-ийн сагсан бөмбөгийн шигшээ багийн удирдлага — эзэмшигчид, спортын алба, бизнес, дасгалжуулагчид.",
+    "СЭЗИС-ийн сагсан бөмбөгийн шигшээ багийн удирдлага — эзэмшигчид, спортын алба, бизнес.",
   title: "Удирдлага",
 };
 
@@ -27,7 +27,9 @@ export default async function FrontOfficePage() {
     <>
       <PageHero breadcrumb="Удирдлага" subtitle={intro} title="Удирдлага" />
       <Reveal delay={60}>
-        <FrontOfficeDirectory members={members} />
+        <FrontOfficeDirectory
+          members={members.filter((member) => member.group !== "COACHES")}
+        />
       </Reveal>
     </>
   );

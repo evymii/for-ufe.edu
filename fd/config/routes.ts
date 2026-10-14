@@ -12,6 +12,7 @@ export const routes = {
     management: "/staff",
     newsletter: "/newsletter",
     photos: "/photos",
+    sponsors: "/sponsors",
     roster: "/players",
     schedule: "/schedule",
     videos: "/videos",

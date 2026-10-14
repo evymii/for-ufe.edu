@@ -15,12 +15,13 @@ export const siteConfig = {
 export const publicNav = [
   { href: "/", label: "Нүүр" },
   { href: "/history", label: "Түүх" },
-  { href: "/players", label: "Тоглогчид" },
-  { href: "/front-office", label: "Удирдлага" },
+  { href: "/players", label: "Roster" },
   { href: "/schedule", label: "Хуваарь" },
   { href: "/photos", label: "Фото" },
   { href: "/videos", label: "Видео" },
   { href: "/fan-club", label: "Фэн клаб" },
+  { href: "/front-office", label: "Удирдлага" },
+  { href: "/sponsors", label: "Дэмжигчид" },
 ] as const;
 
 /** Secondary destinations surfaced in the footer instead of the header. */

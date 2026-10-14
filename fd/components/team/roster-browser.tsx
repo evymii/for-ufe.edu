@@ -9,6 +9,7 @@ import {
   Search,
 } from "lucide-react";
 
+import type { Executive } from "@/types/content";
 import { PlayerCard, PlayerDetails } from "@/components/team/player-card";
 import {
   basePosition,
@@ -19,14 +20,6 @@ import { PlayerCutout } from "@/components/team/player-photo";
 import { cn } from "@/lib/utils";
 
 type ViewMode = "grid" | "table";
-type Group = "all" | "guard" | "forward" | "center";
-
-const GROUP_LABELS: Array<{ id: Group; label: string }> = [
-  { id: "all", label: "Бүгд" },
-  { id: "guard", label: "Холбон / Довтлон" },
-  { id: "forward", label: "Хүчний" },
-  { id: "center", label: "Төв" },
-];
 
 type SortKey = "name" | "number" | "position" | "height" | "major";
 
@@ -41,129 +34,145 @@ const COLUMNS: Array<{ key: SortKey; label: string; className?: string }> = [
 const POSITION_ORDER = ["guard", "forward", "center"];
 
 /**
- * Editorial roster browser: position pills + search, grid ⇄ table toggle
- * (200ms crossfade), NBA-style cards in the grid view and a sticky-header,
- * zebra-striped, sortable table in the other.
+ * Editorial roster: players keep their position labels on each card, with
+ * the coaching staff displayed alongside them.
  */
 export function RosterBrowser({
   players,
-  subtitle,
+  coaches,
 }: {
   players: RosterPlayer[];
-  subtitle: string;
+  coaches: Executive[];
 }) {
   const [view, setView] = useState<ViewMode>("grid");
-  const [group, setGroup] = useState<Group>("all");
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return players.filter((player) => {
-      if (group !== "all" && positionGroup(player.position) !== group) {
-        return false;
-      }
       if (
         needle &&
         !player.name.toLowerCase().includes(needle) &&
-        !String(player.number).includes(needle)
+        !String(player.number).includes(needle) &&
+        !player.position.toLowerCase().includes(needle)
       ) {
         return false;
       }
       return true;
     });
-  }, [players, group, query]);
+  }, [players, query]);
 
   return (
     <section className="bg-paper">
       <div className="team-shell py-12 md:py-16">
-        {/* Control row: pills left, search + view toggle right */}
-        <div className="border-line flex flex-wrap items-center justify-between gap-4 border-b pb-5">
-          <div
-            className="flex flex-wrap gap-2"
-            role="group"
-            aria-label="Байрлалаар шүүх"
-          >
-            {GROUP_LABELS.map((item) => {
-              const count =
-                item.id === "all"
-                  ? players.length
-                  : players.filter((p) => positionGroup(p.position) === item.id)
-                      .length;
-              const active = group === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setGroup(item.id)}
-                  aria-pressed={active}
-                  className={cn(
-                    "team-focus min-h-9 rounded-full border px-4 text-[12px] font-semibold tracking-[0.1em] uppercase transition-colors",
-                    active
-                      ? "border-ink bg-ink text-paper"
-                      : "border-line text-mute hover:border-ink hover:text-ink",
-                  )}
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className="min-w-0 lg:col-span-8">
+            <div className="mb-5 flex min-h-10 flex-wrap items-end justify-between gap-3">
+              <div className="flex min-w-0 flex-1 items-end justify-between gap-3">
+                <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
+                  Тоглогчид
+                </h2>
+                <span className="text-mute shrink-0 pb-1 text-[12px] tracking-[0.08em] uppercase">
+                  {filtered.length} тоглогч
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center justify-end gap-3">
+                <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[180px] items-center gap-2 border px-3">
+                  <Search className="size-4 shrink-0" aria-hidden="true" />
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Тоглогч хайх"
+                    aria-label="Тоглогч хайх"
+                    className="text-ink placeholder:text-mute min-w-0 flex-1 bg-transparent text-sm focus:outline-none"
+                  />
+                </label>
+                <div
+                  className="border-line flex border"
+                  role="group"
+                  aria-label="Харагдац солих"
                 >
-                  {item.label} {count}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[200px] items-center gap-2 border px-3">
-              <Search className="size-4 shrink-0" aria-hidden="true" />
-              <input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Тоглогч хайх"
-                aria-label="Тоглогч хайх"
-                className="text-ink placeholder:text-mute min-w-0 flex-1 bg-transparent text-sm focus:outline-none"
-              />
-            </label>
-            <div
-              className="border-line flex border"
-              role="group"
-              aria-label="Харагдац солих"
-            >
-              <ViewButton
-                active={view === "grid"}
-                onClick={() => setView("grid")}
-                label="Карт харагдац"
-              >
-                <LayoutGrid className="size-4" aria-hidden="true" />
-              </ViewButton>
-              <ViewButton
-                active={view === "table"}
-                onClick={() => setView("table")}
-                label="Хүснэгт харагдац"
-              >
-                <Rows3 className="size-4" aria-hidden="true" />
-              </ViewButton>
+                  <ViewButton
+                    active={view === "grid"}
+                    onClick={() => setView("grid")}
+                    label="Карт харагдац"
+                  >
+                    <LayoutGrid className="size-4" aria-hidden="true" />
+                  </ViewButton>
+                  <ViewButton
+                    active={view === "table"}
+                    onClick={() => setView("table")}
+                    label="Хүснэгт харагдац"
+                  >
+                    <Rows3 className="size-4" aria-hidden="true" />
+                  </ViewButton>
+                </div>
+              </div>
+            </div>
+            <div className="border-line border-t pt-6">
+              <div key={view} className="view-swap">
+                {filtered.length === 0 ? (
+                  <p className="text-mute py-16 text-center text-sm tracking-[0.08em] uppercase">
+                    Таарах тоглогч олдсонгүй
+                  </p>
+                ) : view === "grid" ? (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    {filtered.map((player) => (
+                      <PlayerCard key={player.number} player={player} />
+                    ))}
+                  </div>
+                ) : (
+                  <PlayerTable players={filtered} />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* View switch crossfades 200ms; height follows content */}
-        <div key={view} className="view-swap mt-8">
-          {filtered.length === 0 ? (
-            <p className="text-mute py-16 text-center text-sm tracking-[0.08em] uppercase">
-              Таарах тоглогч олдсонгүй
-            </p>
-          ) : view === "grid" ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filtered.map((player) => (
-                <PlayerCard key={player.number} player={player} />
+          <aside className="lg:col-span-4">
+            <div className="mb-5 flex min-h-10 items-end justify-between gap-3">
+              <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
+                Дасгалжуулагчид
+              </h2>
+              <span className="text-mute shrink-0 pb-1 text-[12px] tracking-[0.08em] uppercase">
+                {coaches.length} дасгалжуулагч
+              </span>
+            </div>
+            <div className="border-line space-y-3 border-t pt-6">
+              {coaches.map((coach) => (
+                <article
+                  key={coach.id}
+                  className="border-line bg-paper-soft flex items-start gap-4 border p-4"
+                >
+                  <div className="size-16 shrink-0 overflow-hidden">
+                    <PlayerCutout
+                      name={coach.name}
+                      photo={coach.photo}
+                      fallbackLabel={coach.name
+                        .split(/[.\s]+/)
+                        .filter(Boolean)
+                        .map((part) => part[0])
+                        .slice(0, 2)
+                        .join("")}
+                      sizes="64px"
+                    />
+                  </div>
+                  <div className="min-w-0 py-1">
+                    <p className="eyebrow">{coach.title}</p>
+                    <h3 className="font-display text-ink mt-1 text-[20px] leading-tight font-bold tracking-[0.02em] uppercase">
+                      {coach.name}
+                    </h3>
+                    {coach.bio ? (
+                      <p className="text-mute mt-2 line-clamp-3 text-[13px] leading-[1.55]">
+                        {coach.bio}
+                      </p>
+                    ) : null}
+                  </div>
+                </article>
               ))}
             </div>
-          ) : (
-            <PlayerTable players={filtered} />
-          )}
+          </aside>
         </div>
-
-        <p className="text-mute mt-6 text-[12px] tracking-[0.12em] uppercase">
-          {subtitle} · {filtered.length} тоглогч
-        </p>
       </div>
     </section>
   );

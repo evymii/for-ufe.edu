@@ -3,18 +3,39 @@ import { ArrowRight } from "lucide-react";
 
 import { routes } from "@/config/routes";
 import { featuredNews } from "@/content/site";
+import type { GameRow } from "@/types/content";
 
 /**
  * 12-column news grid: one featured story card (8 cols, 480px, ink panel
  * with an outlined watermark numeral) and a stack of compact cards in the
  * remaining 4 columns. Copy comes verbatim from content/site.ts.
  */
-export function NewsGrid() {
-  const [featured, ...rest] = featuredNews.items;
+function formatGameDate(value: string) {
+  return new Intl.DateTimeFormat("mn-MN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Ulaanbaatar",
+  }).format(new Date(value));
+}
+
+export function NewsGrid({ latestGame }: { latestGame: GameRow | null }) {
+  const [, ...rest] = featuredNews.items;
+  const opponent = latestGame?.opponentShort ?? latestGame?.opponent;
+  const result =
+    latestGame &&
+    latestGame.teamScore !== null &&
+    latestGame.opponentScore !== null
+      ? latestGame.teamScore > latestGame.opponentScore
+        ? "Ялалт"
+        : latestGame.teamScore < latestGame.opponentScore
+          ? "Хожигдол"
+          : "Тэнцээ"
+      : null;
 
   return (
     <div className="grid gap-6 md:grid-cols-12">
-      {featured ? (
+      {latestGame ? (
         <article className="bg-ink card-lift relative flex min-h-[420px] flex-col justify-end overflow-hidden p-8 text-white md:col-span-8 md:min-h-[480px]">
           <span
             aria-hidden="true"
@@ -23,16 +44,37 @@ export function NewsGrid() {
             01
           </span>
           <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
-            {featuredNews.label} · {featured.kicker}
+            {latestGame.competition}
           </p>
           <h3 className="font-display mt-3 max-w-[520px] text-[clamp(26px,3.4vw,36px)] leading-[1.05] font-bold tracking-[0.02em] uppercase">
-            {featured.title}
+            Сүүлийн тоглолт
           </h3>
-          <p className="mt-4 max-w-[520px] text-[15px] leading-[1.6] text-white/70">
-            {featured.body}
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="font-display text-[clamp(36px,5vw,56px)] leading-none font-bold tabular-nums">
+              {latestGame.teamScore ?? "—"}
+              <span className="mx-3 text-white/35">—</span>
+              {latestGame.opponentScore ?? "—"}
+            </span>
+            <span className="text-[13px] font-semibold tracking-[0.1em] text-white/65 uppercase">
+              СЭЗИС · {opponent}
+            </span>
+          </div>
+          <p className="mt-4 max-w-[520px] text-[14px] leading-[1.6] text-white/70">
+            {result ? `${result} · ` : ""}
+            {latestGame.round ? `${latestGame.round} · ` : ""}
+            {formatGameDate(latestGame.tipsAt)}
           </p>
         </article>
-      ) : null}
+      ) : (
+        <article className="bg-ink flex min-h-[280px] flex-col justify-end p-8 text-white md:col-span-8">
+          <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
+            {featuredNews.label}
+          </p>
+          <h3 className="font-display mt-3 text-[clamp(26px,3.4vw,36px)] leading-[1.05] font-bold uppercase">
+            Одоогоор тоглолтын үр дүн алга
+          </h3>
+        </article>
+      )}
 
       <div className="flex flex-col gap-6 md:col-span-4">
         {rest.map((item, index) => (
@@ -58,20 +100,24 @@ export function NewsGrid() {
           </article>
         ))}
 
-        {/* Archive link tile completes the 3-high stack */}
+        {/* Schedule link completes the news stack */}
         <Link
-          href={routes.site.history}
+          href={routes.site.schedule}
           className="group border-line bg-paper-soft hover:border-ink flex min-h-24 flex-col justify-center gap-1 border p-5 transition-colors"
         >
-          <p className="eyebrow">Архив</p>
+          <p className="eyebrow">Тоглолтууд</p>
           <p className="font-display text-ink flex items-center gap-2 text-[22px] leading-none font-semibold tracking-[0.02em] uppercase">
-            Түүхэн замнал
+            Хуваарь харах
             <ArrowRight
               className="size-5 transition-transform group-hover:translate-x-1"
               aria-hidden="true"
             />
           </p>
-          <p className="text-mute text-[13px]">1992 оноос өнөөдрийг хүртэл</p>
+          <p className="text-mute text-[13px]">
+            {latestGame
+              ? `Сүүлийн тоглолт · ${formatGameDate(latestGame.tipsAt)}`
+              : "Шинэ тоглолтууд"}
+          </p>
         </Link>
       </div>
     </div>

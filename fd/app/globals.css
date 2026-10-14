@@ -230,9 +230,7 @@
 /* Hero slides move horizontally within a shared viewport for a true carousel. */
 .hero-slides {
   position: relative;
-  left: 50%;
-  width: 100vw;
-  margin-left: -50vw;
+  width: 100%;
 }
 .hero-slide {
   grid-area: 1 / 1;
