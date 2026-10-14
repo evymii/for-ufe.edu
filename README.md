@@ -52,3 +52,48 @@ Docker: `docker compose up -d` · `down` (keep data) · `down -v` (wipe).
 **Admin access:** log in as `manager` / `editor` / `edumanager` (all ADMIN, same admin side), or `POST /api/v1/user/auth/pin` with `ADMIN_PIN_CODE` (4–8 digits; empty disables; production refuses the default `1234`). Both issue the same JWT session.
 
 **Content & media:** live site text is stored per `page/key/locale` — public at `GET /api/v1/content/blocks/:page` (with SSE live updates via `/stream`), edited through the admin block endpoints (single-value `PUT`, defaults `ensure`, `history` audit). Media uploads (`POST /api/v1/admin/media`) are magic-byte verified, capped by `MAX_UPLOAD_MB`, and deleting a media row also deletes the Cloudinary asset.
+
+## CMS architecture & update flow
+
+The admin CMS and the public site form one loop, kept fresh through on-demand
+cache revalidation (the update-propagation bridge):
+
+```
+1. Admin edits in fd /admin/content (games, news, players, executives,
+   staff, albums, videos, shop, contact inbox, page copy) and saves.
+2. fd admin browser ── POST/PATCH/DELETE bd /api/v1/content/* (Bearer JWT).
+3. bd persists (Mongo via Prisma) → toast → admin list refetch.
+4. fd admin browser ── POST fd /api/revalidate { tag }  (same Bearer token)
+5. fd route handler app/api/revalidate/route.ts:
+     verifies the token against bd GET /api/v1/user/auth/me
+     (fail closed — bd down ⇒ no purge; ADMIN role required);
+     checks tag ∈ ALLOWED_TAGS (fd/lib/cache-tags.ts);
+     revalidateTag(tag, { expire: 0 }) ⇒ tagged ISR data-cache entries drop NOW.
+6. Next public request refetches fresh data from bd and re-renders.
+```
+
+The backend never calls the frontend — the admin browser is the only party
+that knows "a write just succeeded" AND "which frontend host it is viewing".
+If the purge call fails, the 60s fetch-revalidate window is the safety net.
+
+Key pieces (keep them in sync when extending):
+
+| Concern | Where |
+| --- | --- |
+| Tag registry (single shared surface) | `fd/lib/cache-tags.ts` ↔ `fd/app/api/revalidate/route.ts` |
+| Tagged public fetchers + static fallbacks | `fd/lib/content.ts` |
+| Admin mutation tail: toast → refetch → `revalidatePublicTag(tag)` | `fd/components/admin/content/resource-panel.tsx`, `content-manager.tsx`, `fd/lib/admin/revalidate.ts` |
+| Copy blobs allow-list (page/section) | `bd/src/config/constants.ts` `SITE_CONTENT_PAGES` |
+| JSON-editor defaults prefill | `fd/lib/site-content-defaults.ts` |
+| Public GET browser/CDN cache header | `bd/src/middleware/publicReadCache.ts` |
+
+**Adding a new managed resource:** add the bd route + admin tab (tag defaults
+to the tab `key`), add the tag to `ALLOWED_TAGS` if it is new, and use it on
+the public fetcher. A tag that is fetched but missing from `ALLOWED_TAGS`
+(or vice versa) is the classic bug — edits appear only after the 60s window.
+
+**Static fallbacks:** every public fetcher degrades to the bundled defaults
+(`fd/content/site.ts`, `fd/content/pages.ts`) when bd is unreachable, so the
+site never goes down with the API. The home, history, players, staff and
+contact pages are CMS-backed with those same fallbacks; the JSON editor
+prefills each section's default so admins never edit blind.

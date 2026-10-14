@@ -180,8 +180,8 @@ export function NewsletterSignup({
                         className={cn(
                           "font-display team-focus inline-flex h-11 items-center rounded-full border px-4 text-[13px] font-semibold tracking-[0.06em] uppercase transition-colors",
                           active
-                            ? "border-ink bg-ink text-paper"
-                            : "border-ink/25 text-mute hover:border-ink hover:text-ink",
+                            ? "border-accent-blue bg-accent-blue text-paper"
+                            : "border-accent-blue/25 text-mute hover:border-accent-blue hover:text-accent-blue",
                         )}
                       >
                         {interest.label}

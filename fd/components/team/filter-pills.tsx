@@ -44,8 +44,8 @@ export function FilterPills<T extends string>({
                 ? "min-h-9 px-4 text-[13px]"
                 : "min-h-7 px-2.5 text-[11px]",
               active
-                ? "border-ink bg-ink text-paper"
-                : "border-ink/25 text-mute hover:border-ink hover:text-ink",
+                ? "border-accent-blue bg-accent-blue text-paper"
+                : "border-accent-blue/25 text-mute hover:border-accent-blue hover:text-accent-blue",
             )}
           >
             {option.label}

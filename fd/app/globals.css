@@ -72,6 +72,7 @@
   --color-brand-2: var(--brand-2);
   --color-brand-contrast: var(--brand-contrast);
   --color-gold: var(--gold);
+  --color-accent-blue: var(--accent-blue);
   --font-display:
     var(--font-team-display), "Roboto Condensed", "Segoe UI", Arial, sans-serif;
 }
@@ -91,6 +92,10 @@
   --brand-2: #3a3a38;
   --brand-contrast: #ffffff;
   --gold: #0b0b0c;
+  /* Accent blue: small bordered text controls only (outline buttons, pills,
+     tags, active tab underlines). Everything else stays ink so the blue
+     reads as ~5% of the page. */
+  --accent-blue: #090446;
 }
 
 :root {

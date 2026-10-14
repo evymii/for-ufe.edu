@@ -229,8 +229,8 @@ export function FanClubShop({
                       className={cn(
                         "font-display team-focus inline-flex h-9 min-w-10 items-center justify-center rounded-full border px-3 text-[13px] font-semibold transition-colors",
                         active
-                          ? "border-ink bg-ink text-paper"
-                          : "border-ink/25 text-mute hover:border-ink hover:text-ink",
+                          ? "border-accent-blue bg-accent-blue text-paper"
+                          : "border-accent-blue/25 text-mute hover:border-accent-blue hover:text-accent-blue",
                       )}
                     >
                       {size}

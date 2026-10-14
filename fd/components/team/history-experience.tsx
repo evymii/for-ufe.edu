@@ -322,7 +322,7 @@ export function HistoryExperience({ entries }: { entries: TimelineEntry[] }) {
                     className={cn(
                       "font-display team-focus flex h-14 shrink-0 border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
                       active
-                        ? "border-ink text-ink"
+                        ? "border-accent-blue text-accent-blue"
                         : "text-mute hover:text-ink border-transparent",
                     )}
                   >
