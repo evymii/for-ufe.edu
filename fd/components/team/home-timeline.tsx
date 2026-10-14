@@ -112,7 +112,7 @@ export function HomeTimeline() {
       aria-labelledby="home-history-title"
       className="overflow-hidden bg-[#202020] text-white"
     >
-      <div className="team-shell py-8 md:py-10">
+      <div className="team-shell team-shell-wide py-8 md:py-10">
         <Reveal>
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-2xl">

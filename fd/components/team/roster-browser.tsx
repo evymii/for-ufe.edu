@@ -3,16 +3,18 @@
 import { useMemo, useState } from "react";
 import {
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   LayoutGrid,
   Rows3,
   Search,
 } from "lucide-react";
 
-import type { Executive } from "@/types/content";
 import { PlayerCard, PlayerDetails } from "@/components/team/player-card";
 import {
   basePosition,
+  paginate,
   positionGroup,
   type RosterPlayer,
 } from "@/components/team/roster-utils";
@@ -33,19 +35,18 @@ const COLUMNS: Array<{ key: SortKey; label: string; className?: string }> = [
 
 const POSITION_ORDER = ["guard", "forward", "center"];
 
+/** One roster page = 15 players (3 rows × 5 columns on desktop). */
+const PAGE_SIZE = 15;
+
 /**
- * Editorial roster: players keep their position labels on each card, with
- * the coaching staff displayed alongside them.
+ * Editorial roster: players only (the coaching staff lives on /staff),
+ * paginated 15 per page in a 5-column grid, plus a sortable table view
+ * sharing the same page size.
  */
-export function RosterBrowser({
-  players,
-  coaches,
-}: {
-  players: RosterPlayer[];
-  coaches: Executive[];
-}) {
+export function RosterBrowser({ players }: { players: RosterPlayer[] }) {
   const [view, setView] = useState<ViewMode>("grid");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -62,119 +63,144 @@ export function RosterBrowser({
     });
   }, [players, query]);
 
+  const { items: paged, totalPages } = paginate(filtered, page, PAGE_SIZE);
+
   return (
     <section className="bg-paper">
       <div className="team-shell py-12 md:py-16">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
-          <div className="min-w-0 lg:col-span-8">
-            <div className="mb-5 flex min-h-10 flex-wrap items-end justify-between gap-3">
-              <div className="flex min-w-0 flex-1 items-end justify-between gap-3">
-                <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
-                  Тоглогчид
-                </h2>
-                <span className="text-mute shrink-0 pb-1 text-[12px] tracking-[0.08em] uppercase">
-                  {filtered.length} тоглогч
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center justify-end gap-3">
-                <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[180px] items-center gap-2 border px-3">
-                  <Search className="size-4 shrink-0" aria-hidden="true" />
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Тоглогч хайх"
-                    aria-label="Тоглогч хайх"
-                    className="text-ink placeholder:text-mute min-w-0 flex-1 bg-transparent text-sm focus:outline-none"
-                  />
-                </label>
-                <div
-                  className="border-line flex border"
-                  role="group"
-                  aria-label="Харагдац солих"
-                >
-                  <ViewButton
-                    active={view === "grid"}
-                    onClick={() => setView("grid")}
-                    label="Карт харагдац"
-                  >
-                    <LayoutGrid className="size-4" aria-hidden="true" />
-                  </ViewButton>
-                  <ViewButton
-                    active={view === "table"}
-                    onClick={() => setView("table")}
-                    label="Хүснэгт харагдац"
-                  >
-                    <Rows3 className="size-4" aria-hidden="true" />
-                  </ViewButton>
-                </div>
-              </div>
-            </div>
-            <div className="border-line border-t pt-6">
-              <div key={view} className="view-swap">
-                {filtered.length === 0 ? (
-                  <p className="text-mute py-16 text-center text-sm tracking-[0.08em] uppercase">
-                    Таарах тоглогч олдсонгүй
-                  </p>
-                ) : view === "grid" ? (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    {filtered.map((player) => (
-                      <PlayerCard key={player.number} player={player} />
-                    ))}
-                  </div>
-                ) : (
-                  <PlayerTable players={filtered} />
-                )}
-              </div>
+        <div className="mb-5 flex min-h-10 flex-wrap items-end justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-end justify-between gap-3">
+            <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
+              Тоглогчид
+            </h2>
+            <span className="text-mute shrink-0 pb-1 text-[12px] tracking-[0.08em] uppercase">
+              {filtered.length} тоглогч
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[180px] items-center gap-2 border px-3">
+              <Search className="size-4 shrink-0" aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setPage(1);
+                }}
+                placeholder="Тоглогч хайх"
+                aria-label="Тоглогч хайх"
+                className="text-ink placeholder:text-mute min-w-0 flex-1 bg-transparent text-sm focus:outline-none"
+              />
+            </label>
+            <div
+              className="border-line flex border"
+              role="group"
+              aria-label="Харагдац солих"
+            >
+              <ViewButton
+                active={view === "grid"}
+                onClick={() => setView("grid")}
+                label="Карт харагдац"
+              >
+                <LayoutGrid className="size-4" aria-hidden="true" />
+              </ViewButton>
+              <ViewButton
+                active={view === "table"}
+                onClick={() => setView("table")}
+                label="Хүснэгт харагдац"
+              >
+                <Rows3 className="size-4" aria-hidden="true" />
+              </ViewButton>
             </div>
           </div>
-
-          <aside className="lg:col-span-4">
-            <div className="mb-5 flex min-h-10 items-end justify-between gap-3">
-              <h2 className="font-display text-ink text-[clamp(26px,3vw,32px)] font-bold tracking-[0.02em] uppercase">
-                Дасгалжуулагчид
-              </h2>
-              <span className="text-mute shrink-0 pb-1 text-[12px] tracking-[0.08em] uppercase">
-                {coaches.length} дасгалжуулагч
-              </span>
-            </div>
-            <div className="border-line space-y-3 border-t pt-6">
-              {coaches.map((coach) => (
-                <article
-                  key={coach.id}
-                  className="border-line bg-paper-soft flex items-start gap-4 border p-4"
-                >
-                  <div className="size-16 shrink-0 overflow-hidden">
-                    <PlayerCutout
-                      name={coach.name}
-                      photo={coach.photo}
-                      fallbackLabel={coach.name
-                        .split(/[.\s]+/)
-                        .filter(Boolean)
-                        .map((part) => part[0])
-                        .slice(0, 2)
-                        .join("")}
-                      sizes="64px"
-                    />
-                  </div>
-                  <div className="min-w-0 py-1">
-                    <p className="eyebrow">{coach.title}</p>
-                    <h3 className="font-display text-ink mt-1 text-[20px] leading-tight font-bold tracking-[0.02em] uppercase">
-                      {coach.name}
-                    </h3>
-                    {coach.bio ? (
-                      <p className="text-mute mt-2 line-clamp-3 text-[13px] leading-[1.55]">
-                        {coach.bio}
-                      </p>
-                    ) : null}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </aside>
+        </div>
+        <div className="border-line border-t pt-6">
+          <div key={view} className="view-swap">
+            {filtered.length === 0 ? (
+              <p className="text-mute py-16 text-center text-sm tracking-[0.08em] uppercase">
+                Таарах тоглогч олдсонгүй
+              </p>
+            ) : view === "grid" ? (
+              <>
+                <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+                  {paged.map((player) => (
+                    <PlayerCard key={player.number} player={player} />
+                  ))}
+                </div>
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  onChange={setPage}
+                />
+              </>
+            ) : (
+              <PlayerTable
+                players={filtered}
+                page={page}
+                onPageChange={setPage}
+              />
+            )}
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/** Bordered page buttons + chevrons; hidden entirely for a single page. */
+function Pagination({
+  page,
+  totalPages,
+  onChange,
+}: {
+  page: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+  return (
+    <nav
+      className="mt-8 flex flex-wrap items-center justify-center gap-2"
+      aria-label="Хуудаслалт"
+    >
+      <button
+        type="button"
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        aria-label="Өмнөх хуудас"
+        className="team-focus border-line text-mute hover:border-ink hover:text-ink flex size-10 items-center justify-center border transition-colors disabled:pointer-events-none disabled:opacity-40"
+      >
+        <ChevronLeft className="size-4" aria-hidden="true" />
+      </button>
+      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+        (item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onChange(item)}
+            aria-label={`Хуудас ${item}`}
+            aria-current={item === page ? "page" : undefined}
+            className={cn(
+              "team-focus font-display flex size-10 items-center justify-center border text-sm font-semibold transition-colors",
+              item === page
+                ? "border-ink bg-ink text-paper"
+                : "border-line text-mute hover:border-ink hover:text-ink",
+            )}
+          >
+            {item}
+          </button>
+        ),
+      )}
+      <button
+        type="button"
+        onClick={() => onChange(page + 1)}
+        disabled={page === totalPages}
+        aria-label="Дараагийн хуудас"
+        className="team-focus border-line text-mute hover:border-ink hover:text-ink flex size-10 items-center justify-center border transition-colors disabled:pointer-events-none disabled:opacity-40"
+      >
+        <ChevronRight className="size-4" aria-hidden="true" />
+      </button>
+    </nav>
   );
 }
 
@@ -209,8 +235,20 @@ function ViewButton({
 const ROW_GRID =
   "grid grid-cols-[minmax(48px,64px)_minmax(180px,2.2fr)_minmax(72px,0.8fr)_minmax(96px,0.9fr)_minmax(110px,1.1fr)_minmax(96px,0.9fr)_minmax(88px,0.8fr)] items-center gap-x-4";
 
-/** Flat sortable table: sticky 48px header, 64px zebra rows, expandable. */
-function PlayerTable({ players }: { players: RosterPlayer[] }) {
+/**
+ * Flat sortable table: sticky 48px header, 64px zebra rows, expandable.
+ * Sorting runs over the WHOLE list first and the page slice comes after, so
+ * page 1 always holds the true top of the chosen order.
+ */
+function PlayerTable({
+  players,
+  page,
+  onPageChange,
+}: {
+  players: RosterPlayer[];
+  page: number;
+  onPageChange: (page: number) => void;
+}) {
   const [sortKey, setSortKey] = useState<SortKey>("number");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
@@ -236,6 +274,8 @@ function PlayerTable({ players }: { players: RosterPlayer[] }) {
     });
   }, [players, sortKey, sortDir]);
 
+  const { items: paged, totalPages } = paginate(sorted, page, PAGE_SIZE);
+
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) {
       setSortDir((dir) => (dir === "asc" ? "desc" : "asc"));
@@ -246,58 +286,61 @@ function PlayerTable({ players }: { players: RosterPlayer[] }) {
   };
 
   return (
-    <div className="border-line border">
-      <div className="overflow-x-auto">
-        <div className="min-w-[820px]">
-          {/* Sticky header row */}
-          <div
-            className={cn(
-              ROW_GRID,
-              "border-line bg-paper sticky top-14 z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
-            )}
-          >
-            {COLUMNS.map((column) => (
-              <button
-                key={column.key}
-                type="button"
-                onClick={() => toggleSort(column.key)}
-                aria-label={`${column.label} — эрэмбэлэх`}
-                className={cn(
-                  "team-focus text-mute hover:text-ink flex items-center gap-1 px-4 py-3 text-left transition-colors",
-                  column.key === "name" && "pr-0",
-                )}
-              >
-                {column.label}
-                {sortKey === column.key ? (
-                  sortDir === "asc" ? (
-                    <ChevronUp
-                      className="size-3.5 transition-transform duration-150"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <ChevronDown
-                      className="size-3.5 transition-transform duration-150"
-                      aria-hidden="true"
-                    />
-                  )
-                ) : null}
-              </button>
-            ))}
-            <span className="text-mute px-4 py-3 text-[11px] font-semibold tracking-[0.12em] uppercase">
-              Тоглосон
-            </span>
-          </div>
+    <>
+      <div className="border-line border">
+        <div className="overflow-x-auto">
+          <div className="min-w-[820px]">
+            {/* Sticky header row */}
+            <div
+              className={cn(
+                ROW_GRID,
+                "border-line bg-paper sticky top-[72px] z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
+              )}
+            >
+              {COLUMNS.map((column) => (
+                <button
+                  key={column.key}
+                  type="button"
+                  onClick={() => toggleSort(column.key)}
+                  aria-label={`${column.label} — эрэмбэлэх`}
+                  className={cn(
+                    "team-focus text-mute hover:text-ink flex items-center gap-1 px-4 py-3 text-left transition-colors",
+                    column.key === "name" && "pr-0",
+                  )}
+                >
+                  {column.label}
+                  {sortKey === column.key ? (
+                    sortDir === "asc" ? (
+                      <ChevronUp
+                        className="size-3.5 transition-transform duration-150"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <ChevronDown
+                        className="size-3.5 transition-transform duration-150"
+                        aria-hidden="true"
+                      />
+                    )
+                  ) : null}
+                </button>
+              ))}
+              <span className="text-mute px-4 py-3 text-[11px] font-semibold tracking-[0.12em] uppercase">
+                Тоглосон
+              </span>
+            </div>
 
-          {sorted.map((player, index) => (
-            <PlayerTableRow
-              key={player.number}
-              player={player}
-              zebra={index % 2 === 1}
-            />
-          ))}
+            {paged.map((player, index) => (
+              <PlayerTableRow
+                key={player.number}
+                player={player}
+                zebra={index % 2 === 1}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <Pagination page={page} totalPages={totalPages} onChange={onPageChange} />
+    </>
   );
 }
 

@@ -8,7 +8,10 @@ import { TeamButton } from "@/components/team/button";
 import { HistoryExperience } from "@/components/team/history-experience";
 import { HistoryExtras } from "@/components/team/history-extras";
 import { routes } from "@/config/routes";
-import { history } from "@/content/site";
+import { hero, history, type TimelineEntry } from "@/content/site";
+import { mergeCopy } from "@/lib/copy";
+import { getPageCopy } from "@/lib/content";
+import type { PageCopy } from "@/types/content";
 
 export const metadata: Metadata = {
   description:
@@ -16,13 +19,58 @@ export const metadata: Metadata = {
   title: "Түүх",
 };
 
+export const revalidate = 60;
+
+/** Sanitizes the CMS-edited timeline array from the history/page blob. */
+function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
+  const raw = copy?.timeline;
+  if (!Array.isArray(raw)) return [];
+  const entries: TimelineEntry[] = [];
+  for (const item of raw) {
+    if (typeof item !== "object" || item === null) continue;
+    const entry = item as Record<string, unknown>;
+    if (typeof entry.period !== "string" || entry.period === "") continue;
+    entries.push({
+      bullets: Array.isArray(entry.bullets)
+        ? entry.bullets.filter((b): b is string => typeof b === "string")
+        : undefined,
+      highlightLabel:
+        typeof entry.highlightLabel === "string"
+          ? entry.highlightLabel
+          : undefined,
+      period: entry.period,
+      text: typeof entry.text === "string" ? entry.text : undefined,
+    });
+  }
+  return entries;
+}
+
 /**
  * Season-celebration history page: 720px ink hero with the outlined season
  * numeral over a parallax texture layer, then the sticky year rail +
  * side-scrolling era track (HistoryExperience) and the honour roll /
- * moments gallery / CTA band (HistoryExtras).
+ * moments gallery / CTA band (HistoryExtras). Copy and timeline entries
+ * come from the site-content history/page blob over static defaults.
  */
-export default function HistoryPage() {
+export default async function HistoryPage() {
+  const [pageCopy, heroCopy] = await Promise.all([
+    getPageCopy("history", "page"),
+    getPageCopy("home", "hero"),
+  ]);
+
+  const copy = mergeCopy(
+    { intro: history.intro, title: history.title },
+    pageCopy,
+  );
+  const aublCopy =
+    heroCopy?.aubl !== null &&
+    typeof heroCopy?.aubl === "object" &&
+    !Array.isArray(heroCopy.aubl)
+      ? (heroCopy.aubl as PageCopy)
+      : null;
+  const aubl = mergeCopy({ ...hero.aubl }, aublCopy);
+  const entries = timelineEntries(pageCopy);
+
   return (
     <>
       <section className="bg-ink relative flex min-h-[560px] flex-col items-center justify-center overflow-hidden text-center text-white md:min-h-[720px]">
@@ -50,10 +98,10 @@ export default function HistoryPage() {
           </span>
 
           <h1 className="font-display mt-4 text-[clamp(36px,6vw,56px)] leading-none font-bold tracking-[0.02em] uppercase">
-            {history.title}
+            {copy.title}
           </h1>
           <p className="mt-5 max-w-[560px] text-[16px] leading-[1.55] text-white/70 md:text-[18px]">
-            {history.intro}
+            {copy.intro}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -78,10 +126,10 @@ export default function HistoryPage() {
         </div>
       </section>
 
-      <div id="timeline" className="scroll-mt-14" aria-hidden="true" />
+      <div id="timeline" className="scroll-mt-32" aria-hidden="true" />
 
-      <HistoryExperience />
-      <HistoryExtras />
+      <HistoryExperience entries={entries} />
+      <HistoryExtras aubl={aubl} />
     </>
   );
 }

@@ -44,7 +44,7 @@ export function StaffSubnav() {
   return (
     <nav
       aria-label="Удирдлагын хэсгүүд"
-      className="border-line bg-paper sticky top-14 z-30 border-b"
+      className="border-line bg-paper sticky top-[72px] z-30 border-b"
     >
       <div className="team-shell flex h-12 items-center gap-8 overflow-x-auto">
         {SECTIONS.map((section) => (

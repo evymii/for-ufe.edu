@@ -547,6 +547,13 @@ export const videosHeroFallback = {
   intro: "Онцлох мийчлүүд, ярилцлага, ар талын амьдрал.",
 };
 
+// ── Медиа (combined photos + videos page) ─────────────────────────────────────
+
+export const mediaHeroFallback = {
+  intro:
+    "Тоглолт, нийгмийн ажил, арга хэмжээний зургууд — онцлох бичлэгүүд, ярилцлага, ар талын амьдрал.",
+};
+
 // ── Фэнэйд мэдээ (newsletter) ────────────────────────────────────────────────
 
 export const newsletterFallback: NewsletterCopy = {
@@ -611,7 +618,7 @@ export const fanClubFallback = {
     "Фэн клабын гишүүн болвол илүү олон давуу тал",
   ],
   subtitle: "Албан ёсны бүтээгдэхүүн — FORZA үйлдвэрлэлтэй",
-  title: "СЭЗИС фэн клаб",
+  title: "СЭЗИС мерч",
 };
 
 export const shopFallback: ShopProductRow[] = [

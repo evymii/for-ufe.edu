@@ -1,0 +1,72 @@
+/* Layout skeleton for the structured page-copy editor, following the
+   admin CMS design spec (sticky blurred toolbar, paired editor +
+   sticky live-preview columns) expressed in the public team-site design
+   tokens: paper surfaces, hairline --line borders, editorial shadows. */
+
+/* Everything centers in a max 1480px column like the spec's shell. */
+.shell {
+  width: min(100%, 1480px);
+  margin-inline: auto;
+}
+
+/* Sticky action bar: content scrolling under it dissolves through a
+   paper fade + 10px backdrop blur instead of a hard clip edge. */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 0.5rem 0 1rem;
+  background: linear-gradient(
+    to bottom,
+    var(--paper) 0%,
+    var(--paper) 68%,
+    rgb(255 255 255 / 0) 100%
+  );
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* Vertical rhythm between the paired sections (20px, per spec). */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Editor + preview pair: stacked below 1280px; two columns above, with
+   the preview column sticking under the toolbar while the editor
+   scrolls (spec: 1.12fr editor / 0.88fr preview, sticky at 88px). */
+.pair {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1280px) {
+  .pair {
+    grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+  }
+  .previewCol {
+    position: sticky;
+    top: 5.5rem; /* clears the sticky toolbar */
+  }
+}
+
+/* Editor card: square editorial card — hairline border, paper surface,
+   soft rest shadow that grows to the team hover shadow over 0.2s. */
+.editorCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.editorCard:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.editorCard:focus-within {
+  border-color: var(--ink);
+}

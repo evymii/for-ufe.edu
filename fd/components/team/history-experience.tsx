@@ -43,105 +43,122 @@ interface Era {
   entries: TimelineEntry[];
 }
 
-const byPeriod = (period: string): TimelineEntry => {
-  const entry = timeline.find((e) => e.period === period);
-  if (!entry) throw new Error(`Missing timeline entry: ${period}`);
-  return entry;
-};
+/**
+ * Lookup of timeline entries keyed by period: CMS-edited entries (from the
+ * site-content history/page blob) layered over the static defaults, so an
+ * admin can reword any era without the era structure needing every entry.
+ */
+function makeLookup(
+  entries: TimelineEntry[],
+): (period: string) => TimelineEntry {
+  const merged = new Map(timeline.map((entry) => [entry.period, entry]));
+  for (const entry of entries) {
+    if (entry && typeof entry.period === "string") {
+      merged.set(entry.period, entry);
+    }
+  }
+  return (period: string): TimelineEntry => {
+    const entry = merged.get(period);
+    if (!entry) throw new Error(`Missing timeline entry: ${period}`);
+    return entry;
+  };
+}
 
 const photo = (year: number) => `/images/tuuh/${year}/${year}.png`;
 
-const eras: Era[] = [
-  {
-    id: "1992",
-    navLabel: "1992",
-    title: "Аварга баг",
-    photos: [],
-    centered: true,
-    entries: [byPeriod("1992")],
-  },
-  {
-    id: "1996",
-    navLabel: "1996",
-    title: "Үндсэн суурь",
-    photos: [photo(1996)],
-    entries: [byPeriod("1996")],
-  },
-  {
-    id: "1997-2006",
-    navLabel: "1997",
-    title: "Медалийн жилүүд",
-    photos: [photo(2006)],
-    entries: [byPeriod("1997–2006")],
-  },
-  {
-    id: "2017-2018",
-    navLabel: "2017",
-    title: "Мөнгөн медаль",
-    photos: [photo(2018)],
-    entries: [byPeriod("2017–2018")],
-  },
-  {
-    id: "2018-2019",
-    navLabel: "2018",
-    title: "Elite 8",
-    photos: [photo(2019)],
-    entries: [byPeriod("2018–2019")],
-  },
-  {
-    id: "2019-2020",
-    navLabel: "2019",
-    title: "Elite 8",
-    photos: [photo(2020)],
-    entries: [byPeriod("2019–2020")],
-  },
-  {
-    id: "2021-2022",
-    navLabel: "2021",
-    title: "Шөвгийн дөрөв",
-    photos: [photo(2021)],
-    entries: [byPeriod("2021–2022")],
-  },
-  {
-    id: "2022-2023",
-    navLabel: "2022",
-    title: "Шөвгийн дөрөв",
-    photos: [photo(2022)],
-    entries: [byPeriod("2022–2023")],
-  },
-  {
-    id: "2023-2024",
-    navLabel: "2023",
-    title: "Sweet 16",
-    photos: [photo(2023)],
-    entries: [byPeriod("2023–2024")],
-  },
-  {
-    id: "2024-2025",
-    navLabel: "2024",
-    title: "Хүрэл медаль",
-    photos: [photo(2024)],
-    entries: [byPeriod("2024–2025")],
-  },
-  {
-    id: "2025-2026",
-    navLabel: "2025",
-    title: "Аварга",
-    photos: [photo(2025)],
-    highlight: true,
-    entries: [byPeriod("2025–2026")],
-  },
-  {
-    id: "2026-2027",
-    navLabel: "2026",
-    title: "AUBL",
-    photos: [],
-    entries: [byPeriod("2026–2027")],
-  },
-];
+function buildEras(byPeriod: (period: string) => TimelineEntry): Era[] {
+  return [
+    {
+      id: "1992",
+      navLabel: "1992",
+      title: "Аварга баг",
+      photos: [],
+      centered: true,
+      entries: [byPeriod("1992")],
+    },
+    {
+      id: "1996",
+      navLabel: "1996",
+      title: "Үндсэн суурь",
+      photos: [photo(1996)],
+      entries: [byPeriod("1996")],
+    },
+    {
+      id: "1997-2006",
+      navLabel: "1997",
+      title: "Медалийн жилүүд",
+      photos: [photo(2006)],
+      entries: [byPeriod("1997–2006")],
+    },
+    {
+      id: "2017-2018",
+      navLabel: "2017",
+      title: "Мөнгөн медаль",
+      photos: [photo(2018)],
+      entries: [byPeriod("2017–2018")],
+    },
+    {
+      id: "2018-2019",
+      navLabel: "2018",
+      title: "Elite 8",
+      photos: [photo(2019)],
+      entries: [byPeriod("2018–2019")],
+    },
+    {
+      id: "2019-2020",
+      navLabel: "2019",
+      title: "Elite 8",
+      photos: [photo(2020)],
+      entries: [byPeriod("2019–2020")],
+    },
+    {
+      id: "2021-2022",
+      navLabel: "2021",
+      title: "Шөвгийн дөрөв",
+      photos: [photo(2021)],
+      entries: [byPeriod("2021–2022")],
+    },
+    {
+      id: "2022-2023",
+      navLabel: "2022",
+      title: "Шөвгийн дөрөв",
+      photos: [photo(2022)],
+      entries: [byPeriod("2022–2023")],
+    },
+    {
+      id: "2023-2024",
+      navLabel: "2023",
+      title: "Sweet 16",
+      photos: [photo(2023)],
+      entries: [byPeriod("2023–2024")],
+    },
+    {
+      id: "2024-2025",
+      navLabel: "2024",
+      title: "Хүрэл медаль",
+      photos: [photo(2024)],
+      entries: [byPeriod("2024–2025")],
+    },
+    {
+      id: "2025-2026",
+      navLabel: "2025",
+      title: "Аварга",
+      photos: [photo(2025)],
+      highlight: true,
+      entries: [byPeriod("2025–2026")],
+    },
+    {
+      id: "2026-2027",
+      navLabel: "2026",
+      title: "AUBL",
+      photos: [],
+      entries: [byPeriod("2026–2027")],
+    },
+  ];
+}
 
-/** Sticky chrome: collapsed site header (56px) + year rail (56px). */
-const TOP_OFFSET = 112;
+/** Sticky chrome: site header (72px) + year rail (56px). */
+const TOP_OFFSET = 128;
 
 let tweenTimer = 0;
 
@@ -166,7 +183,8 @@ function tweenScrollTo(target: number, instant: boolean) {
   step();
 }
 
-export function HistoryExperience() {
+export function HistoryExperience({ entries }: { entries: TimelineEntry[] }) {
+  const eras = buildEras(makeLookup(entries));
   const [activeId, setActiveId] = useState(eras[0].id);
   const [distance, setDistance] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -286,7 +304,7 @@ export function HistoryExperience() {
       {/* Sticky year rail — scroll-spy + reading progress */}
       <nav
         aria-label="Он цэс"
-        className="border-line bg-paper sticky top-14 z-30 h-14 border-b"
+        className="border-line bg-paper sticky top-[72px] z-30 h-14 border-b"
       >
         <div className="team-shell flex h-full items-center">
           <ul className="no-scrollbar flex items-center gap-1 overflow-x-auto">
@@ -390,7 +408,7 @@ export function HistoryExperience() {
             key={era.id}
             id={era.id}
             className={cn(
-              "scroll-mt-28",
+              "scroll-mt-32",
               era.highlight ? "bg-ink text-white" : "bg-paper",
             )}
           >

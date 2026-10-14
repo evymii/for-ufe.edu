@@ -7,9 +7,7 @@ test.describe("admin guard", () => {
   }) => {
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/login\?next=%2Fadmin/);
-    await expect(
-      page.getByRole("heading", { name: "Welcome back" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Нэвтрэх" })).toBeVisible();
   });
 
   test("anonymous visitor is redirected from a user page too", async ({

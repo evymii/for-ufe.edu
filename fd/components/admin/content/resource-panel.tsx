@@ -32,12 +32,17 @@ import {
   type FormValues,
 } from "@/components/admin/content/field-input";
 import { ApiClientError } from "@/lib/api-client";
+import { revalidatePublicTag } from "@/lib/admin/revalidate";
 import { adminContentService } from "@/services/admin/content.service";
 import { useContentResource } from "@/hooks/use-content-admin";
 
 /**
  * Generic CMS panel: sortable-by-config table over one content resource,
  * with a create/edit dialog driven by FieldDefs and a delete confirm.
+ *
+ * Every successful write ends with the uniform mutation tail:
+ * toast → refetch() → revalidatePublicTag(tag) so the public ISR cache is
+ * purged and the next visitor sees the change immediately.
  */
 
 export interface ColumnDef {
@@ -56,6 +61,14 @@ export interface ResourceConfig {
   columns: ColumnDef[];
   /** Query params appended to the list request. */
   listQuery?: Record<string, string>;
+  /** Fixed values merged into CREATE payloads only (e.g. group: "STAFF"). */
+  defaults?: Record<string, unknown>;
+  /**
+   * Public cache tag purged after writes. Defaults to `key`; set
+   * explicitly when the tab shares a collection with another tag (e.g. the
+   * staff tab edits Executive rows → "executives").
+   */
+  revalidateTag?: string;
 }
 
 export function ResourcePanel({ config }: { config: ResourceConfig }) {
@@ -103,11 +116,15 @@ export function ResourcePanel({ config }: { config: ResourceConfig }) {
         );
         toast.success(`${config.singular} шинэчлэгдлээ`);
       } else {
-        await adminContentService.create(config.endpoint, payload);
+        await adminContentService.create(config.endpoint, {
+          ...config.defaults,
+          ...payload,
+        });
         toast.success(`${config.singular} нэмэгдлээ`);
       }
       setDialogOpen(false);
       void refetch();
+      void revalidatePublicTag(config.revalidateTag ?? config.key);
     } catch (err) {
       toast.error(
         err instanceof ApiClientError
@@ -125,6 +142,7 @@ export function ResourcePanel({ config }: { config: ResourceConfig }) {
       await adminContentService.remove(config.endpoint, deleting);
       toast.success(`${config.singular} устгагдлаа`);
       void refetch();
+      void revalidatePublicTag(config.revalidateTag ?? config.key);
     } catch (err) {
       toast.error(
         err instanceof ApiClientError ? err.message : "Устгах үед алдаа гарлаа",

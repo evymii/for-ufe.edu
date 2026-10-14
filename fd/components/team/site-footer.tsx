@@ -8,14 +8,16 @@ import { ArrowRight } from "lucide-react";
 import { BallMark } from "@/components/team/photo-slot";
 import { routes } from "@/config/routes";
 import { publicNav, secondaryNav, siteConfig } from "@/config/site";
-import { contact } from "@/content/site";
+import type { ContactInfo } from "@/types/content";
 
 /**
  * Ink footer: brand + newsletter mini-field, link columns, contact details
  * and a mute bottom row. The newsletter field hops to the /newsletter
- * signup page, where the real subscribe endpoint lives.
+ * signup page, where the real subscribe endpoint lives. Contact details
+ * arrive as props from the public layout (site-content contact/info over
+ * the static default).
  */
-export function SiteFooter() {
+export function SiteFooter({ info }: { info: ContactInfo }) {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
@@ -45,8 +47,8 @@ export function SiteFooter() {
     {
       heading: "Их сургууль",
       links: [
-        { label: "ufe.edu.mn", href: contact.webUrl, external: true },
-        { label: contact.email, href: `mailto:${contact.email}` },
+        { label: info.web, href: info.webUrl, external: true },
+        { label: info.email, href: `mailto:${info.email}` },
       ],
     },
   ];
@@ -70,7 +72,7 @@ export function SiteFooter() {
             </div>
           </div>
           <p className="font-display max-w-sm text-2xl leading-[1.2] font-semibold tracking-[0.02em] uppercase">
-            “{contact.slogan}”
+            “{info.slogan}”
           </p>
           <form onSubmit={subscribe} className="max-w-sm">
             <label
@@ -142,14 +144,14 @@ export function SiteFooter() {
             Холбоо барих
           </p>
           <ul className="flex flex-col gap-3 text-sm leading-[1.6] text-white/85 sm:flex-row sm:flex-wrap sm:gap-x-10">
-            <li>{contact.address}</li>
-            <li>{contact.footerPhones.join(", ")}</li>
+            <li>{info.address}</li>
+            <li>{info.footerPhones.join(", ")}</li>
             <li>
               <a
-                href={`mailto:${contact.email}`}
+                href={`mailto:${info.email}`}
                 className="transition-colors hover:text-white"
               >
-                {contact.email}
+                {info.email}
               </a>
             </li>
           </ul>
@@ -161,9 +163,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {siteConfig.fullName}
           </p>
-          <p className="font-display tracking-[0.28em] uppercase">
-            {contact.web}
-          </p>
+          <p className="font-display tracking-[0.28em] uppercase">{info.web}</p>
         </div>
       </div>
     </footer>

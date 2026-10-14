@@ -1,16 +1,41 @@
-import { expect, test } from "@playwright/test";
+import { expect, request, test } from "@playwright/test";
 
 /**
- * Admin console against the real backend. Uses the seeded admin account
- * (bd/ `npm run db:seed`: admin@ufeedu.local / Admin123!).
+ * Admin console against the real backend. Uses the seeded staff account
+ * (bd/ `npm run db:seed`: manager / STAFF_PASSWORD — every staff login is
+ * ADMIN). Listed users are provisioned through the public register API in
+ * an ISOLATED request context — page.request would share the browser cookie
+ * jar, and the register response's fresh session cookies would replace the
+ * admin's.
  */
+
+const STAFF_PASSWORD = process.env.STAFF_PASSWORD ?? "9876";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010";
+
+async function provisionUser(name: string): Promise<string> {
+  const email = `e2e-${name.toLowerCase()}-${Date.now()}-${Math.trunc(Math.random() * 1e4)}@ufeedu.test`;
+  const api = await request.newContext();
+  const res = await api.post(`${API_URL}/api/v1/user/auth/register`, {
+    data: { email, name: `E2E ${name}`, password: "Password123!" },
+  });
+  await api.dispose();
+  if (res.status() !== 201) {
+    throw new Error(`provisioning failed: ${res.status()} ${await res.text()}`);
+  }
+  return email;
+}
+
+async function loginAsManager(page: import("@playwright/test").Page) {
+  await page.goto("/login");
+  await page.getByLabel("Нэвтрэх нэр").fill("manager");
+  await page.getByLabel("Нууц үг").fill(STAFF_PASSWORD);
+  await page.getByRole("button", { name: "Нэвтрэх" }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+}
+
 test.describe("admin console", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("admin@ufeedu.local");
-    await page.getByLabel("Password").fill("Admin123!");
-    await page.getByRole("button", { name: "Log in" }).click();
-    await expect(page).toHaveURL(/\/admin$/);
+    await loginAsManager(page);
   });
 
   test("dashboard shows stat cards and the registrations chart", async ({
@@ -27,28 +52,27 @@ test.describe("admin console", () => {
     ).toBeVisible();
   });
 
-  test("users page lists seeded users with pagination", async ({ page }) => {
+  test("users page lists a provisioned user via search", async ({ page }) => {
+    const email = await provisionUser("list");
+
     await page.goto("/admin/users");
     await expect(page.getByRole("heading", { name: "Users" })).toBeVisible();
 
-    // Seeded chart users are deterministic — seed.user1@ufeedu.local is newest.
-    await page.getByLabel("Search users").fill("seed.user1@ufeedu.local");
+    await page.getByLabel("Search users").fill(email);
     await page.getByRole("button", { name: "Search" }).click();
-    await expect(
-      page.getByRole("cell", { name: "seed.user1@ufeedu.local" }),
-    ).toBeVisible();
+    await expect(page.getByRole("cell", { name: email })).toBeVisible();
     await expect(page.getByText(/1 users?/)).toBeVisible();
   });
 
   test("admin can deactivate and reactivate a user", async ({ page }) => {
-    await page.goto("/admin/users");
-    await page.getByLabel("Search users").fill("demo@ufeedu.local");
-    await page.getByRole("button", { name: "Search" }).click();
-    await expect(
-      page.getByRole("cell", { name: "demo@ufeedu.local" }),
-    ).toBeVisible();
+    const email = await provisionUser("toggle");
 
-    const row = page.getByRole("row", { name: /demo@ufeedu\.local/ });
+    await page.goto("/admin/users");
+    await page.getByLabel("Search users").fill(email);
+    await page.getByRole("button", { name: "Search" }).click();
+    await expect(page.getByRole("cell", { name: email })).toBeVisible();
+
+    const row = page.getByRole("row", { name: new RegExp(email) });
     await row.getByRole("button", { name: "Deactivate" }).click();
     await expect(row.getByText("Inactive")).toBeVisible();
 

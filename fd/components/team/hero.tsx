@@ -4,14 +4,25 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { TeamButton } from "@/components/team/button";
+import { HeroStack, type HeroFigure } from "@/components/team/hero-stack";
 import { WaveField } from "@/components/team/wave-field";
 import { routes } from "@/config/routes";
-import { hero, history } from "@/content/site";
 
 // ── Hero carousel ───────────────────────────────────────────────────────────
 // Responsive ink panel: wave-field texture, bottom gradient, condensed
 // headline. Three horizontally sliding panels autoplay every 8s with 80×3
 // progress bars and 44px arrow controls.
+
+/** Editable hero copy (site-content home/hero over the static default). */
+export interface HeroCopy {
+  badge: string;
+  title: string;
+  headline: string;
+  intro: string;
+  ctaPlayers: string;
+  ctaHistory: string;
+  aubl: { title: string; text: string };
+}
 
 /** Abstract three-bar team mark (two cut bars framing a slanted middle bar). */
 function TeamMark({ className }: { className?: string }) {
@@ -37,40 +48,55 @@ interface Slide {
   secondary?: { label: string; href: string };
 }
 
-const slides: Slide[] = [
-  {
-    kicker: hero.badge,
-    headline: hero.headline,
-    subline: hero.intro,
-    primary: { label: hero.ctaPlayers, href: routes.site.roster },
-    secondary: { label: hero.ctaHistory, href: routes.site.history },
-  },
-  {
-    kicker: `${hero.aubl.title} · 2026–2027`,
-    headline: hero.aubl.title,
-    subline: hero.aubl.text,
-    primary: { label: hero.ctaHistory, href: routes.site.history },
-    secondary: { label: "Холбоо барих", href: routes.site.contact },
-  },
-  {
-    kicker: "Түүх · 1992–2026",
-    headline: "1992 оноос өнөөдрийг хүртэл",
-    subline: history.intro,
-    primary: { label: "Түүхийг үзэх", href: routes.site.history },
-  },
-];
+function buildSlides(copy: HeroCopy, historyIntro: string): Slide[] {
+  return [
+    {
+      kicker: copy.badge,
+      headline: copy.headline,
+      subline: copy.intro,
+      primary: { label: copy.ctaPlayers, href: routes.site.roster },
+      secondary: { label: copy.ctaHistory, href: routes.site.history },
+    },
+    {
+      kicker: `${copy.aubl.title} · 2026–2027`,
+      headline: copy.aubl.title,
+      subline: copy.aubl.text,
+      primary: { label: copy.ctaHistory, href: routes.site.history },
+      secondary: { label: "Холбоо барих", href: routes.site.contact },
+    },
+    {
+      kicker: "Түүх · 1992–2026",
+      headline: "1992 оноос өнөөдрийг хүртэл",
+      subline: historyIntro,
+      primary: { label: "Түүхийг үзэх", href: routes.site.history },
+    },
+  ];
+}
 
 const AUTOPLAY_MS = 8000;
 
-export function Hero() {
+export function Hero({
+  copy,
+  historyIntro,
+  stack = [],
+}: {
+  copy: HeroCopy;
+  historyIntro: string;
+  /** Stacked player trio on the right rail (home page only). */
+  stack?: HeroFigure[];
+}) {
+  const slides = buildSlides(copy, historyIntro);
   const [index, setIndex] = useState(0);
   const [progressKey, setProgressKey] = useState(0);
   const parallaxRef = useRef<HTMLDivElement>(null);
 
-  const go = useCallback((next: number) => {
-    setIndex(((next % slides.length) + slides.length) % slides.length);
-    setProgressKey((key) => key + 1);
-  }, []);
+  const go = useCallback(
+    (next: number) => {
+      setIndex(((next % slides.length) + slides.length) % slides.length);
+      setProgressKey((key) => key + 1);
+    },
+    [slides.length],
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => go(index + 1), AUTOPLAY_MS);
@@ -96,7 +122,7 @@ export function Hero() {
 
   return (
     <section
-      aria-label={hero.title}
+      aria-label={copy.title}
       className="bg-paper px-4 py-4 sm:px-6 sm:py-6"
       onKeyDown={(event) => {
         if (event.key === "ArrowRight") go(index + 1);
@@ -114,9 +140,16 @@ export function Hero() {
           aria-hidden="true"
           className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,.85),rgba(0,0,0,0)_60%)]"
         />
+        {/* Stacked player trio — decorative, right rail, above the gradient
+            but under the slide copy (DOM order) so controls stay visible. */}
+        {stack.length > 0 ? (
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[440px] items-end justify-center pr-10 select-none lg:flex xl:w-[500px] xl:pr-14">
+            <HeroStack figures={stack} />
+          </div>
+        ) : null}
         <TeamMark className="absolute top-8 right-6 hidden h-14 w-14 text-white/20 lg:block" />
 
-        <div className="team-shell relative w-full pb-6 sm:pb-10 md:pb-12">
+        <div className="team-shell team-shell-wide relative w-full pb-6 sm:pb-10 md:pb-12">
           <div className="hero-slides grid">
             {slides.map((slide, slideIndex) => (
               <div
@@ -134,8 +167,8 @@ export function Hero() {
                 }
                 className="hero-slide"
               >
-                <div className="team-shell flex h-full w-full">
-                  <div className="flex h-full max-w-[780px] flex-col gap-4">
+                <div className="team-shell team-shell-wide flex h-full w-full">
+                  <div className="flex h-full max-w-[780px] flex-col gap-4 lg:max-w-[600px] xl:max-w-[660px]">
                     <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
                       {slide.kicker}
                     </p>

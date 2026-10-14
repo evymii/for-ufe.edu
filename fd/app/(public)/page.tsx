@@ -1,22 +1,112 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { Hero } from "@/components/team/hero";
-import { NewsGrid } from "@/components/team/news-grid";
-import { Reveal } from "@/components/team/reveal";
+import { Hero, type HeroCopy } from "@/components/team/hero";
+import { HomeGallery, getHomeGallery } from "@/components/team/home-gallery";
+import {
+  HomeSpotlight,
+  getHeroFigures,
+  getHomeSpotlight,
+} from "@/components/team/home-spotlight";
 import { HomeTimeline } from "@/components/team/home-timeline";
+import { NewsGrid, type NewsItem } from "@/components/team/news-grid";
+import { Reveal } from "@/components/team/reveal";
 import { ScheduleStrip } from "@/components/team/schedule-strip";
+import { ThanksSection } from "@/components/team/thanks-section";
 import { routes } from "@/config/routes";
-import { featuredNews, stats } from "@/content/site";
-import { getGames } from "@/lib/content";
+import { featuredNews, hero, history, stats } from "@/content/site";
+import { mergeCopy } from "@/lib/copy";
+import { getGames, getNews, getPageCopy } from "@/lib/content";
+import type { NewsPostRow, PageCopy } from "@/types/content";
+
+export const revalidate = 60;
+
+interface StatItem {
+  value: string;
+  label: string;
+}
+
+/** NewsPost rows → home grid cards: featured first, newest next, max 3. */
+function toNewsItems(rows: NewsPostRow[]): NewsItem[] {
+  return [...rows]
+    .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
+    .slice(0, 3)
+    .map((row) => ({
+      body: row.excerpt,
+      kicker: row.category,
+      title: row.title,
+    }));
+}
+
+function statItems(copy: PageCopy | null): StatItem[] {
+  const items = copy?.items;
+  if (!Array.isArray(items) || items.length === 0) {
+    return stats.map((stat) => ({ label: stat.label, value: stat.value }));
+  }
+  return items.filter(
+    (item): item is StatItem =>
+      typeof item === "object" &&
+      item !== null &&
+      typeof (item as StatItem).value === "string" &&
+      typeof (item as StatItem).label === "string",
+  );
+}
 
 export default async function HomePage() {
-  const games = await getGames();
-  const played = games
+  const [
+    heroCopy,
+    statsCopy,
+    newsCopy,
+    historyCopy,
+    newsRows,
+    gameRows,
+    spotlight,
+    gallery,
+    heroStack,
+  ] = await Promise.all([
+    getPageCopy("home", "hero"),
+    getPageCopy("home", "stats"),
+    getPageCopy("home", "news"),
+    getPageCopy("history", "page"),
+    getNews({ limit: 12 }),
+    getGames(),
+    getHomeSpotlight(),
+    getHomeGallery(),
+    getHeroFigures(),
+  ]);
+
+  const heroData: HeroCopy = mergeCopy(
+    { ...hero, aubl: { ...hero.aubl } },
+    heroCopy,
+  );
+  const historyIntro =
+    typeof historyCopy?.intro === "string" && historyCopy.intro
+      ? historyCopy.intro
+      : history.intro;
+
+  const numbers = statItems(statsCopy);
+
+  const newsMeta = mergeCopy(
+    {
+      heading: featuredNews.heading,
+      label: featuredNews.label,
+      lead: featuredNews.lead,
+    },
+    newsCopy,
+  );
+  const newsItems: NewsItem[] = newsRows.length
+    ? toNewsItems(newsRows)
+    : featuredNews.items.map((item) => ({
+        body: item.body,
+        kicker: item.kicker,
+        title: item.title,
+      }));
+
+  const played = gameRows
     .filter((game) => game.status === "FINAL")
     .sort((a, b) => b.tipsAt.localeCompare(a.tipsAt));
   const latestGame = played[0] ?? null;
-  const upcoming = games
+  const upcoming = gameRows
     .filter((game) => game.status === "SCHEDULED")
     .sort((a, b) => a.tipsAt.localeCompare(b.tipsAt));
   const selectedGames = [...played.slice(0, 3), ...upcoming.slice(0, 5)];
@@ -29,15 +119,15 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
-      <Hero />
+      <Hero copy={heroData} historyIntro={historyIntro} stack={heroStack} />
 
       {/* Latest news — featured card + stacked cards */}
-      <section aria-label={featuredNews.label} className="bg-paper">
-        <div className="team-shell py-16 md:py-24">
+      <section aria-label={newsMeta.label} className="bg-paper">
+        <div className="team-shell team-shell-wide py-16 md:py-24">
           <Reveal>
             <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
               <h2 className="font-display text-ink text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] uppercase">
-                {featuredNews.heading}
+                {newsMeta.heading}
               </h2>
               <Link
                 href={routes.site.schedule}
@@ -52,7 +142,11 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <Reveal delay={60}>
-            <NewsGrid latestGame={latestGame} />
+            <NewsGrid
+              items={newsItems}
+              label={newsMeta.label}
+              latestGame={latestGame}
+            />
           </Reveal>
         </div>
       </section>
@@ -62,8 +156,8 @@ export default async function HomePage() {
         aria-label="Тоонууд"
         className="border-line bg-paper-soft border-y"
       >
-        <div className="team-shell grid grid-cols-2 gap-y-10 py-14 md:grid-cols-4 md:py-16">
-          {stats.map((stat, index) => (
+        <div className="team-shell team-shell-wide grid grid-cols-2 gap-y-10 py-14 md:grid-cols-4 md:py-16">
+          {numbers.map((stat, index) => (
             <Reveal
               key={stat.label}
               delay={index * 60}
@@ -81,6 +175,12 @@ export default async function HomePage() {
       </section>
 
       <HomeTimeline />
+
+      {/* Team leaders (captain + coaches), the photo mosaic and the
+          gratitude band close out the page above the footer. */}
+      {spotlight.length > 0 ? <HomeSpotlight members={spotlight} /> : null}
+      <HomeGallery tiles={gallery} />
+      <ThanksSection tone="paper" />
     </>
   );
 }

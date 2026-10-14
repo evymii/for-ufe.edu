@@ -47,7 +47,7 @@ describe("api client", () => {
     await expect(api.get("/api/v1/ping")).resolves.toEqual({ hello: "world" });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:4000/api/v1/ping",
+      "http://localhost:4010/api/v1/ping",
       expect.objectContaining({ method: "GET", credentials: "include" }),
     );
   });
@@ -131,7 +131,7 @@ describe("api client", () => {
     const refreshCall = fetchMock.mock.calls[1];
     const replayCall = fetchMock.mock.calls[2];
     expect(String(refreshCall[0])).toBe(
-      "http://localhost:4000/api/v1/user/auth/refresh",
+      "http://localhost:4010/api/v1/user/auth/refresh",
     );
     expect(replayCall[1].headers.get("Authorization")).toBe(
       "Bearer fresh-access-token",

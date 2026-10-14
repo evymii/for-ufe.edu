@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/providers/auth-provider";
 import {
   adminContentService,
+  contactInboxService,
   newsletterAdminService,
 } from "@/services/admin/content.service";
 
@@ -12,9 +13,8 @@ import {
 export const contentAdminKeys = {
   all: ["admin", "content"] as const,
   resource: (key: string) => [...contentAdminKeys.all, key] as const,
-  pageCopy: (page: string) =>
-    [...contentAdminKeys.all, "page-copy", page] as const,
   subscribers: () => [...contentAdminKeys.all, "subscribers"] as const,
+  inbox: () => [...contentAdminKeys.all, "contact-inbox"] as const,
 };
 
 export function useContentResource(
@@ -28,33 +28,6 @@ export function useContentResource(
     queryFn: () =>
       adminContentService.list<Record<string, unknown>>(endpoint, query),
     enabled: user?.role === "ADMIN",
-  });
-}
-
-export function usePageCopy(page: string) {
-  const { user } = useAuth();
-  return useQuery({
-    queryKey: contentAdminKeys.pageCopy(page),
-    queryFn: () => adminContentService.getPageCopy(page),
-    enabled: user?.role === "ADMIN",
-  });
-}
-
-export function usePutPageCopy(page: string) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      section,
-      data,
-    }: {
-      section: string;
-      data: Record<string, unknown>;
-    }) => adminContentService.putPageCopy(page, section, data),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: contentAdminKeys.pageCopy(page),
-      });
-    },
   });
 }
 
@@ -74,6 +47,40 @@ export function useDeleteSubscriber() {
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: contentAdminKeys.subscribers(),
+      });
+    },
+  });
+}
+
+export function useContactInbox() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: contentAdminKeys.inbox(),
+    queryFn: () => contactInboxService.list(),
+    enabled: user?.role === "ADMIN",
+  });
+}
+
+export function useMarkContactRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isRead }: { id: string; isRead: boolean }) =>
+      contactInboxService.markRead(id, isRead),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: contentAdminKeys.inbox(),
+      });
+    },
+  });
+}
+
+export function useDeleteContactMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => contactInboxService.remove(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: contentAdminKeys.inbox(),
       });
     },
   });

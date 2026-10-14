@@ -7,8 +7,8 @@ import { getPageCopy, getShopProducts } from "@/lib/content";
 
 export const metadata: Metadata = {
   description:
-    "СЭЗИС фэн клаб — албан ёсны өмсгөл, хувцас, хэрэгсэл. FORZA үйлдвэрлэсэн бүтээгдэхүүн.",
-  title: "Фэн клаб",
+    "СЭЗИС мерч — албан ёсны өмсгөл, хувцас, хэрэгсэл. FORZA үйлдвэрлэсэн бүтээгдэхүүн.",
+  title: "Мерч",
 };
 
 export const revalidate = 60;

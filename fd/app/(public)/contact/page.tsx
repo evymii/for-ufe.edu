@@ -3,7 +3,9 @@ import { Globe, Mail, MapPin, Phone } from "lucide-react";
 
 import { PageHero } from "@/components/team/page-hero";
 import { Reveal } from "@/components/team/reveal";
+import { ContactForm } from "@/components/team/contact-form";
 import { contact } from "@/content/site";
+import { getContactInfo } from "@/lib/content";
 
 export const metadata: Metadata = {
   description:
@@ -11,24 +13,36 @@ export const metadata: Metadata = {
   title: "Холбоо барих",
 };
 
-export default function ContactPage() {
+export const revalidate = 60;
+
+export default async function ContactPage() {
+  const info = await getContactInfo({
+    address: contact.address,
+    email: contact.email,
+    footerPhones: [...contact.footerPhones],
+    phones: [...contact.phones],
+    slogan: contact.slogan,
+    web: contact.web,
+    webUrl: contact.webUrl,
+  });
+
   const cards = [
     {
       icon: MapPin,
       label: "Хаяг",
-      value: contact.address,
+      value: info.address,
     },
     {
       icon: Mail,
       label: "Имэйл",
-      value: contact.email,
-      href: `mailto:${contact.email}`,
+      value: info.email,
+      href: `mailto:${info.email}`,
     },
     {
       icon: Globe,
       label: "Вэб",
-      value: contact.web,
-      href: contact.webUrl,
+      value: info.web,
+      href: info.webUrl,
     },
   ];
 
@@ -83,7 +97,7 @@ export default function ContactPage() {
                 Утас
               </p>
               <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
-                {contact.phones.map((phone) => (
+                {info.phones.map((phone) => (
                   <li key={phone}>
                     <a
                       href={`tel:${phone}`}
@@ -95,8 +109,14 @@ export default function ContactPage() {
                 ))}
               </ul>
               <p className="border-ink text-ink font-display mt-8 inline-block border px-3.5 py-1.5 text-[12px] font-semibold tracking-[0.14em] uppercase">
-                СЭЗИС · «{contact.slogan}»
+                СЭЗИС · «{info.slogan}»
               </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={90}>
+            <div className="mt-6">
+              <ContactForm />
             </div>
           </Reveal>
         </div>

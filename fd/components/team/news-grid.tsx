@@ -2,14 +2,15 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { routes } from "@/config/routes";
-import { featuredNews } from "@/content/site";
 import type { GameRow } from "@/types/content";
 
-/**
- * 12-column news grid: one featured story card (8 cols, 480px, ink panel
- * with an outlined watermark numeral) and a stack of compact cards in the
- * remaining 4 columns. Copy comes verbatim from content/site.ts.
- */
+/** One story card in the grid (from bd/ NewsPost rows or the static fallback). */
+export interface NewsItem {
+  kicker: string;
+  title: string;
+  body: string;
+}
+
 function formatGameDate(value: string) {
   return new Intl.DateTimeFormat("mn-MN", {
     day: "numeric",
@@ -19,8 +20,22 @@ function formatGameDate(value: string) {
   }).format(new Date(value));
 }
 
-export function NewsGrid({ latestGame }: { latestGame: GameRow | null }) {
-  const [, ...rest] = featuredNews.items;
+/**
+ * 12-column news grid: the featured card (8 cols, ink panel) surfaces the
+ * latest finished game with its score, and a stack of compact story cards
+ * from the NewsPost collection fills the remaining 4 columns (static
+ * fallback when the API is empty/unreachable).
+ */
+export function NewsGrid({
+  label,
+  items,
+  latestGame,
+}: {
+  label: string;
+  items: NewsItem[];
+  latestGame: GameRow | null;
+}) {
+  const [, ...rest] = items;
   const opponent = latestGame?.opponentShort ?? latestGame?.opponent;
   const result =
     latestGame &&
@@ -68,7 +83,7 @@ export function NewsGrid({ latestGame }: { latestGame: GameRow | null }) {
       ) : (
         <article className="bg-ink flex min-h-[280px] flex-col justify-end p-8 text-white md:col-span-8">
           <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
-            {featuredNews.label}
+            {label}
           </p>
           <h3 className="font-display mt-3 text-[clamp(26px,3.4vw,36px)] leading-[1.05] font-bold uppercase">
             Одоогоор тоглолтын үр дүн алга

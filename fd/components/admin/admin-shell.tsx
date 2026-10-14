@@ -15,9 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { siteConfig } from "@/config/site";
-import { adminNav } from "@/config/nav";
+import { adminNav, adminNavGroups } from "@/config/nav";
 import { routes } from "@/config/routes";
 import { useAuth } from "@/providers/auth-provider";
+import { cn } from "@/lib/utils";
 
 /**
  * Sidebar shell for the admin area. Deliberately separate from the user
@@ -42,27 +43,44 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             Admin
           </Badge>
         </div>
-        <nav aria-label="Admin" className="flex flex-1 flex-col gap-1 p-3">
-          {adminNav.map((item) => {
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={
-                  active
-                    ? "bg-background text-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium shadow-xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background/60 flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
-                }
-              >
-                <Icon className="size-4" aria-hidden="true" />
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav
+          aria-label="Admin"
+          className="flex flex-1 flex-col gap-4 overflow-y-auto p-3"
+        >
+          {adminNavGroups.map((group, groupIndex) => (
+            <div
+              key={group.label}
+              className={cn(
+                "space-y-1",
+                groupIndex > 0 && "border-border/60 mt-1 border-t pt-4",
+              )}
+            >
+              <p className="text-muted-foreground px-3 pb-0.5 text-[10px] font-semibold tracking-[0.12em] uppercase">
+                {group.label}
+              </p>
+              {group.items.map((item) => {
+                const active =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={
+                      active
+                        ? "bg-background text-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium shadow-xs"
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/60 flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors"
+                    }
+                  >
+                    <Icon className="size-4" aria-hidden="true" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
         <div className="border-t p-3">
           <Button

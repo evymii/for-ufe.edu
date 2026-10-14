@@ -6,7 +6,6 @@ import { ArrowLeft, ArrowRight, Download, Share2, X } from "lucide-react";
 
 import { TeamButton } from "@/components/team/button";
 import { Reveal } from "@/components/team/reveal";
-import { hero } from "@/content/site";
 import { routes } from "@/config/routes";
 
 /** Archive photos that exist on disk (public/images/tuuh/<year>/). */
@@ -32,7 +31,11 @@ const HONORS = [
  * (masonry + full-screen lightbox with keyboard nav, counter, download and
  * share), and the closing ink CTA band.
  */
-export function HistoryExtras() {
+export function HistoryExtras({
+  aubl,
+}: {
+  aubl: { title: string; text: string };
+}) {
   return (
     <>
       {/* Honour roll — dark cards, 140px count watermark */}
@@ -92,13 +95,13 @@ export function HistoryExtras() {
             <div className="bg-ink flex min-h-[240px] flex-wrap items-center justify-between gap-8 p-8 text-white md:p-12">
               <div className="max-w-[640px]">
                 <p className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase">
-                  {hero.aubl.title} · Дараагийн бүлэг
+                  {aubl.title} · Дараагийн бүлэг
                 </p>
                 <h2 className="font-display mt-3 text-[clamp(28px,4vw,48px)] leading-[1] font-bold tracking-[0.02em] uppercase">
                   2026–2027 он · Азийн лиг
                 </h2>
                 <p className="mt-4 max-w-[520px] text-[15px] leading-[1.6] text-white/70">
-                  {hero.aubl.text}
+                  {aubl.text}
                 </p>
               </div>
               <TeamButton variant="dark" href={routes.site.roster}>

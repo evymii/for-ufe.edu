@@ -186,6 +186,12 @@
   }
 }
 
+/* Landing-page variant — wider rail (1400) trims the side gutters on the
+   home page without touching the inner pages. */
+.team-shell-wide {
+  max-width: 1400px;
+}
+
 /* Section eyebrow label (meta): 12px uppercase, wide tracking, mute. */
 .eyebrow {
   color: var(--mute);

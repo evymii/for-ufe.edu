@@ -7,7 +7,11 @@ import { FrontOffice, type RosterStaff } from "@/components/team/front-office";
 import { StaffSubnav } from "@/components/team/staff-subnav";
 import { Reveal } from "@/components/team/reveal";
 import { staff } from "@/content/site";
+import { getStaff } from "@/lib/content";
 import { staffKey } from "@/lib/staff";
+import type { Executive } from "@/types/content";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   description:
@@ -15,11 +19,23 @@ export const metadata: Metadata = {
   title: "Удирдлага",
 };
 
+/** Executive row (STAFF group) → the /staff card shape. */
+function toRosterStaff(row: Executive): RosterStaff {
+  return {
+    bullets: row.bullets ?? [],
+    intro: row.bio ?? "",
+    name: row.name,
+    photo: row.photo,
+    role: row.title,
+    sections: row.sections ?? undefined,
+  };
+}
+
 /**
  * Transparent cutouts live at public/images/staff/<staffKey>.png — dropping a
- * file in is enough (an explicit `photo` field on the profile always wins).
+ * file in is enough (an explicit `photo` field on the row always wins).
  */
-function resolvePhoto(member: (typeof staff)[number]): null | string {
+function resolvePhoto(member: RosterStaff): null | string {
   if (member.photo) return member.photo;
   const key = staffKey(member.name);
   const file = path.join(
@@ -32,11 +48,14 @@ function resolvePhoto(member: (typeof staff)[number]): null | string {
   return fs.existsSync(file) ? `/images/staff/${key}.png` : null;
 }
 
-export default function ManagementPage() {
-  const roster: RosterStaff[] = staff.map((member) => ({
-    ...member,
-    photo: resolvePhoto(member),
-  }));
+export default async function ManagementPage() {
+  const staffRows = await getStaff();
+
+  const roster: RosterStaff[] = (
+    staffRows.length > 0
+      ? staffRows.map(toRosterStaff)
+      : staff.map((member) => ({ ...member, photo: member.photo ?? null }))
+  ).map((member) => ({ ...member, photo: resolvePhoto(member) }));
 
   return (
     <>

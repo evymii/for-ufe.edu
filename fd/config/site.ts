@@ -17,11 +17,10 @@ export const publicNav = [
   { href: "/history", label: "Түүх" },
   { href: "/players", label: "Roster" },
   { href: "/schedule", label: "Хуваарь" },
-  { href: "/photos", label: "Фото" },
-  { href: "/videos", label: "Видео" },
-  { href: "/fan-club", label: "Фэн клаб" },
+  { href: "/media", label: "Медиа" },
+  { href: "/fan-club", label: "Мерч" },
   { href: "/front-office", label: "Удирдлага" },
-  { href: "/sponsors", label: "Дэмжигчид" },
+  { href: "/sponsors", label: "Sponsors" },
 ] as const;
 
 /** Secondary destinations surfaced in the footer instead of the header. */

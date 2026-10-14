@@ -4,5 +4,5 @@
  */
 export const env = {
   /** Base URL of the Express API (bd/), configurable per environment. */
-  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000",
+  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010",
 } as const;

@@ -1,10 +1,12 @@
 "use client";
 
+import { youTubeThumbUrl } from "@/lib/youtube";
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
 
 import { FilterPills } from "@/components/team/filter-pills";
+import { YouTubeFrame } from "@/components/team/youtube-frame";
 import type { VideoRow } from "@/types/content";
 import { cn } from "@/lib/utils";
 
@@ -106,7 +108,7 @@ export function VideoLibrary({ videos }: { videos: VideoRow[] }) {
   );
 }
 
-/** Featured surface: mp4 → native player, YouTube → iframe, else poster. */
+/** Featured surface: mp4 → native player, YouTube → brand-free frame, else poster. */
 function FeaturedFrame({ video }: { video: VideoRow }) {
   if (video.videoUrl) {
     return (
@@ -122,13 +124,11 @@ function FeaturedFrame({ video }: { video: VideoRow }) {
   }
   if (video.youtubeId) {
     return (
-      <iframe
+      <YouTubeFrame
         key={video.slug}
-        src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0`}
+        videoId={video.youtubeId}
         title={video.title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="h-full w-full"
+        poster={video.thumbnail}
       />
     );
   }
@@ -151,7 +151,7 @@ function FeaturedFrame({ video }: { video: VideoRow }) {
           />
         </span>
         <p className="font-display text-sm tracking-[0.12em] uppercase">
-          Видео удахгүй нэмэгдэнэ
+          Бичлэгүүд удахгүй нэмэгдэнэ
         </p>
       </div>
     </div>
@@ -181,9 +181,11 @@ function VideoTile({
             active && "border-ink",
           )}
         >
-          {video.thumbnail ? (
+          {video.thumbnail || video.youtubeId ? (
             <Image
-              src={video.thumbnail}
+              src={
+                video.thumbnail || youTubeThumbUrl(video.youtubeId as string)
+              }
               alt=""
               fill
               sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"

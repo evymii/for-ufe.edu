@@ -47,7 +47,11 @@ async function rawRequest<T>(
   init: RequestInit,
 ): Promise<Envelope<T> | null> {
   const headers = new Headers(init.headers);
-  if (init.body !== undefined && !headers.has("Content-Type")) {
+  if (
+    init.body !== undefined &&
+    !(init.body instanceof FormData) &&
+    !headers.has("Content-Type")
+  ) {
     headers.set("Content-Type", "application/json");
   }
   if (accessToken) {
@@ -110,6 +114,9 @@ export const api = {
       method: "POST",
       body: payload === undefined ? undefined : JSON.stringify(payload),
     }),
+  /** Multipart upload — the browser sets the Content-Type boundary. */
+  postForm: <T>(path: string, form: FormData) =>
+    request<T>(path, { method: "POST", body: form }),
   put: <T>(path: string, payload?: unknown) =>
     request<T>(path, {
       method: "PUT",

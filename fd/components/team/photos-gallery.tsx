@@ -150,8 +150,9 @@ function AlbumCard({
   );
 }
 
-/** Lightbox: ink backdrop, counter, actions, main frame, thumb strip. */
-function Lightbox({
+/** Lightbox: ink backdrop, counter, actions, main frame, thumb strip.
+ *  Exported for reuse by the combined media board. */
+export function Lightbox({
   album,
   onClose,
 }: {

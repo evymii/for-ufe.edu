@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-import { ContentManager } from "@/components/admin/content/content-manager";
-
-export const metadata: Metadata = {
-  title: "Admin · Агуулга",
-};
-
+/** The old tabbed CMS is superseded by the per-entity pages and the
+ *  /admin/text/[page] editors — keep the path alive as a redirect. */
 export default function AdminContentPage() {
-  return <ContentManager />;
+  redirect("/admin/text/home");
 }

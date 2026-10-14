@@ -51,8 +51,11 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "npm run dev",
       cwd: "../bd",
+      // The suite is login-heavy (register + login per journey); a long-lived
+      // dev server's 15-min auth limiter would flake it. When Playwright
+      // starts the backend itself, give it a generous auth budget.
+      command: "AUTH_RATE_LIMIT_MAX=1000 npm run dev",
       url: `${apiBase}/health`,
       reuseExistingServer: true,
       timeout: 90_000,

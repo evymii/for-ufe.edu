@@ -1,24 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/shared/page-header";
 import {
   ResourcePanel,
   type ResourceConfig,
 } from "@/components/admin/content/resource-panel";
+import { SiteContentEditor } from "@/components/admin/content/site-content/site-content-editor";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  useContactInbox,
+  useDeleteContactMessage,
   useDeleteSubscriber,
-  usePageCopy,
-  usePutPageCopy,
+  useMarkContactRead,
   useSubscribers,
 } from "@/hooks/use-content-admin";
 import { ApiClientError } from "@/lib/api-client";
+import type { ContactMessageRow } from "@/services/admin/content.service";
 
 /**
  * The CMS surface for the public team site: one tab per content
@@ -62,7 +72,141 @@ const GAME_STATUSES = [
   { value: "CANCELLED", label: "Цуцлагдсан" },
 ];
 
+const PLAYER_ROLES = [
+  { value: "PLAYER", label: "Тоглогч" },
+  { value: "COACH", label: "Дасгалжуулагч" },
+  { value: "STAFF", label: "Ажилтан" },
+];
+
 const RESOURCES: ResourceConfig[] = [
+  {
+    columns: [
+      { key: "title", label: "Мэдээ" },
+      {
+        key: "category",
+        label: "Ангилал",
+        render: (row) => (
+          <Badge variant="secondary">{String(row.category)}</Badge>
+        ),
+      },
+      {
+        key: "publishedAt",
+        label: "Огноо",
+        render: (row) =>
+          row.publishedAt
+            ? new Date(String(row.publishedAt)).toLocaleDateString()
+            : "—",
+      },
+      {
+        key: "isFeatured",
+        label: "Онцлох",
+        render: (row) => (row.isFeatured ? "★" : "—"),
+      },
+      {
+        key: "isPublished",
+        label: "Нийтлэгдсэн",
+        render: (row) => (row.isPublished ? "Тийм" : "Үгүй"),
+      },
+    ],
+    description:
+      "Мэдээний постууд — нүүр хуудасны «Онцлох мэдээ» хэсэгт онцлох тэмдэгтэй нь харагдана.",
+    endpoint: "/api/v1/content/news",
+    fields: [
+      { name: "title", label: "Гарчиг", type: "text", required: true },
+      { name: "slug", label: "Slug", type: "text", required: true },
+      {
+        name: "category",
+        label: "Ангилал (картын шошго)",
+        type: "text",
+        placeholder: "Аварга",
+      },
+      {
+        name: "excerpt",
+        label: "Товч агуулга",
+        type: "textarea",
+        required: true,
+      },
+      {
+        name: "content",
+        label: "Агуулга",
+        type: "textarea",
+        required: true,
+        full: true,
+      },
+      { name: "coverImage", label: "Нүүр зургийн URL", type: "url" },
+      {
+        name: "tags",
+        label: "Шошгууд",
+        type: "tags",
+        help: "Таслалаар тусгаарлана",
+      },
+      { name: "isFeatured", label: "Онцлох мэдээ", type: "checkbox" },
+      { name: "isPublished", label: "Нийтлэх", type: "checkbox" },
+      { name: "sortOrder", label: "Дараалал", type: "number" },
+    ],
+    key: "news",
+    singular: "Мэдээ",
+    title: "Мэдээ",
+  },
+  {
+    columns: [
+      { key: "number", label: "№" },
+      { key: "name", label: "Тоглогч" },
+      { key: "position", label: "Байрлал" },
+      {
+        key: "isCaptain",
+        label: "Ахлагч",
+        render: (row) => (row.isCaptain ? "★" : "—"),
+      },
+      {
+        key: "isPublic",
+        label: "Нийтлэх",
+        render: (row) => (row.isPublic ? "Тийм" : "Үгүй"),
+      },
+    ],
+    description:
+      "Багийн бүрэлдэхүүн — /players хуудас ба нүүр хуудасны танилцуулга. Профайлын нэмэлт мэдээлэл (амжилт, девиз…) profile JSON-д.",
+    endpoint: "/api/v1/content/players",
+    fields: [
+      { name: "name", label: "Нэр", type: "text", required: true },
+      { name: "slug", label: "Slug", type: "text", required: true },
+      { name: "number", label: "Дугаар", type: "number" },
+      {
+        name: "role",
+        label: "Үүрэг",
+        type: "select",
+        options: PLAYER_ROLES,
+      },
+      {
+        name: "position",
+        label: "Байрлал",
+        type: "text",
+        placeholder: "Point Guard",
+      },
+      { name: "heightCm", label: "Өндөр (см)", type: "number" },
+      { name: "hometown", label: "Төрсөн газар", type: "text" },
+      { name: "photo", label: "Зурагны URL", type: "url" },
+      { name: "actionPhoto", label: "Тоглолтын зураг", type: "url" },
+      { name: "bio", label: "Танилцуулга", type: "textarea", full: true },
+      { name: "academicYear", label: "Курс", type: "text" },
+      { name: "isCaptain", label: "Багийн ахлагч", type: "checkbox" },
+      { name: "ppg", label: "PPG", type: "number" },
+      { name: "rpg", label: "RPG", type: "number" },
+      { name: "apg", label: "APG", type: "number" },
+      {
+        name: "profile",
+        label: "Профайл нэмэлт (JSON)",
+        type: "json",
+        full: true,
+        help: '{ "yearsOnTeam": "4 дэх жил", "major": "…", "achievements": ["…"], "motto": "…", "pregame": "…", "reason": "…", "roleLabel": "…" }',
+      },
+      { name: "sortOrder", label: "Дараалал", type: "number" },
+      { name: "isPublic", label: "Нийтлэх", type: "checkbox" },
+    ],
+    key: "players",
+    singular: "Тоглогч",
+    title: "Тоглогчид",
+  },
   {
     columns: [
       {
@@ -184,6 +328,51 @@ const RESOURCES: ResourceConfig[] = [
   },
   {
     columns: [
+      { key: "name", label: "Нэр" },
+      { key: "title", label: "Албан тушаал" },
+      { key: "sortOrder", label: "Дараалал" },
+    ],
+    description:
+      "/staff хуудас — дасгалжуулагчид, багийн ахлагч зэрэг карт (+ задаргааны хэсгүүд sections JSON-д).",
+    defaults: { group: "STAFF" },
+    endpoint: "/api/v1/content/executives",
+    fields: [
+      { name: "name", label: "Нэр", type: "text", required: true },
+      {
+        name: "slug",
+        label: "Slug",
+        type: "text",
+        required: true,
+        placeholder: "b-purevdorj",
+      },
+      { name: "title", label: "Албан тушаал", type: "text", required: true },
+      { name: "photo", label: "Зурагны URL", type: "url" },
+      { name: "sortOrder", label: "Дараалал", type: "number" },
+      { name: "bio", label: "Товч танилцуулга", type: "textarea", full: true },
+      {
+        name: "bullets",
+        label: "Онцлох мөрүүд",
+        type: "tags",
+        full: true,
+        help: "Таслалаар тусгаарлана",
+      },
+      {
+        name: "sections",
+        label: "Задаргааны хэсгүүд (JSON)",
+        type: "json",
+        full: true,
+        help: '[{ "heading": "Боловсрол", "text": "…" }, { "heading": "Ажлын замнал", "list": ["…"] }]',
+      },
+      { name: "isPublic", label: "Нийтлэх", type: "checkbox" },
+    ],
+    key: "staff",
+    listQuery: { group: "STAFF" },
+    revalidateTag: "executives",
+    singular: "Ажилтан",
+    title: "Багийн ажилтан",
+  },
+  {
+    columns: [
       { key: "title", label: "Галерей" },
       {
         key: "category",
@@ -210,7 +399,8 @@ const RESOURCES: ResourceConfig[] = [
           String(Array.isArray(row.images) ? row.images.length : 0),
       },
     ],
-    description: "Фото хуудсын галерейнууд — нүүр зураг, ангилал, зургууд.",
+    description:
+      "Зурагнууд хуудасны галерейнууд — нүүр зураг, ангилал, зургууд.",
     endpoint: "/api/v1/content/media",
     fields: [
       { name: "title", label: "Гарчиг", type: "text", required: true },
@@ -264,7 +454,8 @@ const RESOURCES: ResourceConfig[] = [
         render: (row) => (row.isFeatured ? "★" : "—"),
       },
     ],
-    description: "Видео сан — онцлох видео, ангилал, дамжуулалтын эх.",
+    description:
+      "Бичлэгүүдийн сан — онцлох бичлэгүүд, ангилал, дамжуулалтын эх.",
     endpoint: "/api/v1/content/videos",
     fields: [
       { name: "title", label: "Гарчиг", type: "text", required: true },
@@ -288,8 +479,8 @@ const RESOURCES: ResourceConfig[] = [
       { name: "sortOrder", label: "Дараалал", type: "number" },
     ],
     key: "videos",
-    singular: "Видео",
-    title: "Видео",
+    singular: "Бичлэг",
+    title: "Бичлэгүүд",
   },
   {
     columns: [
@@ -312,7 +503,7 @@ const RESOURCES: ResourceConfig[] = [
       },
       { key: "sizes", label: "Хэмжээ" },
     ],
-    description: "Фэн клабын дэлгүүр — бүтээгдэхүүн, үнэ, хэмжээ.",
+    description: "Мерч дэлгүүр — бүтээгдэхүүн, үнэ, хэмжээ.",
     endpoint: "/api/v1/content/shop",
     fields: [
       { name: "name", label: "Нэр", type: "text", required: true },
@@ -343,19 +534,24 @@ const RESOURCES: ResourceConfig[] = [
 ];
 
 export function ContentManager() {
+  // Controlled so the page-copy editor's pointer links can hop straight
+  // to the panel that owns a section's live rows (news, shop, inbox…).
+  const [cmsTab, setCmsTab] = useState("games");
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Агуулга"
-        description="Нийтийн хуудсуудын агуулга — хуваарь, удирдлага, галерей, видео, дэлгүүр ба хуудасны текст."
+        description="Нийтийн хуудсуудын агуулга — мэдээ, тоглогчид, хуваарь, удирдлага, ажилтан, галерей, видео, дэлгүүр, холбоо ба хуудасны текст. Хадгалсны дараа нийтийн хуудас шууд шинэчлэгдэнэ."
       />
-      <Tabs defaultValue="games">
+      <Tabs value={cmsTab} onValueChange={setCmsTab}>
         <TabsList className="flex h-auto flex-wrap justify-start">
           {RESOURCES.map((resource) => (
             <TabsTrigger key={resource.key} value={resource.key}>
               {resource.title}
             </TabsTrigger>
           ))}
+          <TabsTrigger value="inbox">Холбоо</TabsTrigger>
           <TabsTrigger value="subscribers">Захиалга</TabsTrigger>
           <TabsTrigger value="page-copy">Хуудасны текст</TabsTrigger>
         </TabsList>
@@ -364,11 +560,20 @@ export function ContentManager() {
             <ResourcePanel config={resource} />
           </TabsContent>
         ))}
+        <TabsContent value="inbox">
+          <InboxPanel />
+        </TabsContent>
         <TabsContent value="subscribers">
           <SubscribersPanel />
         </TabsContent>
         <TabsContent value="page-copy">
-          <PageCopyPanel />
+          <div className="space-y-4">
+            <PageHeader
+              title="Хуудасны текст"
+              description="Хуудас бүрийн бичвэр — талбаруудыг бөглөж, баруун талд бодит харагдацыг ажиглана. Хадгалсны дараа нийтийн хуудас шууд шинэчлэгдэнэ."
+            />
+            <SiteContentEditor onOpenTab={setCmsTab} />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
@@ -450,146 +655,121 @@ function SubscribersPanel() {
   );
 }
 
-/** Page/section copy pages editable as JSON, matching the site's fallbacks. */
-const COPY_PAGES: Array<{ value: string; label: string; sections: string[] }> =
-  [
-    { label: "Хотын загвар", sections: ["page"], value: "city-edition" },
-    { label: "Фэн клаб", sections: ["page"], value: "fan-club" },
-    { label: "Фэнэйд мэдээ", sections: ["page"], value: "newsletter" },
-    {
-      label: "Хуудасны танилцуулга",
-      sections: ["hero"],
-      value: "heroes",
-    },
-  ];
-
-const HERO_PAGES = [
-  "schedule",
-  "photos",
-  "videos",
-  "front-office",
-  "home",
-  "contact",
-  "footer",
-];
-
-function PageCopyPanel() {
-  const [page, setPage] = useState(COPY_PAGES[0]?.value ?? "city-edition");
-  const [heroPage, setHeroPage] = useState(HERO_PAGES[0] ?? "schedule");
+/** Contact-form inbox: unread count, read/unread toggle, delete. */
+function InboxPanel() {
+  const { data, isPending, isError, error } = useContactInbox();
+  const markRead = useMarkContactRead();
+  const remove = useDeleteContactMessage();
+  const [open, setOpen] = useState<ContactMessageRow | null>(null);
 
   return (
     <div className="space-y-4">
       <PageHeader
-        title="Хуудасны текст"
-        description="Хотоос эхэлсэн бичвэрүүд — JSON хэлбэрээр засварлана. Хоосон үед сайтын статик нөөц хэрэглэгдэнэ."
+        title="Холбоо барих — зурвас"
+        description="/public contact хуудасны формын ирсэн зурвасууд."
       />
-      <div className="flex flex-wrap gap-2">
-        {COPY_PAGES.map((option) => (
-          <Button
-            key={option.value}
-            variant={page === option.value ? "default" : "outline"}
-            size="sm"
-            onClick={() => setPage(option.value)}
-          >
-            {option.label}
-          </Button>
-        ))}
-      </div>
-
-      {page === "heroes" ? (
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {HERO_PAGES.map((option) => (
-              <Button
-                key={option}
-                variant={heroPage === option ? "default" : "outline"}
-                size="sm"
-                onClick={() => setHeroPage(option)}
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
-          <SectionEditor key={heroPage} page={heroPage} section="hero" />
-        </div>
-      ) : (
-        COPY_PAGES.find((option) => option.value === page)?.sections.map(
-          (section) => (
-            <SectionEditor
-              key={`${page}-${section}`}
-              page={page}
-              section={section}
-            />
-          ),
-        )
-      )}
-    </div>
-  );
-}
-
-function SectionEditor({ page, section }: { page: string; section: string }) {
-  const { data, isPending, isError } = usePageCopy(page);
-  const save = usePutPageCopy(page);
-
-  const raw = data?.sections?.[section];
-  const serialized = raw === undefined ? "" : JSON.stringify(raw, null, 2);
-
-  // Adjust-during-render reset: when a fresh payload arrives (load or save),
-  // the draft follows it without an effect.
-  const [baseline, setBaseline] = useState(serialized);
-  const [draft, setDraft] = useState(serialized);
-  if (baseline !== serialized) {
-    setBaseline(serialized);
-    setDraft(serialized);
-  }
-
-  const saveSection = async () => {
-    let parsed: Record<string, unknown>;
-    try {
-      parsed = draft.trim() === "" ? {} : JSON.parse(draft);
-    } catch {
-      toast.error("JSON буруу хэлбэртэй байна — шалгаад дахин оролдоно уу.");
-      return;
-    }
-    try {
-      await save.mutateAsync({ section, data: parsed });
-      toast.success("Хадгалагдлаа");
-    } catch (err) {
-      toast.error(
-        err instanceof ApiClientError ? err.message : "Хадгалахад алдаа гарлаа",
-      );
-    }
-  };
-
-  return (
-    <div className="border-border/60 space-y-2 rounded-lg border p-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">
-          {page} · {section}
-        </p>
-        <Button
-          size="sm"
-          onClick={() => void saveSection()}
-          disabled={save.isPending}
-        >
-          <Save aria-hidden="true" />
-          {save.isPending ? "Хадгалж байна…" : "Хадгалах"}
-        </Button>
-      </div>
       {isPending ? (
         <p className="text-muted-foreground text-sm">Ачаалж байна…</p>
       ) : isError ? (
-        <p className="text-destructive text-sm">Ачаалахад алдаа гарлаа.</p>
+        <p className="text-destructive text-sm" role="alert">
+          {error instanceof ApiClientError
+            ? error.message
+            : "Ачаалахад алдаа гарлаа."}
+        </p>
+      ) : (data?.items.length ?? 0) === 0 ? (
+        <p className="text-muted-foreground py-10 text-center text-sm">
+          Одоогоор зурвас байхгүй.
+        </p>
       ) : (
-        <textarea
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          rows={10}
-          spellCheck={false}
-          placeholder='{ "intro": "…" }'
-          className="border-input focus-visible:ring-ring bg-background w-full rounded-md border px-3 py-2 font-mono text-xs focus-visible:outline-none"
-        />
+        <div className="space-y-2">
+          <p className="text-muted-foreground text-sm">
+            Уншаагүй {data?.unread ?? 0} · нийт {data?.items.length ?? 0}
+          </p>
+          <div className="border-border/60 overflow-x-auto rounded-lg border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40 text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium">Нэр</th>
+                  <th className="px-3 py-2 text-left font-medium">Имэйл</th>
+                  <th className="px-3 py-2 text-left font-medium">Сэдэв</th>
+                  <th className="px-3 py-2 text-left font-medium">Огноо</th>
+                  <th className="px-3 py-2 text-left font-medium">Төлөв</th>
+                  <th className="px-3 py-2" />
+                </tr>
+              </thead>
+              <tbody>
+                {data?.items.map((row) => (
+                  <tr key={row.id} className="border-border/60 border-t">
+                    <td className="px-3 py-2">{row.name}</td>
+                    <td className="text-muted-foreground px-3 py-2">
+                      {row.email}
+                    </td>
+                    <td className="max-w-[200px] truncate px-3 py-2">
+                      {row.subject ?? "—"}
+                    </td>
+                    <td className="text-muted-foreground px-3 py-2">
+                      {new Date(row.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-3 py-2">
+                      <Badge variant={row.isRead ? "outline" : "secondary"}>
+                        {row.isRead ? "Уншсан" : "Шинэ"}
+                      </Badge>
+                    </td>
+                    <td className="px-3 py-2 text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setOpen(row);
+                            if (!row.isRead)
+                              markRead.mutate({ id: row.id, isRead: true });
+                          }}
+                        >
+                          Харах
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`${row.name} устгах`}
+                          onClick={() => remove.mutate(row.id)}
+                        >
+                          <Trash2
+                            className="text-destructive size-4"
+                            aria-hidden="true"
+                          />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
+
+      <Dialog
+        open={open !== null}
+        onOpenChange={(isOpen) => !isOpen && setOpen(null)}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{open?.subject ?? "Зурвас"}</DialogTitle>
+            <DialogDescription>
+              {open?.name} · {open?.email}
+              {open?.phone ? ` · ${open.phone}` : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-sm whitespace-pre-wrap">{open?.message}</p>
+          <DialogFooter>
+            <Button variant="outline" asChild>
+              <a href={`mailto:${open?.email ?? ""}`}>Хариулах</a>
+            </Button>
+            <Button onClick={() => setOpen(null)}>Хаах</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

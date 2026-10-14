@@ -68,3 +68,30 @@ export const newsletterAdminService = {
     return api.delete<{ deleted: boolean }>(`/api/v1/content/newsletter/${id}`);
   },
 };
+
+export interface ContactMessageRow {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string | null;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export const contactInboxService = {
+  list(): Promise<{ items: ContactMessageRow[]; unread: number }> {
+    return api.get<{ items: ContactMessageRow[]; unread: number }>(
+      "/api/v1/content/contact/inbox",
+    );
+  },
+
+  markRead(id: string, isRead: boolean): Promise<unknown> {
+    return api.patch(`/api/v1/content/contact/${id}/read`, { isRead });
+  },
+
+  remove(id: string): Promise<{ deleted: boolean }> {
+    return api.delete<{ deleted: boolean }>(`/api/v1/content/contact/${id}`);
+  },
+};

@@ -25,3 +25,21 @@ export function splitName(name: string): [string, string] {
   const [first = "", ...rest] = name.split(" ");
   return [first, rest.join(" ")];
 }
+
+/**
+ * Splits a roster list into fixed-size pages. The grid shows 15 players per
+ * page (3 rows × 5 columns); the requested page is clamped into range so a
+ * shrunken list (search, data refresh) can never point past the last page.
+ */
+export function paginate<T>(
+  items: readonly T[],
+  page: number,
+  pageSize: number,
+): { items: T[]; totalPages: number } {
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  return {
+    items: items.slice((safePage - 1) * pageSize, safePage * pageSize),
+    totalPages,
+  };
+}
