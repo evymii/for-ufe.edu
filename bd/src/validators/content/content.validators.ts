@@ -303,18 +303,6 @@ export const listShopQuerySchema = z.object({
   includeHidden: boolFlag.optional(), // ADMIN-only
 });
 
-// ── Newsletter (public signup + admin inbox) ─────────────────────────────────
-export const newsletterInterestEnum = z.enum(['community', 'recaps', 'shop', 'tickets']);
-
-export const newsletterSubscribeSchema = z.object({
-  email: z
-    .email()
-    .max(254)
-    .transform((value) => value.toLowerCase()),
-  firstName: optionalText(80),
-  interests: z.array(newsletterInterestEnum).max(4).optional(),
-});
-
 // ── Update variants: everything optional (essentials included) ───────────────
 export const updateNewsSchema = createNewsSchema.partial();
 export const updatePlayerSchema = createPlayerSchema.partial();
@@ -340,23 +328,6 @@ export const sectionParamSchema = z.object({
   section: z.string().trim().min(1).max(40),
 });
 
-// ── Contact inbox ────────────────────────────────────────────────────────────
-export const createContactSchema = z.object({
-  email: z
-    .email()
-    .max(254)
-    .transform((value) => value.toLowerCase()),
-  message: text(4000),
-  name: text(80),
-  phone: optionalText(30),
-  subject: optionalText(140),
-});
-
-export const contactReadSchema = z.object({
-  isRead: boolFlag,
-});
-
-export type CreateContactInput = z.infer<typeof createContactSchema>;
 export type CreateGameInput = z.infer<typeof createGameSchema>;
 export type ListAlbumsQuery = z.infer<typeof listAlbumsQuerySchema>;
 export type ListExecutivesQuery = z.infer<typeof listExecutivesQuerySchema>;
@@ -365,7 +336,6 @@ export type ListNewsQuery = z.infer<typeof listNewsQuerySchema>;
 export type ListPlayersQuery = z.infer<typeof listPlayersQuerySchema>;
 export type ListShopQuery = z.infer<typeof listShopQuerySchema>;
 export type ListVideosQuery = z.infer<typeof listVideosQuerySchema>;
-export type NewsletterSubscribeInput = z.infer<typeof newsletterSubscribeSchema>;
 export type SiteContentPutInput = z.infer<typeof siteContentPutSchema>;
 export type UpdateGameInput = z.infer<typeof updateGameSchema>;
 

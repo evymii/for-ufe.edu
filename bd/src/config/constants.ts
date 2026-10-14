@@ -18,15 +18,13 @@ export const USER_SORT_FIELDS = ['createdAt', 'updatedAt', 'email', 'name', 'rol
  * free-form JSON outside these keys is rejected server-side.
  */
 export const SITE_CONTENT_PAGES = {
-  'city-edition': ['page'],
-  contact: ['info', 'tickets'],
+  contact: ['info'],
   'fan-club': ['page'],
   footer: ['social'],
   'front-office': ['hero'],
   general: ['brand', 'contact'],
   history: ['page'],
   home: ['fanmail', 'hero', 'news', 'stats', 'thanks'],
-  newsletter: ['page'],
   photos: ['hero'],
   players: ['page'],
   schedule: ['hero'],

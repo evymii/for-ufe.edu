@@ -100,11 +100,6 @@ export type Video = Prisma.VideoModel
  */
 export type ShopProduct = Prisma.ShopProductModel
 /**
- * Model NewsletterSubscriber
- * 
- */
-export type NewsletterSubscriber = Prisma.NewsletterSubscriberModel
-/**
  * Model Order
  * 
  */
@@ -129,8 +124,3 @@ export type Media = Prisma.MediaModel
  * 
  */
 export type ContentHistory = Prisma.ContentHistoryModel
-/**
- * Model ContactMessage
- * 
- */
-export type ContactMessage = Prisma.ContactMessageModel

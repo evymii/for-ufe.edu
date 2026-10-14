@@ -227,17 +227,6 @@ model ShopProduct {
   @@index([isVisible, category, sortOrder])
 }
 
-// Newsletter signups from the public /newsletter page.
-model NewsletterSubscriber {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  firstName String?
-  interests String[] @default([]) // recaps | tickets | community | shop
-  createdAt DateTime @default(now())
-
-  @@index([createdAt])
-}
-
 // Shop orders (фэн клаб). Items are a JSON snapshot of the purchased
 // products so history survives product edits/deletion.
 model Order {
@@ -326,18 +315,4 @@ model ContentHistory {
 
   @@index([blockId, createdAt(sort: Desc)])
   @@map("content_history")
-}
-
-// Public contact form inbox (admins read/mark/delete).
-model ContactMessage {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  email     String
-  phone     String?
-  subject   String?
-  message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([isRead, createdAt])
 }

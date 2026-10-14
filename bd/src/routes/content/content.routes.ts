@@ -3,11 +3,9 @@ import type { RequestHandler } from 'express';
 import { Router } from 'express';
 
 import * as collections from '../../controllers/content/collections.controller.js';
-import * as contact from '../../controllers/content/contact.controller.js';
 import * as executives from '../../controllers/content/executives.controller.js';
 import * as games from '../../controllers/content/games.controller.js';
 import * as news from '../../controllers/content/news.controller.js';
-import * as newsletter from '../../controllers/content/newsletter.controller.js';
 import * as players from '../../controllers/content/players.controller.js';
 import * as shop from '../../controllers/content/shop.controller.js';
 import * as siteContent from '../../controllers/content/site-content.controller.js';
@@ -19,9 +17,7 @@ import { publicReadCache } from '../../middleware/publicReadCache.js';
 import { requireRole } from '../../middleware/requireRole.js';
 import { validate } from '../../middleware/validate.js';
 import {
-  contactReadSchema,
   createAlbumSchema,
-  createContactSchema,
   createExecutiveSchema,
   createGameSchema,
   createNewsSchema,
@@ -38,7 +34,6 @@ import {
   listPlayersQuerySchema,
   listShopQuerySchema,
   listVideosQuerySchema,
-  newsletterSubscribeSchema,
   pageParamSchema,
   sectionParamSchema,
   siteContentPutSchema,
@@ -313,24 +308,6 @@ contentRouter.delete(
   asyncHandler(shop.deleteShopProduct),
 );
 
-// ── Newsletter (захиалга) ────────────────────────────────────────────────────
-contentRouter.post(
-  '/newsletter/subscribe',
-  validate({ body: newsletterSubscribeSchema }),
-  asyncHandler(newsletter.subscribeNewsletter),
-);
-contentRouter.get(
-  '/newsletter/subscribers',
-  ...adminWrite,
-  asyncHandler(newsletter.listSubscribers),
-);
-contentRouter.delete(
-  '/newsletter/:id',
-  ...adminWrite,
-  validate({ params: idParamSchema }),
-  asyncHandler(newsletter.deleteSubscriber),
-);
-
 // ── Site content (singleton copy) ────────────────────────────────────────────
 contentRouter.get('/site-content', asyncHandler(siteContent.getAllSiteContent));
 contentRouter.get(
@@ -343,24 +320,4 @@ contentRouter.put(
   ...adminWrite,
   validate({ body: siteContentPutSchema, params: sectionParamSchema }),
   asyncHandler(siteContent.putSiteContent),
-);
-
-// ── Contact inbox (холбоо барих) ────────────────────────────────────────────
-contentRouter.post(
-  '/contact',
-  validate({ body: createContactSchema }),
-  asyncHandler(contact.submitContact),
-);
-contentRouter.get('/contact/inbox', ...adminWrite, asyncHandler(contact.listInbox));
-contentRouter.patch(
-  '/contact/:id/read',
-  ...adminWrite,
-  validate({ body: contactReadSchema, params: idParamSchema }),
-  asyncHandler(contact.markContactRead),
-);
-contentRouter.delete(
-  '/contact/:id',
-  ...adminWrite,
-  validate({ params: idParamSchema }),
-  asyncHandler(contact.deleteContact),
 );

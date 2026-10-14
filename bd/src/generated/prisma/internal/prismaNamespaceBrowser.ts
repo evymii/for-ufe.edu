@@ -60,13 +60,11 @@ export const ModelName = {
   Executive: 'Executive',
   Video: 'Video',
   ShopProduct: 'ShopProduct',
-  NewsletterSubscriber: 'NewsletterSubscriber',
   Order: 'Order',
   SiteContent: 'SiteContent',
   ContentBlock: 'ContentBlock',
   Media: 'Media',
-  ContentHistory: 'ContentHistory',
-  ContactMessage: 'ContactMessage'
+  ContentHistory: 'ContentHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -281,17 +279,6 @@ export const ShopProductScalarFieldEnum = {
 export type ShopProductScalarFieldEnum = (typeof ShopProductScalarFieldEnum)[keyof typeof ShopProductScalarFieldEnum]
 
 
-export const NewsletterSubscriberScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  firstName: 'firstName',
-  interests: 'interests',
-  createdAt: 'createdAt'
-} as const
-
-export type NewsletterSubscriberScalarFieldEnum = (typeof NewsletterSubscriberScalarFieldEnum)[keyof typeof NewsletterSubscriberScalarFieldEnum]
-
-
 export const OrderScalarFieldEnum = {
   id: 'id',
   customerName: 'customerName',
@@ -364,20 +351,6 @@ export const ContentHistoryScalarFieldEnum = {
 } as const
 
 export type ContentHistoryScalarFieldEnum = (typeof ContentHistoryScalarFieldEnum)[keyof typeof ContentHistoryScalarFieldEnum]
-
-
-export const ContactMessageScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  subject: 'subject',
-  message: 'message',
-  isRead: 'isRead',
-  createdAt: 'createdAt'
-} as const
-
-export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
 
 
 export const SortOrder = {
