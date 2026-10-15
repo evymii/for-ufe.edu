@@ -43,6 +43,15 @@ export function buildApp(): Express {
   // Liveness/readiness for docker & load balancers (outside the versioned API).
   app.use('/health', healthRouter);
 
+  // Plain success response for the bare domain — service-is-up check.
+  app.get('/', (_req, res) => {
+    res.json({
+      service: 'ufeedu-api',
+      success: true,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   // Versioned API surface, rate limited as a whole.
   app.use(API_PREFIX, apiLimiter, apiRouter);
 
