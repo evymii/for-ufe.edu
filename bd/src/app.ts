@@ -36,11 +36,10 @@ export function buildApp(): Express {
     app.use(requestLogger);
   }
   app.use(helmet());
-  app.use(cors(corsOptions));
-  app.use(express.json({ limit: '1mb' }));
-  app.use(cookieParser());
 
-  // Liveness/readiness for docker & load balancers (outside the versioned API).
+  // Liveness/readiness for docker & load balancers (outside the versioned
+  // API). Mounted BEFORE the CORS allowlist on purpose — health checks must
+  // answer any origin with a plain success/failure message.
   app.use('/health', healthRouter);
 
   // Plain success response for the bare domain — service-is-up check.
@@ -51,6 +50,10 @@ export function buildApp(): Express {
       timestamp: new Date().toISOString(),
     });
   });
+
+  app.use(cors(corsOptions));
+  app.use(express.json({ limit: '1mb' }));
+  app.use(cookieParser());
 
   // Versioned API surface, rate limited as a whole.
   app.use(API_PREFIX, apiLimiter, apiRouter);
