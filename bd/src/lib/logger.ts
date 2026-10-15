@@ -1,4 +1,8 @@
-import pino from 'pino';
+// Named import, not the default: pino ships ESM-style declarations and
+// Vercel's Node builder types default imports of such packages as the
+// (non-callable) module namespace. pino exports itself as a named binding
+// too, which is immune and keeps full typing.
+import { pino } from 'pino';
 
 import { env } from '../config/env.js';
 

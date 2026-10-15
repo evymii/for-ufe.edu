@@ -1,6 +1,16 @@
-import rateLimit from 'express-rate-limit';
+import type { Options, RateLimitRequestHandler } from 'express-rate-limit';
+
+import * as rateLimitModule from 'express-rate-limit';
 
 import { env } from '../config/env.js';
+
+// express-rate-limit ships ESM-style declarations (`export { rateLimit as
+// default }`); under Vercel's Node builder the default import is typed as
+// the module namespace (not callable). Bind it ourselves — the named type
+// imports keep their declared shapes, and `default` exists at runtime in
+// both the CJS and ESM builds.
+type RateLimitFn = (options?: Partial<Options>) => RateLimitRequestHandler;
+const rateLimit = (rateLimitModule.default ?? rateLimitModule) as unknown as RateLimitFn;
 
 function envelope(message: string) {
   return { error: { code: 'RATE_LIMITED', message }, success: false };
