@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "prepare": "cd .. && node bd/node_modules/husky/bin.js .husky",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
     "start": "node dist/index.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
@@ -44,13 +44,13 @@
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
-    "file-type": "^22.1.1",
+    "file-type": "^16.5.4",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.4.0",
     "pino": "^10.4.0",
     "pino-http": "^11.0.0",
-    "sanitize-html": "^2.18.0",
+    "sanitize-html": "^2.16.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
