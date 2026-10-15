@@ -1,3 +1,5 @@
+import type { RequestHandler } from 'express';
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
@@ -18,12 +20,13 @@ import { requestLogger } from './middleware/requestLogger.js';
 import { healthRouter } from './routes/health.routes.js';
 import { apiRouter } from './routes/index.js';
 
-// helmet ships ESM-style declarations with no `export =`, so a default
-// import binds to the module namespace (not callable) when this file is
-// type-checked as CommonJS — e.g. by Vercel's Node builder. `default`
-// exists on both the CJS and ESM builds (the CJS shim re-exports it), so
-// call through it explicitly.
-const helmet = (helmetModule.default ?? helmetModule) as typeof helmetModule.default;
+// helmet ships ESM-style declarations with no `export =`; under Vercel's
+// Node builder both the default import and `.default` end up typed as the
+// module namespace (not callable). Sidestep its declarations entirely and
+// type the binding ourselves. At runtime `default` exists in both the CJS
+// build (its shim re-exports itself as `.default`) and the ESM build.
+type HelmetMiddleware = () => RequestHandler;
+const helmet = (helmetModule.default ?? helmetModule) as unknown as HelmetMiddleware;
 
 export function buildApp(): Express {
   const app = express();
