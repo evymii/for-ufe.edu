@@ -1,9 +1,6 @@
 import type { UploadApiResponse } from 'cloudinary';
 
 import { v2 as cloudinary } from 'cloudinary';
-// Default import + property call: file-type 16 is the last CommonJS
-// release, and Node's ESM named-export detection can't see its exports.
-import { fileTypeFromBuffer } from 'file-type';
 
 import { MEDIA_MIME_ALLOWLIST } from '../../config/constants.js';
 import { env } from '../../config/env.js';
@@ -41,7 +38,12 @@ export async function uploadImage(buffer: Buffer, subfolder: string): Promise<St
 
   // Trust the bytes, never the client's MIME type or filename. SVG is
   // rejected implicitly: it is not in the allowlist (it can carry scripts).
-  const detected = await fileTypeFromBuffer(buffer);
+  // Dynamic import works across both CommonJS (file-type v16) and ESM.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ft: any = await import('file-type');
+  const detector = ft.fileTypeFromBuffer ?? ft.fromBuffer ?? ft.default?.fromBuffer;
+  const detected = detector ? await detector(buffer) : null;
+
   if (!detected || !(MEDIA_MIME_ALLOWLIST as readonly string[]).includes(detected.mime)) {
     throw ApiError.badRequest(
       'Unsupported or invalid image file (allowed: JPEG, PNG, WebP, GIF, AVIF)',
