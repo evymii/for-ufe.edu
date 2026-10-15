@@ -5,6 +5,10 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+  // Ship the linux engine alongside the native one so the Vercel serverless
+  // bundle always contains it (build-time `prisma generate` re-runs there,
+  // but committed binaries keep the lambda self-sufficient).
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

@@ -19,8 +19,15 @@ healthRouter.get(
       await prisma.$runCommandRaw({ ping: 1 });
     } catch (error) {
       logger.error({ err: error }, 'Readiness check failed — database unreachable');
+      // TEMPORARY diagnostic: expose the underlying error so deployment
+      // issues (engine missing vs. bad DATABASE_URL vs. network) are
+      // identifiable from the outside. Remove once the DB connects.
       res.status(503).json({
-        error: { code: 'SERVICE_UNAVAILABLE', message: 'Database is not ready' },
+        error: {
+          code: 'SERVICE_UNAVAILABLE',
+          detail: String(error).slice(0, 300),
+          message: 'Database is not ready',
+        },
         success: false,
       });
       return;
