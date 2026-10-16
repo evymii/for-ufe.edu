@@ -1,8 +1,9 @@
 {
   "name": "ufeedu-backend",
+  "author": "Mio (https://github.com/evymii)",
   "version": "0.1.0",
   "private": true,
-  "description": "ufeedu backend — Express + TypeScript + PostgreSQL (Prisma)",
+  "description": "ufeedu backend \u2014 Express + TypeScript + PostgreSQL (Prisma)",
   "type": "module",
   "engines": {
     "node": ">=22"

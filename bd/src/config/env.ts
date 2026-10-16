@@ -95,7 +95,15 @@ function checkStorage(data: z.infer<typeof envSchema>): string[] {
 }
 
 function loadEnv() {
-  const parsed = envSchema.safeParse(process.env);
+  const raw: NodeJS.ProcessEnv = { ...process.env };
+  for (const key of Object.keys(raw)) {
+    const value = raw[key];
+    if (typeof value === 'string') {
+      raw[key] = normalizeEnvValue(value);
+    }
+  }
+
+  const parsed = envSchema.safeParse(raw);
 
   if (!parsed.success) {
     abortEnv(
@@ -123,6 +131,18 @@ function loadEnv() {
     isTest: data.NODE_ENV === 'test',
     storageConfigured: data.STORAGE_PROVIDER !== '',
   };
+}
+
+/**
+ * Dashboard env fields (Vercel/Heroku) keep pasted quotes literally —
+ * `DATABASE_URL="mongodb+srv://…"` then fails provider validation and
+ * `CORS_ORIGIN="https://…"` never matches an Origin. Strip one layer of
+ * matching surrounding quotes and outer whitespace from every value.
+ */
+function normalizeEnvValue(value: string): string {
+  const trimmed = value.trim();
+  const quoted = /^(["'])(.*)\1$/u.exec(trimmed);
+  return quoted?.[2] ?? trimmed;
 }
 
 export const env = loadEnv();
