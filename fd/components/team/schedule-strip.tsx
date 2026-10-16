@@ -71,7 +71,7 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
               return (
                 <Link
                   key={game.id}
-                  href={routes.site.schedule}
+                  href={routes.site.game(game.id)}
                   aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
                   className="group/card border-line bg-paper focus-visible:outline-ink hover:border-ink/40 hover:shadow-card flex h-[104px] min-w-[224px] snap-start flex-col justify-between border p-3 transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] sm:min-w-[248px]"
                 >

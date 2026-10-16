@@ -5,6 +5,7 @@ export const routes = {
   register: "/register",
   site: {
     fanClub: "/fan-club",
+    game: (gameId: string) => `/schedule/${encodeURIComponent(gameId)}`,
     history: "/history",
     management: "/staff",
     media: "/media",

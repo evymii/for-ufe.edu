@@ -3,7 +3,7 @@
 // MongoDB connector has no native enums).
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
   // Ship the linux engine alongside the native one so the Vercel serverless
   // bundle always contains it (build-time `prisma generate` re-runs there,
