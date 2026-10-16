@@ -1,5 +1,6 @@
 {
   "name": "fd",
+  "author": "Mio (https://github.com/evymii)",
   "version": "0.1.0",
   "private": true,
   "scripts": {
