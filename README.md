@@ -97,3 +97,7 @@ the public fetcher. A tag that is fetched but missing from `ALLOWED_TAGS`
 site never goes down with the API. The home, history, players, staff and
 contact pages are CMS-backed with those same fallbacks; the JSON editor
 prefills each section's default so admins never edit blind.
+
+## Author
+
+**Mio** — [evymii](https://github.com/evymii)

@@ -18,6 +18,9 @@ playwright-report/
 test-results/
 playwright/.cache/
 
+# Local backups (mongodumps, pre-edit snapshots) — never commit
+backups/
+
 # Logs & OS
 *.log
 .DS_Store
