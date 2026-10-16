@@ -83,6 +83,12 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
         : error instanceof Error
           ? error.message
           : 'Internal server error',
+      // TEMPORARY production diagnostic — names the real cause of 500s so
+      // deployment issues are debuggable from the network tab. Remove once
+      // the auth write failure is resolved.
+      ...(env.isProd
+        ? { detail: (error instanceof Error ? error.message : String(error)).slice(0, 300) }
+        : {}),
     },
     success: false,
   });
