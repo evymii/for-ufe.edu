@@ -123,6 +123,7 @@ function loadEnv() {
 
   return {
     ...data,
+    COOKIE_DOMAIN: normalizeCookieDomain(data.COOKIE_DOMAIN),
     // Origins are compared verbatim against the browser's Origin header,
     // which never carries a trailing slash — normalize pasted values.
     CORS_ORIGINS: data.CORS_ORIGIN.split(',')
@@ -133,6 +134,29 @@ function loadEnv() {
     isTest: data.NODE_ENV === 'test',
     storageConfigured: data.STORAGE_PROVIDER !== '',
   };
+}
+
+/**
+ * The cookie `domain` option must be a bare hostname — a pasted URL
+ * (`https://site.vercel.app`) makes res.cookie() throw "option domain is
+ * invalid" on every successful login. Extract the hostname when a URL was
+ * pasted and disable (empty) anything still malformed.
+ */
+function normalizeCookieDomain(value: string | undefined): string {
+  const raw = (value ?? '').trim();
+  if (!raw) return '';
+  let host = raw;
+  if (host.includes('://') || host.includes('/')) {
+    try {
+      host = new URL(raw).hostname;
+    } catch {
+      return '';
+    }
+  }
+  host = host.replace(/^\.+/u, '').toLowerCase();
+  return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/u.test(host)
+    ? host
+    : '';
 }
 
 /**
