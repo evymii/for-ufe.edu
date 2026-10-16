@@ -123,8 +123,10 @@ function loadEnv() {
 
   return {
     ...data,
+    // Origins are compared verbatim against the browser's Origin header,
+    // which never carries a trailing slash — normalize pasted values.
     CORS_ORIGINS: data.CORS_ORIGIN.split(',')
-      .map((origin) => origin.trim())
+      .map((origin) => origin.trim().replace(/\/+$/u, ''))
       .filter(Boolean),
     isDev: data.NODE_ENV === 'development',
     isProd: data.NODE_ENV === 'production',

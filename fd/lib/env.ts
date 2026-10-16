@@ -4,5 +4,10 @@
  */
 export const env = {
   /** Base URL of the Express API (bd/), configurable per environment. */
-  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010",
+  // Trailing slashes would double up on `${apiUrl}${path}` (…app//api),
+  // which Vercel answers with a redirect — fatal for CORS preflights.
+  apiUrl: (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010").replace(
+    /\/+$/u,
+    "",
+  ),
 } as const;
