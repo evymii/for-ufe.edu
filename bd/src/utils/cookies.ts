@@ -29,7 +29,10 @@ export function setAuthCookies(res: Response, user: AuthUser, refreshToken: stri
 function baseCookieOptions() {
   return {
     path: '/',
-    sameSite: 'lax' as const,
+    // The frontend and API are separate origins in deployment. `none` lets
+    // the browser send the refresh cookie on credentialed cross-origin API
+    // requests; production's `secure` flag is required by browsers for it.
+    sameSite: env.isProd ? ('none' as const) : ('lax' as const),
     secure: env.isProd,
     ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
   };

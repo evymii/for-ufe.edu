@@ -61,6 +61,8 @@ environment variables (`DATABASE_URL`, JWT secrets, `CORS_ORIGIN`, and the other
 values in `bd/.env.example`). Deploy `fd/` as a separate project with
 `NEXT_PUBLIC_API_URL` set to the backend's public URL. Set `CORS_ORIGIN` on the
 backend to the exact frontend origin, including its scheme.
+Production auth cookies are configured for credentialed requests between these
+separate frontend and backend origins; both deployments must use HTTPS.
 
 **Admin access:** log in as `manager` / `editor` / `edumanager` (all ADMIN, same admin side), or `POST /api/v1/user/auth/pin` with `ADMIN_PIN_CODE` (4–8 digits; empty disables; production refuses the default `1234`). Both issue the same JWT session.
 
