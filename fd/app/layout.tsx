@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { Inter, Oswald } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -35,14 +34,7 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
-const SESSION_COOKIE = "uf_session";
-
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  // Server-side session hint so AuthProvider only attempts a silent refresh
-  // when the API actually left an httpOnly session cookie.
-  const cookieStore = await cookies();
-  const hasSession = cookieStore.has(SESSION_COOKIE);
-
   return (
     <html
       lang="mn"
@@ -50,7 +42,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col font-sans">
         <QueryProvider>
-          <AuthProvider hasSession={hasSession}>{children}</AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
         <Toaster position="top-right" />
       </body>

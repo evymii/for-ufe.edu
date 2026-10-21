@@ -33,46 +33,59 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
+const SESSION_COOKIE = "uf_session";
+
+function setSessionHint(user: User): void {
+  const value = encodeURIComponent(
+    JSON.stringify({ id: user.id, role: user.role }),
+  );
+  document.cookie = `${SESSION_COOKIE}=${value}; Path=/; SameSite=Lax${
+    window.location.protocol === "https:" ? "; Secure" : ""
+  }`;
+}
+
+function clearSessionHint(): void {
+  document.cookie = `${SESSION_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax${
+    window.location.protocol === "https:" ? "; Secure" : ""
+  }`;
+}
+
 /**
  * Holds the authenticated user in memory, bootstrapped from the httpOnly
  * session cookie via a silent refresh-token exchange. The access token never
  * touches localStorage — the API client keeps it in module memory only.
  */
-export function AuthProvider({
-  children,
-  hasSession,
-}: {
-  children: ReactNode;
-  hasSession: boolean;
-}) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
-  const [status, setStatus] = useState<AuthStatus>(
-    hasSession ? "loading" : "unauthenticated",
-  );
+  const [status, setStatus] = useState<AuthStatus>("loading");
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!hasSession) return;
     let cancelled = false;
 
     refreshSession()
       .then((payload) => {
         if (!cancelled) {
+          setSessionHint(payload.user);
           setUserState(payload.user);
           setStatus("authenticated");
         }
       })
       .catch(() => {
-        if (!cancelled) setStatus("unauthenticated");
+        if (!cancelled) {
+          clearSessionHint();
+          setStatus("unauthenticated");
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [hasSession]);
+  }, []);
 
   const login = useCallback(async (identifier: string, password: string) => {
     const payload = await authService.login({ identifier, password });
+    setSessionHint(payload.user);
     setUserState(payload.user);
     setStatus("authenticated");
     return payload.user;
@@ -81,6 +94,7 @@ export function AuthProvider({
   const register = useCallback(
     async (input: { name: string; email: string; password: string }) => {
       const payload = await authService.register(input);
+      setSessionHint(payload.user);
       setUserState(payload.user);
       setStatus("authenticated");
       return payload.user;
@@ -91,6 +105,7 @@ export function AuthProvider({
   const logout = useCallback(async () => {
     await authService.logout();
     setAccessToken(null);
+    clearSessionHint();
     setUserState(null);
     setStatus("unauthenticated");
     queryClient.clear();
