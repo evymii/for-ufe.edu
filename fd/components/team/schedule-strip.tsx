@@ -73,7 +73,7 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
                   key={game.id}
                   href={routes.site.game(game.id)}
                   aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
-                  className="group/card border-line bg-paper focus-visible:outline-ink hover:border-ink/40 hover:shadow-card flex h-[104px] min-w-[224px] snap-start flex-col justify-between border p-3 transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] sm:min-w-[248px]"
+                  className="group/card border-line bg-paper focus-visible:outline-ink hover:border-ink/40 hover:shadow-card flex h-[104px] w-[min(76vw,280px)] shrink-0 snap-start flex-col justify-between border p-3 transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-mute text-[10px] font-semibold tracking-[0.1em] uppercase">
@@ -148,7 +148,7 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
             type="button"
             onClick={() => scroll(-1)}
             aria-label="Өмнөх тоглолтууд"
-            className="team-focus border-line bg-paper text-ink hover:border-ink flex size-9 items-center justify-center rounded-full border transition-colors"
+            className="team-focus border-line bg-paper text-ink hover:border-ink flex size-8 items-center justify-center rounded-full border transition-colors"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
           </button>
@@ -156,7 +156,7 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
             type="button"
             onClick={() => scroll(1)}
             aria-label="Дараагийн тоглолтууд"
-            className="team-focus border-line bg-paper text-ink hover:border-ink flex size-9 items-center justify-center rounded-full border transition-colors"
+            className="team-focus border-line bg-paper text-ink hover:border-ink flex size-8 items-center justify-center rounded-full border transition-colors"
           >
             <ArrowRight className="size-4" aria-hidden="true" />
           </button>
