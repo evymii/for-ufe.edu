@@ -24,9 +24,13 @@ export function FadeIn({
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay, ease: EASE_OUT }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.25,
+        delay: reduceMotion ? 0 : delay,
+        ease: EASE_OUT,
+      }}
     >
       {children}
     </motion.div>
@@ -37,22 +41,22 @@ export function SlideIn({
   children,
   delay = 0,
   className,
-  from = "left",
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
-  from?: "left" | "right";
 }) {
   const reduceMotion = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={
-        reduceMotion ? false : { opacity: 0, x: from === "left" ? -16 : 16 }
-      }
+      initial={false}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay, ease: EASE_OUT }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.3,
+        delay: reduceMotion ? 0 : delay,
+        ease: EASE_OUT,
+      }}
     >
       {children}
     </motion.div>
@@ -70,7 +74,7 @@ export function Stagger({
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : "hidden"}
+      initial={false}
       animate="visible"
       variants={{
         hidden: {},
