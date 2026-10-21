@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { isAllowedTag } from "@/lib/cache-tags";
 import { env } from "@/lib/env";
@@ -80,5 +80,9 @@ export async function POST(request: NextRequest): Promise<Response> {
   // External invalidation: expire immediately so the admin's own check of
   // the public page blocks once and then serves the fresh value.
   revalidateTag(tagName, { expire: 0 });
+  if (tagName === "games") {
+    revalidatePath("/", "page");
+    revalidatePath("/schedule", "page");
+  }
   return Response.json({ revalidated: true, tag: tagName });
 }
