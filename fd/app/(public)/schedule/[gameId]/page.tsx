@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { GameBoxScore } from "@/components/team/schedule-board";
+import { LiveScoreDisplay } from "@/components/team/live-score-display";
 import { PageHero } from "@/components/team/page-hero";
 import { routes } from "@/config/routes";
 import { getGames } from "@/lib/content";
@@ -118,6 +119,11 @@ export default async function GameDetailsPage({
             ) : null}
           </div>
         </section>
+
+        <LiveScoreDisplay
+          gameId={game.id}
+          opponent={game.opponentShort ?? game.opponent}
+        />
 
         <div className="mt-8">
           <GameBoxScore game={game} />

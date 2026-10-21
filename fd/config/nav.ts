@@ -10,6 +10,7 @@ import {
   Timeline,
   Users,
   Video,
+  Timer,
 } from "lucide-react";
 
 import { ADMIN_TEXT_PAGES } from "@/config/admin-text-pages";
@@ -35,7 +36,10 @@ export const userNav: NavItem[] = [
 /** Admin sidebar — English paths, Mongolian labels, grouped in sections. */
 export const adminNavSections: NavSection[] = [
   {
-    items: [{ href: routes.admin.dashboard, label: "Хяналт", icon: BarChart3 }],
+    items: [
+      { href: routes.admin.dashboard, label: "Хяналт", icon: BarChart3 },
+      { href: routes.admin.scorer, label: "Live scorer", icon: Timer },
+    ],
   },
   {
     title: "Агуулга",

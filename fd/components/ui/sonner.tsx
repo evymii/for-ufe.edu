@@ -31,10 +31,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
         } as React.CSSProperties
       }
       toastOptions={{
+        duration: 5000,
         classNames: {
-          toast: "cn-toast",
+          toast:
+            "cn-toast animate-in fade-in slide-in-from-top-2 data-[removed=true]:animate-out data-[removed=true]:fade-out data-[removed=true]:slide-out-to-right-2",
         },
       }}
+      closeButton
       {...props}
     />
   );

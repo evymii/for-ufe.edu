@@ -20,6 +20,7 @@ export const routes = {
   },
   admin: {
     dashboard: "/admin",
+    scorer: "/admin/scorer",
     content: "/admin/content",
     players: "/admin/players",
     staff: "/admin/staff",

@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma/client.js';
+import { PrismaClient } from '../generated/prisma/index.js';
 
 // The ONLY place a PrismaClient is instantiated. Everything else imports `prisma`.
 // MongoDB needs no driver adapter — Prisma's built-in MongoDB driver is used.

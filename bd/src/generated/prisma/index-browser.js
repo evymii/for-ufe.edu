@@ -199,6 +199,34 @@ exports.Prisma.GameScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.LiveGameScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  status: 'status',
+  period: 'period',
+  clockSeconds: 'clockSeconds',
+  clockRunning: 'clockRunning',
+  teamScore: 'teamScore',
+  opponentScore: 'opponentScore',
+  teamFouls: 'teamFouls',
+  opponentFouls: 'opponentFouls',
+  timeouts: 'timeouts',
+  lineup: 'lineup',
+  startedAt: 'startedAt',
+  endedAt: 'endedAt',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LiveGameEventScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  type: 'type',
+  payload: 'payload',
+  reversed: 'reversed',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.StandingRowScalarFieldEnum = {
   id: 'id',
   teamName: 'teamName',
@@ -363,6 +391,8 @@ exports.Prisma.ModelName = {
   NewsPost: 'NewsPost',
   Player: 'Player',
   Game: 'Game',
+  LiveGame: 'LiveGame',
+  LiveGameEvent: 'LiveGameEvent',
   StandingRow: 'StandingRow',
   Partner: 'Partner',
   MediaAlbum: 'MediaAlbum',

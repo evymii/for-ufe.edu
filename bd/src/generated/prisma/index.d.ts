@@ -39,6 +39,16 @@ export type Player = $Result.DefaultSelection<Prisma.$PlayerPayload>
  */
 export type Game = $Result.DefaultSelection<Prisma.$GamePayload>
 /**
+ * Model LiveGame
+ * 
+ */
+export type LiveGame = $Result.DefaultSelection<Prisma.$LiveGamePayload>
+/**
+ * Model LiveGameEvent
+ * 
+ */
+export type LiveGameEvent = $Result.DefaultSelection<Prisma.$LiveGameEventPayload>
+/**
  * Model StandingRow
  * 
  */
@@ -228,6 +238,26 @@ export class PrismaClient<
     * ```
     */
   get game(): Prisma.GameDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.liveGame`: Exposes CRUD operations for the **LiveGame** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LiveGames
+    * const liveGames = await prisma.liveGame.findMany()
+    * ```
+    */
+  get liveGame(): Prisma.LiveGameDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.liveGameEvent`: Exposes CRUD operations for the **LiveGameEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LiveGameEvents
+    * const liveGameEvents = await prisma.liveGameEvent.findMany()
+    * ```
+    */
+  get liveGameEvent(): Prisma.LiveGameEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.standingRow`: Exposes CRUD operations for the **StandingRow** model.
@@ -784,6 +814,8 @@ export namespace Prisma {
     NewsPost: 'NewsPost',
     Player: 'Player',
     Game: 'Game',
+    LiveGame: 'LiveGame',
+    LiveGameEvent: 'LiveGameEvent',
     StandingRow: 'StandingRow',
     Partner: 'Partner',
     MediaAlbum: 'MediaAlbum',
@@ -813,7 +845,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "refreshToken" | "newsPost" | "player" | "game" | "standingRow" | "partner" | "mediaAlbum" | "executive" | "video" | "shopProduct" | "order" | "siteContent" | "contentBlock" | "media" | "contentHistory"
+      modelProps: "user" | "refreshToken" | "newsPost" | "player" | "game" | "liveGame" | "liveGameEvent" | "standingRow" | "partner" | "mediaAlbum" | "executive" | "video" | "shopProduct" | "order" | "siteContent" | "contentBlock" | "media" | "contentHistory"
       txIsolationLevel: never
     }
     model: {
@@ -1184,6 +1216,154 @@ export namespace Prisma {
           count: {
             args: Prisma.GameCountArgs<ExtArgs>
             result: $Utils.Optional<GameCountAggregateOutputType> | number
+          }
+        }
+      }
+      LiveGame: {
+        payload: Prisma.$LiveGamePayload<ExtArgs>
+        fields: Prisma.LiveGameFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LiveGameFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LiveGameFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          findFirst: {
+            args: Prisma.LiveGameFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LiveGameFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          findMany: {
+            args: Prisma.LiveGameFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>[]
+          }
+          create: {
+            args: Prisma.LiveGameCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          createMany: {
+            args: Prisma.LiveGameCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.LiveGameDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          update: {
+            args: Prisma.LiveGameUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          deleteMany: {
+            args: Prisma.LiveGameDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LiveGameUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.LiveGameUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGamePayload>
+          }
+          aggregate: {
+            args: Prisma.LiveGameAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLiveGame>
+          }
+          groupBy: {
+            args: Prisma.LiveGameGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LiveGameGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.LiveGameFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.LiveGameAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.LiveGameCountArgs<ExtArgs>
+            result: $Utils.Optional<LiveGameCountAggregateOutputType> | number
+          }
+        }
+      }
+      LiveGameEvent: {
+        payload: Prisma.$LiveGameEventPayload<ExtArgs>
+        fields: Prisma.LiveGameEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LiveGameEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LiveGameEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          findFirst: {
+            args: Prisma.LiveGameEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LiveGameEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          findMany: {
+            args: Prisma.LiveGameEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>[]
+          }
+          create: {
+            args: Prisma.LiveGameEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          createMany: {
+            args: Prisma.LiveGameEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.LiveGameEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          update: {
+            args: Prisma.LiveGameEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.LiveGameEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LiveGameEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.LiveGameEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LiveGameEventPayload>
+          }
+          aggregate: {
+            args: Prisma.LiveGameEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLiveGameEvent>
+          }
+          groupBy: {
+            args: Prisma.LiveGameEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LiveGameEventGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.LiveGameEventFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.LiveGameEventAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.LiveGameEventCountArgs<ExtArgs>
+            result: $Utils.Optional<LiveGameEventCountAggregateOutputType> | number
           }
         }
       }
@@ -2085,6 +2265,8 @@ export namespace Prisma {
     newsPost?: NewsPostOmit
     player?: PlayerOmit
     game?: GameOmit
+    liveGame?: LiveGameOmit
+    liveGameEvent?: LiveGameEventOmit
     standingRow?: StandingRowOmit
     partner?: PartnerOmit
     mediaAlbum?: MediaAlbumOmit
@@ -7750,6 +7932,2040 @@ export namespace Prisma {
      * Omit specific fields from the Game
      */
     omit?: GameOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LiveGame
+   */
+
+  export type AggregateLiveGame = {
+    _count: LiveGameCountAggregateOutputType | null
+    _avg: LiveGameAvgAggregateOutputType | null
+    _sum: LiveGameSumAggregateOutputType | null
+    _min: LiveGameMinAggregateOutputType | null
+    _max: LiveGameMaxAggregateOutputType | null
+  }
+
+  export type LiveGameAvgAggregateOutputType = {
+    period: number | null
+    clockSeconds: number | null
+    teamScore: number | null
+    opponentScore: number | null
+    teamFouls: number | null
+    opponentFouls: number | null
+    timeouts: number | null
+  }
+
+  export type LiveGameSumAggregateOutputType = {
+    period: number | null
+    clockSeconds: number | null
+    teamScore: number | null
+    opponentScore: number | null
+    teamFouls: number[]
+    opponentFouls: number[]
+    timeouts: number[]
+  }
+
+  export type LiveGameMinAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    status: string | null
+    period: number | null
+    clockSeconds: number | null
+    clockRunning: boolean | null
+    teamScore: number | null
+    opponentScore: number | null
+    startedAt: Date | null
+    endedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type LiveGameMaxAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    status: string | null
+    period: number | null
+    clockSeconds: number | null
+    clockRunning: boolean | null
+    teamScore: number | null
+    opponentScore: number | null
+    startedAt: Date | null
+    endedAt: Date | null
+    updatedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type LiveGameCountAggregateOutputType = {
+    id: number
+    gameId: number
+    status: number
+    period: number
+    clockSeconds: number
+    clockRunning: number
+    teamScore: number
+    opponentScore: number
+    teamFouls: number
+    opponentFouls: number
+    timeouts: number
+    lineup: number
+    startedAt: number
+    endedAt: number
+    updatedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LiveGameAvgAggregateInputType = {
+    period?: true
+    clockSeconds?: true
+    teamScore?: true
+    opponentScore?: true
+    teamFouls?: true
+    opponentFouls?: true
+    timeouts?: true
+  }
+
+  export type LiveGameSumAggregateInputType = {
+    period?: true
+    clockSeconds?: true
+    teamScore?: true
+    opponentScore?: true
+    teamFouls?: true
+    opponentFouls?: true
+    timeouts?: true
+  }
+
+  export type LiveGameMinAggregateInputType = {
+    id?: true
+    gameId?: true
+    status?: true
+    period?: true
+    clockSeconds?: true
+    clockRunning?: true
+    teamScore?: true
+    opponentScore?: true
+    startedAt?: true
+    endedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type LiveGameMaxAggregateInputType = {
+    id?: true
+    gameId?: true
+    status?: true
+    period?: true
+    clockSeconds?: true
+    clockRunning?: true
+    teamScore?: true
+    opponentScore?: true
+    startedAt?: true
+    endedAt?: true
+    updatedAt?: true
+    createdAt?: true
+  }
+
+  export type LiveGameCountAggregateInputType = {
+    id?: true
+    gameId?: true
+    status?: true
+    period?: true
+    clockSeconds?: true
+    clockRunning?: true
+    teamScore?: true
+    opponentScore?: true
+    teamFouls?: true
+    opponentFouls?: true
+    timeouts?: true
+    lineup?: true
+    startedAt?: true
+    endedAt?: true
+    updatedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LiveGameAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LiveGame to aggregate.
+     */
+    where?: LiveGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGames to fetch.
+     */
+    orderBy?: LiveGameOrderByWithRelationInput | LiveGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LiveGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LiveGames
+    **/
+    _count?: true | LiveGameCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LiveGameAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LiveGameSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LiveGameMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LiveGameMaxAggregateInputType
+  }
+
+  export type GetLiveGameAggregateType<T extends LiveGameAggregateArgs> = {
+        [P in keyof T & keyof AggregateLiveGame]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLiveGame[P]>
+      : GetScalarType<T[P], AggregateLiveGame[P]>
+  }
+
+
+
+
+  export type LiveGameGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LiveGameWhereInput
+    orderBy?: LiveGameOrderByWithAggregationInput | LiveGameOrderByWithAggregationInput[]
+    by: LiveGameScalarFieldEnum[] | LiveGameScalarFieldEnum
+    having?: LiveGameScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LiveGameCountAggregateInputType | true
+    _avg?: LiveGameAvgAggregateInputType
+    _sum?: LiveGameSumAggregateInputType
+    _min?: LiveGameMinAggregateInputType
+    _max?: LiveGameMaxAggregateInputType
+  }
+
+  export type LiveGameGroupByOutputType = {
+    id: string
+    gameId: string
+    status: string
+    period: number
+    clockSeconds: number
+    clockRunning: boolean
+    teamScore: number
+    opponentScore: number
+    teamFouls: number[]
+    opponentFouls: number[]
+    timeouts: number[]
+    lineup: string[]
+    startedAt: Date | null
+    endedAt: Date | null
+    updatedAt: Date
+    createdAt: Date
+    _count: LiveGameCountAggregateOutputType | null
+    _avg: LiveGameAvgAggregateOutputType | null
+    _sum: LiveGameSumAggregateOutputType | null
+    _min: LiveGameMinAggregateOutputType | null
+    _max: LiveGameMaxAggregateOutputType | null
+  }
+
+  type GetLiveGameGroupByPayload<T extends LiveGameGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LiveGameGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LiveGameGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LiveGameGroupByOutputType[P]>
+            : GetScalarType<T[P], LiveGameGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LiveGameSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    status?: boolean
+    period?: boolean
+    clockSeconds?: boolean
+    clockRunning?: boolean
+    teamScore?: boolean
+    opponentScore?: boolean
+    teamFouls?: boolean
+    opponentFouls?: boolean
+    timeouts?: boolean
+    lineup?: boolean
+    startedAt?: boolean
+    endedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["liveGame"]>
+
+
+
+  export type LiveGameSelectScalar = {
+    id?: boolean
+    gameId?: boolean
+    status?: boolean
+    period?: boolean
+    clockSeconds?: boolean
+    clockRunning?: boolean
+    teamScore?: boolean
+    opponentScore?: boolean
+    teamFouls?: boolean
+    opponentFouls?: boolean
+    timeouts?: boolean
+    lineup?: boolean
+    startedAt?: boolean
+    endedAt?: boolean
+    updatedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type LiveGameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "status" | "period" | "clockSeconds" | "clockRunning" | "teamScore" | "opponentScore" | "teamFouls" | "opponentFouls" | "timeouts" | "lineup" | "startedAt" | "endedAt" | "updatedAt" | "createdAt", ExtArgs["result"]["liveGame"]>
+
+  export type $LiveGamePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LiveGame"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      gameId: string
+      status: string
+      period: number
+      clockSeconds: number
+      clockRunning: boolean
+      teamScore: number
+      opponentScore: number
+      teamFouls: number[]
+      opponentFouls: number[]
+      timeouts: number[]
+      lineup: string[]
+      startedAt: Date | null
+      endedAt: Date | null
+      updatedAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["liveGame"]>
+    composites: {}
+  }
+
+  type LiveGameGetPayload<S extends boolean | null | undefined | LiveGameDefaultArgs> = $Result.GetResult<Prisma.$LiveGamePayload, S>
+
+  type LiveGameCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LiveGameFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LiveGameCountAggregateInputType | true
+    }
+
+  export interface LiveGameDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LiveGame'], meta: { name: 'LiveGame' } }
+    /**
+     * Find zero or one LiveGame that matches the filter.
+     * @param {LiveGameFindUniqueArgs} args - Arguments to find a LiveGame
+     * @example
+     * // Get one LiveGame
+     * const liveGame = await prisma.liveGame.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LiveGameFindUniqueArgs>(args: SelectSubset<T, LiveGameFindUniqueArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LiveGame that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LiveGameFindUniqueOrThrowArgs} args - Arguments to find a LiveGame
+     * @example
+     * // Get one LiveGame
+     * const liveGame = await prisma.liveGame.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LiveGameFindUniqueOrThrowArgs>(args: SelectSubset<T, LiveGameFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LiveGame that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameFindFirstArgs} args - Arguments to find a LiveGame
+     * @example
+     * // Get one LiveGame
+     * const liveGame = await prisma.liveGame.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LiveGameFindFirstArgs>(args?: SelectSubset<T, LiveGameFindFirstArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LiveGame that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameFindFirstOrThrowArgs} args - Arguments to find a LiveGame
+     * @example
+     * // Get one LiveGame
+     * const liveGame = await prisma.liveGame.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LiveGameFindFirstOrThrowArgs>(args?: SelectSubset<T, LiveGameFindFirstOrThrowArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LiveGames that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LiveGames
+     * const liveGames = await prisma.liveGame.findMany()
+     * 
+     * // Get first 10 LiveGames
+     * const liveGames = await prisma.liveGame.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const liveGameWithIdOnly = await prisma.liveGame.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LiveGameFindManyArgs>(args?: SelectSubset<T, LiveGameFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LiveGame.
+     * @param {LiveGameCreateArgs} args - Arguments to create a LiveGame.
+     * @example
+     * // Create one LiveGame
+     * const LiveGame = await prisma.liveGame.create({
+     *   data: {
+     *     // ... data to create a LiveGame
+     *   }
+     * })
+     * 
+     */
+    create<T extends LiveGameCreateArgs>(args: SelectSubset<T, LiveGameCreateArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LiveGames.
+     * @param {LiveGameCreateManyArgs} args - Arguments to create many LiveGames.
+     * @example
+     * // Create many LiveGames
+     * const liveGame = await prisma.liveGame.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LiveGameCreateManyArgs>(args?: SelectSubset<T, LiveGameCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a LiveGame.
+     * @param {LiveGameDeleteArgs} args - Arguments to delete one LiveGame.
+     * @example
+     * // Delete one LiveGame
+     * const LiveGame = await prisma.liveGame.delete({
+     *   where: {
+     *     // ... filter to delete one LiveGame
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LiveGameDeleteArgs>(args: SelectSubset<T, LiveGameDeleteArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LiveGame.
+     * @param {LiveGameUpdateArgs} args - Arguments to update one LiveGame.
+     * @example
+     * // Update one LiveGame
+     * const liveGame = await prisma.liveGame.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LiveGameUpdateArgs>(args: SelectSubset<T, LiveGameUpdateArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LiveGames.
+     * @param {LiveGameDeleteManyArgs} args - Arguments to filter LiveGames to delete.
+     * @example
+     * // Delete a few LiveGames
+     * const { count } = await prisma.liveGame.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LiveGameDeleteManyArgs>(args?: SelectSubset<T, LiveGameDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LiveGames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LiveGames
+     * const liveGame = await prisma.liveGame.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LiveGameUpdateManyArgs>(args: SelectSubset<T, LiveGameUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one LiveGame.
+     * @param {LiveGameUpsertArgs} args - Arguments to update or create a LiveGame.
+     * @example
+     * // Update or create a LiveGame
+     * const liveGame = await prisma.liveGame.upsert({
+     *   create: {
+     *     // ... data to create a LiveGame
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LiveGame we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LiveGameUpsertArgs>(args: SelectSubset<T, LiveGameUpsertArgs<ExtArgs>>): Prisma__LiveGameClient<$Result.GetResult<Prisma.$LiveGamePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LiveGames that matches the filter.
+     * @param {LiveGameFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const liveGame = await prisma.liveGame.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: LiveGameFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a LiveGame.
+     * @param {LiveGameAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const liveGame = await prisma.liveGame.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: LiveGameAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of LiveGames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameCountArgs} args - Arguments to filter LiveGames to count.
+     * @example
+     * // Count the number of LiveGames
+     * const count = await prisma.liveGame.count({
+     *   where: {
+     *     // ... the filter for the LiveGames we want to count
+     *   }
+     * })
+    **/
+    count<T extends LiveGameCountArgs>(
+      args?: Subset<T, LiveGameCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LiveGameCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LiveGame.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LiveGameAggregateArgs>(args: Subset<T, LiveGameAggregateArgs>): Prisma.PrismaPromise<GetLiveGameAggregateType<T>>
+
+    /**
+     * Group by LiveGame.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LiveGameGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LiveGameGroupByArgs['orderBy'] }
+        : { orderBy?: LiveGameGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LiveGameGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLiveGameGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LiveGame model
+   */
+  readonly fields: LiveGameFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LiveGame.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LiveGameClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LiveGame model
+   */
+  interface LiveGameFieldRefs {
+    readonly id: FieldRef<"LiveGame", 'String'>
+    readonly gameId: FieldRef<"LiveGame", 'String'>
+    readonly status: FieldRef<"LiveGame", 'String'>
+    readonly period: FieldRef<"LiveGame", 'Int'>
+    readonly clockSeconds: FieldRef<"LiveGame", 'Int'>
+    readonly clockRunning: FieldRef<"LiveGame", 'Boolean'>
+    readonly teamScore: FieldRef<"LiveGame", 'Int'>
+    readonly opponentScore: FieldRef<"LiveGame", 'Int'>
+    readonly teamFouls: FieldRef<"LiveGame", 'Int[]'>
+    readonly opponentFouls: FieldRef<"LiveGame", 'Int[]'>
+    readonly timeouts: FieldRef<"LiveGame", 'Int[]'>
+    readonly lineup: FieldRef<"LiveGame", 'String[]'>
+    readonly startedAt: FieldRef<"LiveGame", 'DateTime'>
+    readonly endedAt: FieldRef<"LiveGame", 'DateTime'>
+    readonly updatedAt: FieldRef<"LiveGame", 'DateTime'>
+    readonly createdAt: FieldRef<"LiveGame", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LiveGame findUnique
+   */
+  export type LiveGameFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGame to fetch.
+     */
+    where: LiveGameWhereUniqueInput
+  }
+
+  /**
+   * LiveGame findUniqueOrThrow
+   */
+  export type LiveGameFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGame to fetch.
+     */
+    where: LiveGameWhereUniqueInput
+  }
+
+  /**
+   * LiveGame findFirst
+   */
+  export type LiveGameFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGame to fetch.
+     */
+    where?: LiveGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGames to fetch.
+     */
+    orderBy?: LiveGameOrderByWithRelationInput | LiveGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LiveGames.
+     */
+    cursor?: LiveGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LiveGames.
+     */
+    distinct?: LiveGameScalarFieldEnum | LiveGameScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGame findFirstOrThrow
+   */
+  export type LiveGameFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGame to fetch.
+     */
+    where?: LiveGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGames to fetch.
+     */
+    orderBy?: LiveGameOrderByWithRelationInput | LiveGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LiveGames.
+     */
+    cursor?: LiveGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LiveGames.
+     */
+    distinct?: LiveGameScalarFieldEnum | LiveGameScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGame findMany
+   */
+  export type LiveGameFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGames to fetch.
+     */
+    where?: LiveGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGames to fetch.
+     */
+    orderBy?: LiveGameOrderByWithRelationInput | LiveGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LiveGames.
+     */
+    cursor?: LiveGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGames.
+     */
+    skip?: number
+    distinct?: LiveGameScalarFieldEnum | LiveGameScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGame create
+   */
+  export type LiveGameCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * The data needed to create a LiveGame.
+     */
+    data: XOR<LiveGameCreateInput, LiveGameUncheckedCreateInput>
+  }
+
+  /**
+   * LiveGame createMany
+   */
+  export type LiveGameCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LiveGames.
+     */
+    data: LiveGameCreateManyInput | LiveGameCreateManyInput[]
+  }
+
+  /**
+   * LiveGame update
+   */
+  export type LiveGameUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * The data needed to update a LiveGame.
+     */
+    data: XOR<LiveGameUpdateInput, LiveGameUncheckedUpdateInput>
+    /**
+     * Choose, which LiveGame to update.
+     */
+    where: LiveGameWhereUniqueInput
+  }
+
+  /**
+   * LiveGame updateMany
+   */
+  export type LiveGameUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LiveGames.
+     */
+    data: XOR<LiveGameUpdateManyMutationInput, LiveGameUncheckedUpdateManyInput>
+    /**
+     * Filter which LiveGames to update
+     */
+    where?: LiveGameWhereInput
+    /**
+     * Limit how many LiveGames to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LiveGame upsert
+   */
+  export type LiveGameUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * The filter to search for the LiveGame to update in case it exists.
+     */
+    where: LiveGameWhereUniqueInput
+    /**
+     * In case the LiveGame found by the `where` argument doesn't exist, create a new LiveGame with this data.
+     */
+    create: XOR<LiveGameCreateInput, LiveGameUncheckedCreateInput>
+    /**
+     * In case the LiveGame was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LiveGameUpdateInput, LiveGameUncheckedUpdateInput>
+  }
+
+  /**
+   * LiveGame delete
+   */
+  export type LiveGameDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+    /**
+     * Filter which LiveGame to delete.
+     */
+    where: LiveGameWhereUniqueInput
+  }
+
+  /**
+   * LiveGame deleteMany
+   */
+  export type LiveGameDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LiveGames to delete
+     */
+    where?: LiveGameWhereInput
+    /**
+     * Limit how many LiveGames to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LiveGame findRaw
+   */
+  export type LiveGameFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * LiveGame aggregateRaw
+   */
+  export type LiveGameAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * LiveGame without action
+   */
+  export type LiveGameDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGame
+     */
+    select?: LiveGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGame
+     */
+    omit?: LiveGameOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LiveGameEvent
+   */
+
+  export type AggregateLiveGameEvent = {
+    _count: LiveGameEventCountAggregateOutputType | null
+    _min: LiveGameEventMinAggregateOutputType | null
+    _max: LiveGameEventMaxAggregateOutputType | null
+  }
+
+  export type LiveGameEventMinAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    type: string | null
+    reversed: boolean | null
+    createdAt: Date | null
+  }
+
+  export type LiveGameEventMaxAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    type: string | null
+    reversed: boolean | null
+    createdAt: Date | null
+  }
+
+  export type LiveGameEventCountAggregateOutputType = {
+    id: number
+    gameId: number
+    type: number
+    payload: number
+    reversed: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LiveGameEventMinAggregateInputType = {
+    id?: true
+    gameId?: true
+    type?: true
+    reversed?: true
+    createdAt?: true
+  }
+
+  export type LiveGameEventMaxAggregateInputType = {
+    id?: true
+    gameId?: true
+    type?: true
+    reversed?: true
+    createdAt?: true
+  }
+
+  export type LiveGameEventCountAggregateInputType = {
+    id?: true
+    gameId?: true
+    type?: true
+    payload?: true
+    reversed?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LiveGameEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LiveGameEvent to aggregate.
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGameEvents to fetch.
+     */
+    orderBy?: LiveGameEventOrderByWithRelationInput | LiveGameEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LiveGameEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGameEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGameEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LiveGameEvents
+    **/
+    _count?: true | LiveGameEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LiveGameEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LiveGameEventMaxAggregateInputType
+  }
+
+  export type GetLiveGameEventAggregateType<T extends LiveGameEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateLiveGameEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLiveGameEvent[P]>
+      : GetScalarType<T[P], AggregateLiveGameEvent[P]>
+  }
+
+
+
+
+  export type LiveGameEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LiveGameEventWhereInput
+    orderBy?: LiveGameEventOrderByWithAggregationInput | LiveGameEventOrderByWithAggregationInput[]
+    by: LiveGameEventScalarFieldEnum[] | LiveGameEventScalarFieldEnum
+    having?: LiveGameEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LiveGameEventCountAggregateInputType | true
+    _min?: LiveGameEventMinAggregateInputType
+    _max?: LiveGameEventMaxAggregateInputType
+  }
+
+  export type LiveGameEventGroupByOutputType = {
+    id: string
+    gameId: string
+    type: string
+    payload: JsonValue
+    reversed: boolean
+    createdAt: Date
+    _count: LiveGameEventCountAggregateOutputType | null
+    _min: LiveGameEventMinAggregateOutputType | null
+    _max: LiveGameEventMaxAggregateOutputType | null
+  }
+
+  type GetLiveGameEventGroupByPayload<T extends LiveGameEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LiveGameEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LiveGameEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LiveGameEventGroupByOutputType[P]>
+            : GetScalarType<T[P], LiveGameEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LiveGameEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    type?: boolean
+    payload?: boolean
+    reversed?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["liveGameEvent"]>
+
+
+
+  export type LiveGameEventSelectScalar = {
+    id?: boolean
+    gameId?: boolean
+    type?: boolean
+    payload?: boolean
+    reversed?: boolean
+    createdAt?: boolean
+  }
+
+  export type LiveGameEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "type" | "payload" | "reversed" | "createdAt", ExtArgs["result"]["liveGameEvent"]>
+
+  export type $LiveGameEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LiveGameEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      gameId: string
+      type: string
+      payload: Prisma.JsonValue
+      reversed: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["liveGameEvent"]>
+    composites: {}
+  }
+
+  type LiveGameEventGetPayload<S extends boolean | null | undefined | LiveGameEventDefaultArgs> = $Result.GetResult<Prisma.$LiveGameEventPayload, S>
+
+  type LiveGameEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LiveGameEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LiveGameEventCountAggregateInputType | true
+    }
+
+  export interface LiveGameEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LiveGameEvent'], meta: { name: 'LiveGameEvent' } }
+    /**
+     * Find zero or one LiveGameEvent that matches the filter.
+     * @param {LiveGameEventFindUniqueArgs} args - Arguments to find a LiveGameEvent
+     * @example
+     * // Get one LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LiveGameEventFindUniqueArgs>(args: SelectSubset<T, LiveGameEventFindUniqueArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LiveGameEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LiveGameEventFindUniqueOrThrowArgs} args - Arguments to find a LiveGameEvent
+     * @example
+     * // Get one LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LiveGameEventFindUniqueOrThrowArgs>(args: SelectSubset<T, LiveGameEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LiveGameEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventFindFirstArgs} args - Arguments to find a LiveGameEvent
+     * @example
+     * // Get one LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LiveGameEventFindFirstArgs>(args?: SelectSubset<T, LiveGameEventFindFirstArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LiveGameEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventFindFirstOrThrowArgs} args - Arguments to find a LiveGameEvent
+     * @example
+     * // Get one LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LiveGameEventFindFirstOrThrowArgs>(args?: SelectSubset<T, LiveGameEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LiveGameEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LiveGameEvents
+     * const liveGameEvents = await prisma.liveGameEvent.findMany()
+     * 
+     * // Get first 10 LiveGameEvents
+     * const liveGameEvents = await prisma.liveGameEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const liveGameEventWithIdOnly = await prisma.liveGameEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LiveGameEventFindManyArgs>(args?: SelectSubset<T, LiveGameEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LiveGameEvent.
+     * @param {LiveGameEventCreateArgs} args - Arguments to create a LiveGameEvent.
+     * @example
+     * // Create one LiveGameEvent
+     * const LiveGameEvent = await prisma.liveGameEvent.create({
+     *   data: {
+     *     // ... data to create a LiveGameEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends LiveGameEventCreateArgs>(args: SelectSubset<T, LiveGameEventCreateArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LiveGameEvents.
+     * @param {LiveGameEventCreateManyArgs} args - Arguments to create many LiveGameEvents.
+     * @example
+     * // Create many LiveGameEvents
+     * const liveGameEvent = await prisma.liveGameEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LiveGameEventCreateManyArgs>(args?: SelectSubset<T, LiveGameEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a LiveGameEvent.
+     * @param {LiveGameEventDeleteArgs} args - Arguments to delete one LiveGameEvent.
+     * @example
+     * // Delete one LiveGameEvent
+     * const LiveGameEvent = await prisma.liveGameEvent.delete({
+     *   where: {
+     *     // ... filter to delete one LiveGameEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LiveGameEventDeleteArgs>(args: SelectSubset<T, LiveGameEventDeleteArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LiveGameEvent.
+     * @param {LiveGameEventUpdateArgs} args - Arguments to update one LiveGameEvent.
+     * @example
+     * // Update one LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LiveGameEventUpdateArgs>(args: SelectSubset<T, LiveGameEventUpdateArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LiveGameEvents.
+     * @param {LiveGameEventDeleteManyArgs} args - Arguments to filter LiveGameEvents to delete.
+     * @example
+     * // Delete a few LiveGameEvents
+     * const { count } = await prisma.liveGameEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LiveGameEventDeleteManyArgs>(args?: SelectSubset<T, LiveGameEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LiveGameEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LiveGameEvents
+     * const liveGameEvent = await prisma.liveGameEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LiveGameEventUpdateManyArgs>(args: SelectSubset<T, LiveGameEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one LiveGameEvent.
+     * @param {LiveGameEventUpsertArgs} args - Arguments to update or create a LiveGameEvent.
+     * @example
+     * // Update or create a LiveGameEvent
+     * const liveGameEvent = await prisma.liveGameEvent.upsert({
+     *   create: {
+     *     // ... data to create a LiveGameEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LiveGameEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LiveGameEventUpsertArgs>(args: SelectSubset<T, LiveGameEventUpsertArgs<ExtArgs>>): Prisma__LiveGameEventClient<$Result.GetResult<Prisma.$LiveGameEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LiveGameEvents that matches the filter.
+     * @param {LiveGameEventFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const liveGameEvent = await prisma.liveGameEvent.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: LiveGameEventFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a LiveGameEvent.
+     * @param {LiveGameEventAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const liveGameEvent = await prisma.liveGameEvent.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: LiveGameEventAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of LiveGameEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventCountArgs} args - Arguments to filter LiveGameEvents to count.
+     * @example
+     * // Count the number of LiveGameEvents
+     * const count = await prisma.liveGameEvent.count({
+     *   where: {
+     *     // ... the filter for the LiveGameEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends LiveGameEventCountArgs>(
+      args?: Subset<T, LiveGameEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LiveGameEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LiveGameEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LiveGameEventAggregateArgs>(args: Subset<T, LiveGameEventAggregateArgs>): Prisma.PrismaPromise<GetLiveGameEventAggregateType<T>>
+
+    /**
+     * Group by LiveGameEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LiveGameEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LiveGameEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LiveGameEventGroupByArgs['orderBy'] }
+        : { orderBy?: LiveGameEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LiveGameEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLiveGameEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LiveGameEvent model
+   */
+  readonly fields: LiveGameEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LiveGameEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LiveGameEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LiveGameEvent model
+   */
+  interface LiveGameEventFieldRefs {
+    readonly id: FieldRef<"LiveGameEvent", 'String'>
+    readonly gameId: FieldRef<"LiveGameEvent", 'String'>
+    readonly type: FieldRef<"LiveGameEvent", 'String'>
+    readonly payload: FieldRef<"LiveGameEvent", 'Json'>
+    readonly reversed: FieldRef<"LiveGameEvent", 'Boolean'>
+    readonly createdAt: FieldRef<"LiveGameEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LiveGameEvent findUnique
+   */
+  export type LiveGameEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGameEvent to fetch.
+     */
+    where: LiveGameEventWhereUniqueInput
+  }
+
+  /**
+   * LiveGameEvent findUniqueOrThrow
+   */
+  export type LiveGameEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGameEvent to fetch.
+     */
+    where: LiveGameEventWhereUniqueInput
+  }
+
+  /**
+   * LiveGameEvent findFirst
+   */
+  export type LiveGameEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGameEvent to fetch.
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGameEvents to fetch.
+     */
+    orderBy?: LiveGameEventOrderByWithRelationInput | LiveGameEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LiveGameEvents.
+     */
+    cursor?: LiveGameEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGameEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGameEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LiveGameEvents.
+     */
+    distinct?: LiveGameEventScalarFieldEnum | LiveGameEventScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGameEvent findFirstOrThrow
+   */
+  export type LiveGameEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGameEvent to fetch.
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGameEvents to fetch.
+     */
+    orderBy?: LiveGameEventOrderByWithRelationInput | LiveGameEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LiveGameEvents.
+     */
+    cursor?: LiveGameEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGameEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGameEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LiveGameEvents.
+     */
+    distinct?: LiveGameEventScalarFieldEnum | LiveGameEventScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGameEvent findMany
+   */
+  export type LiveGameEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter, which LiveGameEvents to fetch.
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LiveGameEvents to fetch.
+     */
+    orderBy?: LiveGameEventOrderByWithRelationInput | LiveGameEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LiveGameEvents.
+     */
+    cursor?: LiveGameEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LiveGameEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LiveGameEvents.
+     */
+    skip?: number
+    distinct?: LiveGameEventScalarFieldEnum | LiveGameEventScalarFieldEnum[]
+  }
+
+  /**
+   * LiveGameEvent create
+   */
+  export type LiveGameEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a LiveGameEvent.
+     */
+    data: XOR<LiveGameEventCreateInput, LiveGameEventUncheckedCreateInput>
+  }
+
+  /**
+   * LiveGameEvent createMany
+   */
+  export type LiveGameEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LiveGameEvents.
+     */
+    data: LiveGameEventCreateManyInput | LiveGameEventCreateManyInput[]
+  }
+
+  /**
+   * LiveGameEvent update
+   */
+  export type LiveGameEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a LiveGameEvent.
+     */
+    data: XOR<LiveGameEventUpdateInput, LiveGameEventUncheckedUpdateInput>
+    /**
+     * Choose, which LiveGameEvent to update.
+     */
+    where: LiveGameEventWhereUniqueInput
+  }
+
+  /**
+   * LiveGameEvent updateMany
+   */
+  export type LiveGameEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LiveGameEvents.
+     */
+    data: XOR<LiveGameEventUpdateManyMutationInput, LiveGameEventUncheckedUpdateManyInput>
+    /**
+     * Filter which LiveGameEvents to update
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * Limit how many LiveGameEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LiveGameEvent upsert
+   */
+  export type LiveGameEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the LiveGameEvent to update in case it exists.
+     */
+    where: LiveGameEventWhereUniqueInput
+    /**
+     * In case the LiveGameEvent found by the `where` argument doesn't exist, create a new LiveGameEvent with this data.
+     */
+    create: XOR<LiveGameEventCreateInput, LiveGameEventUncheckedCreateInput>
+    /**
+     * In case the LiveGameEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LiveGameEventUpdateInput, LiveGameEventUncheckedUpdateInput>
+  }
+
+  /**
+   * LiveGameEvent delete
+   */
+  export type LiveGameEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
+    /**
+     * Filter which LiveGameEvent to delete.
+     */
+    where: LiveGameEventWhereUniqueInput
+  }
+
+  /**
+   * LiveGameEvent deleteMany
+   */
+  export type LiveGameEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LiveGameEvents to delete
+     */
+    where?: LiveGameEventWhereInput
+    /**
+     * Limit how many LiveGameEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LiveGameEvent findRaw
+   */
+  export type LiveGameEventFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * LiveGameEvent aggregateRaw
+   */
+  export type LiveGameEventAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * LiveGameEvent without action
+   */
+  export type LiveGameEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LiveGameEvent
+     */
+    select?: LiveGameEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LiveGameEvent
+     */
+    omit?: LiveGameEventOmit<ExtArgs> | null
   }
 
 
@@ -19266,6 +21482,40 @@ export namespace Prisma {
   export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum]
 
 
+  export const LiveGameScalarFieldEnum: {
+    id: 'id',
+    gameId: 'gameId',
+    status: 'status',
+    period: 'period',
+    clockSeconds: 'clockSeconds',
+    clockRunning: 'clockRunning',
+    teamScore: 'teamScore',
+    opponentScore: 'opponentScore',
+    teamFouls: 'teamFouls',
+    opponentFouls: 'opponentFouls',
+    timeouts: 'timeouts',
+    lineup: 'lineup',
+    startedAt: 'startedAt',
+    endedAt: 'endedAt',
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type LiveGameScalarFieldEnum = (typeof LiveGameScalarFieldEnum)[keyof typeof LiveGameScalarFieldEnum]
+
+
+  export const LiveGameEventScalarFieldEnum: {
+    id: 'id',
+    gameId: 'gameId',
+    type: 'type',
+    payload: 'payload',
+    reversed: 'reversed',
+    createdAt: 'createdAt'
+  };
+
+  export type LiveGameEventScalarFieldEnum = (typeof LiveGameEventScalarFieldEnum)[keyof typeof LiveGameEventScalarFieldEnum]
+
+
   export const StandingRowScalarFieldEnum: {
     id: 'id',
     teamName: 'teamName',
@@ -20044,6 +22294,172 @@ export namespace Prisma {
     sortOrder?: IntWithAggregatesFilter<"Game"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Game"> | Date | string
+  }
+
+  export type LiveGameWhereInput = {
+    AND?: LiveGameWhereInput | LiveGameWhereInput[]
+    OR?: LiveGameWhereInput[]
+    NOT?: LiveGameWhereInput | LiveGameWhereInput[]
+    id?: StringFilter<"LiveGame"> | string
+    gameId?: StringFilter<"LiveGame"> | string
+    status?: StringFilter<"LiveGame"> | string
+    period?: IntFilter<"LiveGame"> | number
+    clockSeconds?: IntFilter<"LiveGame"> | number
+    clockRunning?: BoolFilter<"LiveGame"> | boolean
+    teamScore?: IntFilter<"LiveGame"> | number
+    opponentScore?: IntFilter<"LiveGame"> | number
+    teamFouls?: IntNullableListFilter<"LiveGame">
+    opponentFouls?: IntNullableListFilter<"LiveGame">
+    timeouts?: IntNullableListFilter<"LiveGame">
+    lineup?: StringNullableListFilter<"LiveGame">
+    startedAt?: DateTimeNullableFilter<"LiveGame"> | Date | string | null
+    endedAt?: DateTimeNullableFilter<"LiveGame"> | Date | string | null
+    updatedAt?: DateTimeFilter<"LiveGame"> | Date | string
+    createdAt?: DateTimeFilter<"LiveGame"> | Date | string
+  }
+
+  export type LiveGameOrderByWithRelationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    status?: SortOrder
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    clockRunning?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    teamFouls?: SortOrder
+    opponentFouls?: SortOrder
+    timeouts?: SortOrder
+    lineup?: SortOrder
+    startedAt?: SortOrder
+    endedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    gameId?: string
+    AND?: LiveGameWhereInput | LiveGameWhereInput[]
+    OR?: LiveGameWhereInput[]
+    NOT?: LiveGameWhereInput | LiveGameWhereInput[]
+    status?: StringFilter<"LiveGame"> | string
+    period?: IntFilter<"LiveGame"> | number
+    clockSeconds?: IntFilter<"LiveGame"> | number
+    clockRunning?: BoolFilter<"LiveGame"> | boolean
+    teamScore?: IntFilter<"LiveGame"> | number
+    opponentScore?: IntFilter<"LiveGame"> | number
+    teamFouls?: IntNullableListFilter<"LiveGame">
+    opponentFouls?: IntNullableListFilter<"LiveGame">
+    timeouts?: IntNullableListFilter<"LiveGame">
+    lineup?: StringNullableListFilter<"LiveGame">
+    startedAt?: DateTimeNullableFilter<"LiveGame"> | Date | string | null
+    endedAt?: DateTimeNullableFilter<"LiveGame"> | Date | string | null
+    updatedAt?: DateTimeFilter<"LiveGame"> | Date | string
+    createdAt?: DateTimeFilter<"LiveGame"> | Date | string
+  }, "id" | "gameId">
+
+  export type LiveGameOrderByWithAggregationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    status?: SortOrder
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    clockRunning?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    teamFouls?: SortOrder
+    opponentFouls?: SortOrder
+    timeouts?: SortOrder
+    lineup?: SortOrder
+    startedAt?: SortOrder
+    endedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: LiveGameCountOrderByAggregateInput
+    _avg?: LiveGameAvgOrderByAggregateInput
+    _max?: LiveGameMaxOrderByAggregateInput
+    _min?: LiveGameMinOrderByAggregateInput
+    _sum?: LiveGameSumOrderByAggregateInput
+  }
+
+  export type LiveGameScalarWhereWithAggregatesInput = {
+    AND?: LiveGameScalarWhereWithAggregatesInput | LiveGameScalarWhereWithAggregatesInput[]
+    OR?: LiveGameScalarWhereWithAggregatesInput[]
+    NOT?: LiveGameScalarWhereWithAggregatesInput | LiveGameScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LiveGame"> | string
+    gameId?: StringWithAggregatesFilter<"LiveGame"> | string
+    status?: StringWithAggregatesFilter<"LiveGame"> | string
+    period?: IntWithAggregatesFilter<"LiveGame"> | number
+    clockSeconds?: IntWithAggregatesFilter<"LiveGame"> | number
+    clockRunning?: BoolWithAggregatesFilter<"LiveGame"> | boolean
+    teamScore?: IntWithAggregatesFilter<"LiveGame"> | number
+    opponentScore?: IntWithAggregatesFilter<"LiveGame"> | number
+    teamFouls?: IntNullableListFilter<"LiveGame">
+    opponentFouls?: IntNullableListFilter<"LiveGame">
+    timeouts?: IntNullableListFilter<"LiveGame">
+    lineup?: StringNullableListFilter<"LiveGame">
+    startedAt?: DateTimeNullableWithAggregatesFilter<"LiveGame"> | Date | string | null
+    endedAt?: DateTimeNullableWithAggregatesFilter<"LiveGame"> | Date | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"LiveGame"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"LiveGame"> | Date | string
+  }
+
+  export type LiveGameEventWhereInput = {
+    AND?: LiveGameEventWhereInput | LiveGameEventWhereInput[]
+    OR?: LiveGameEventWhereInput[]
+    NOT?: LiveGameEventWhereInput | LiveGameEventWhereInput[]
+    id?: StringFilter<"LiveGameEvent"> | string
+    gameId?: StringFilter<"LiveGameEvent"> | string
+    type?: StringFilter<"LiveGameEvent"> | string
+    payload?: JsonFilter<"LiveGameEvent">
+    reversed?: BoolFilter<"LiveGameEvent"> | boolean
+    createdAt?: DateTimeFilter<"LiveGameEvent"> | Date | string
+  }
+
+  export type LiveGameEventOrderByWithRelationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrder
+    reversed?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LiveGameEventWhereInput | LiveGameEventWhereInput[]
+    OR?: LiveGameEventWhereInput[]
+    NOT?: LiveGameEventWhereInput | LiveGameEventWhereInput[]
+    gameId?: StringFilter<"LiveGameEvent"> | string
+    type?: StringFilter<"LiveGameEvent"> | string
+    payload?: JsonFilter<"LiveGameEvent">
+    reversed?: BoolFilter<"LiveGameEvent"> | boolean
+    createdAt?: DateTimeFilter<"LiveGameEvent"> | Date | string
+  }, "id">
+
+  export type LiveGameEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrder
+    reversed?: SortOrder
+    createdAt?: SortOrder
+    _count?: LiveGameEventCountOrderByAggregateInput
+    _max?: LiveGameEventMaxOrderByAggregateInput
+    _min?: LiveGameEventMinOrderByAggregateInput
+  }
+
+  export type LiveGameEventScalarWhereWithAggregatesInput = {
+    AND?: LiveGameEventScalarWhereWithAggregatesInput | LiveGameEventScalarWhereWithAggregatesInput[]
+    OR?: LiveGameEventScalarWhereWithAggregatesInput[]
+    NOT?: LiveGameEventScalarWhereWithAggregatesInput | LiveGameEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LiveGameEvent"> | string
+    gameId?: StringWithAggregatesFilter<"LiveGameEvent"> | string
+    type?: StringWithAggregatesFilter<"LiveGameEvent"> | string
+    payload?: JsonWithAggregatesFilter<"LiveGameEvent">
+    reversed?: BoolWithAggregatesFilter<"LiveGameEvent"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"LiveGameEvent"> | Date | string
   }
 
   export type StandingRowWhereInput = {
@@ -21534,6 +23950,194 @@ export namespace Prisma {
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameCreateInput = {
+    id?: string
+    gameId: string
+    status?: string
+    period?: number
+    clockSeconds?: number
+    clockRunning?: boolean
+    teamScore?: number
+    opponentScore?: number
+    teamFouls?: LiveGameCreateteamFoulsInput | number[]
+    opponentFouls?: LiveGameCreateopponentFoulsInput | number[]
+    timeouts?: LiveGameCreatetimeoutsInput | number[]
+    lineup?: LiveGameCreatelineupInput | string[]
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type LiveGameUncheckedCreateInput = {
+    id?: string
+    gameId: string
+    status?: string
+    period?: number
+    clockSeconds?: number
+    clockRunning?: boolean
+    teamScore?: number
+    opponentScore?: number
+    teamFouls?: LiveGameCreateteamFoulsInput | number[]
+    opponentFouls?: LiveGameCreateopponentFoulsInput | number[]
+    timeouts?: LiveGameCreatetimeoutsInput | number[]
+    lineup?: LiveGameCreatelineupInput | string[]
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type LiveGameUpdateInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    period?: IntFieldUpdateOperationsInput | number
+    clockSeconds?: IntFieldUpdateOperationsInput | number
+    clockRunning?: BoolFieldUpdateOperationsInput | boolean
+    teamScore?: IntFieldUpdateOperationsInput | number
+    opponentScore?: IntFieldUpdateOperationsInput | number
+    teamFouls?: LiveGameUpdateteamFoulsInput | number[]
+    opponentFouls?: LiveGameUpdateopponentFoulsInput | number[]
+    timeouts?: LiveGameUpdatetimeoutsInput | number[]
+    lineup?: LiveGameUpdatelineupInput | string[]
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameUncheckedUpdateInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    period?: IntFieldUpdateOperationsInput | number
+    clockSeconds?: IntFieldUpdateOperationsInput | number
+    clockRunning?: BoolFieldUpdateOperationsInput | boolean
+    teamScore?: IntFieldUpdateOperationsInput | number
+    opponentScore?: IntFieldUpdateOperationsInput | number
+    teamFouls?: LiveGameUpdateteamFoulsInput | number[]
+    opponentFouls?: LiveGameUpdateopponentFoulsInput | number[]
+    timeouts?: LiveGameUpdatetimeoutsInput | number[]
+    lineup?: LiveGameUpdatelineupInput | string[]
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameCreateManyInput = {
+    id?: string
+    gameId: string
+    status?: string
+    period?: number
+    clockSeconds?: number
+    clockRunning?: boolean
+    teamScore?: number
+    opponentScore?: number
+    teamFouls?: LiveGameCreateteamFoulsInput | number[]
+    opponentFouls?: LiveGameCreateopponentFoulsInput | number[]
+    timeouts?: LiveGameCreatetimeoutsInput | number[]
+    lineup?: LiveGameCreatelineupInput | string[]
+    startedAt?: Date | string | null
+    endedAt?: Date | string | null
+    updatedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type LiveGameUpdateManyMutationInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    period?: IntFieldUpdateOperationsInput | number
+    clockSeconds?: IntFieldUpdateOperationsInput | number
+    clockRunning?: BoolFieldUpdateOperationsInput | boolean
+    teamScore?: IntFieldUpdateOperationsInput | number
+    opponentScore?: IntFieldUpdateOperationsInput | number
+    teamFouls?: LiveGameUpdateteamFoulsInput | number[]
+    opponentFouls?: LiveGameUpdateopponentFoulsInput | number[]
+    timeouts?: LiveGameUpdatetimeoutsInput | number[]
+    lineup?: LiveGameUpdatelineupInput | string[]
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameUncheckedUpdateManyInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    period?: IntFieldUpdateOperationsInput | number
+    clockSeconds?: IntFieldUpdateOperationsInput | number
+    clockRunning?: BoolFieldUpdateOperationsInput | boolean
+    teamScore?: IntFieldUpdateOperationsInput | number
+    opponentScore?: IntFieldUpdateOperationsInput | number
+    teamFouls?: LiveGameUpdateteamFoulsInput | number[]
+    opponentFouls?: LiveGameUpdateopponentFoulsInput | number[]
+    timeouts?: LiveGameUpdatetimeoutsInput | number[]
+    lineup?: LiveGameUpdatelineupInput | string[]
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameEventCreateInput = {
+    id?: string
+    gameId: string
+    type: string
+    payload: InputJsonValue
+    reversed?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LiveGameEventUncheckedCreateInput = {
+    id?: string
+    gameId: string
+    type: string
+    payload: InputJsonValue
+    reversed?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LiveGameEventUpdateInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    payload?: InputJsonValue | InputJsonValue
+    reversed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameEventUncheckedUpdateInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    payload?: InputJsonValue | InputJsonValue
+    reversed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameEventCreateManyInput = {
+    id?: string
+    gameId: string
+    type: string
+    payload: InputJsonValue
+    reversed?: boolean
+    createdAt?: Date | string
+  }
+
+  export type LiveGameEventUpdateManyMutationInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    payload?: InputJsonValue | InputJsonValue
+    reversed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LiveGameEventUncheckedUpdateManyInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    payload?: InputJsonValue | InputJsonValue
+    reversed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StandingRowCreateInput = {
@@ -23112,6 +25716,133 @@ export namespace Prisma {
     sortOrder?: SortOrder
   }
 
+  export type IntNullableListFilter<$PrismaModel = never> = {
+    equals?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    has?: number | IntFieldRefInput<$PrismaModel> | null
+    hasEvery?: number[] | ListIntFieldRefInput<$PrismaModel>
+    hasSome?: number[] | ListIntFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type LiveGameCountOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    status?: SortOrder
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    clockRunning?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    teamFouls?: SortOrder
+    opponentFouls?: SortOrder
+    timeouts?: SortOrder
+    lineup?: SortOrder
+    startedAt?: SortOrder
+    endedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameAvgOrderByAggregateInput = {
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    teamFouls?: SortOrder
+    opponentFouls?: SortOrder
+    timeouts?: SortOrder
+  }
+
+  export type LiveGameMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    status?: SortOrder
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    clockRunning?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    startedAt?: SortOrder
+    endedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameMinOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    status?: SortOrder
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    clockRunning?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    startedAt?: SortOrder
+    endedAt?: SortOrder
+    updatedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameSumOrderByAggregateInput = {
+    period?: SortOrder
+    clockSeconds?: SortOrder
+    teamScore?: SortOrder
+    opponentScore?: SortOrder
+    teamFouls?: SortOrder
+    opponentFouls?: SortOrder
+    timeouts?: SortOrder
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+  }
+
+  export type LiveGameEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    type?: SortOrder
+    payload?: SortOrder
+    reversed?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    type?: SortOrder
+    reversed?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LiveGameEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    type?: SortOrder
+    reversed?: SortOrder
+    createdAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
   export type StandingRowCountOrderByAggregateInput = {
     id?: SortOrder
     teamName?: SortOrder
@@ -23203,17 +25934,6 @@ export namespace Prisma {
   export type PartnerSumOrderByAggregateInput = {
     sortOrder?: SortOrder
   }
-  export type JsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-  }
 
   export type MediaAlbumCountOrderByAggregateInput = {
     id?: SortOrder
@@ -23261,20 +25981,6 @@ export namespace Prisma {
 
   export type MediaAlbumSumOrderByAggregateInput = {
     sortOrder?: SortOrder
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type ExecutiveCountOrderByAggregateInput = {
@@ -23902,6 +26608,42 @@ export namespace Prisma {
     multiply?: number
     divide?: number
     unset?: boolean
+  }
+
+  export type LiveGameCreateteamFoulsInput = {
+    set: number[]
+  }
+
+  export type LiveGameCreateopponentFoulsInput = {
+    set: number[]
+  }
+
+  export type LiveGameCreatetimeoutsInput = {
+    set: number[]
+  }
+
+  export type LiveGameCreatelineupInput = {
+    set: string[]
+  }
+
+  export type LiveGameUpdateteamFoulsInput = {
+    set?: number[]
+    push?: number | number[]
+  }
+
+  export type LiveGameUpdateopponentFoulsInput = {
+    set?: number[]
+    push?: number | number[]
+  }
+
+  export type LiveGameUpdatetimeoutsInput = {
+    set?: number[]
+    push?: number | number[]
+  }
+
+  export type LiveGameUpdatelineupInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type ExecutiveCreatebulletsInput = {
