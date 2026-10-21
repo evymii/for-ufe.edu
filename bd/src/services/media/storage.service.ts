@@ -97,7 +97,24 @@ export async function uploadImage(buffer: Buffer, subfolder: string): Promise<St
 }
 
 function requireConfigured(): void {
-  if (!env.storageConfigured) {
+  if (
+    !env.storageConfigured ||
+    !env.CLOUDINARY_CLOUD_NAME ||
+    !env.CLOUDINARY_API_KEY ||
+    !env.CLOUDINARY_API_SECRET ||
+    !env.CLOUDINARY_FOLDER
+  ) {
+    logger.error(
+      {
+        apiKeyConfigured: Boolean(env.CLOUDINARY_API_KEY),
+        apiSecretConfigured: Boolean(env.CLOUDINARY_API_SECRET),
+        cloudNameConfigured: Boolean(env.CLOUDINARY_CLOUD_NAME),
+        folderConfigured: Boolean(env.CLOUDINARY_FOLDER),
+        provider: env.STORAGE_PROVIDER || null,
+        storageConfigured: env.storageConfigured,
+      },
+      'Cloudinary storage is not fully configured',
+    );
     throw ApiError.serviceUnavailable('Media storage is not configured on this server');
   }
 }
