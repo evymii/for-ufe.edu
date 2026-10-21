@@ -32,6 +32,9 @@ export function buildApp(): Express {
   const app = express();
 
   app.disable('x-powered-by');
+  // Vercel terminates TLS and forwards the client address to Express.
+  // Trust the platform proxy so rate-limiters can safely resolve req.ip.
+  app.set('trust proxy', 1);
   if (!env.isTest) {
     app.use(requestLogger);
   }
