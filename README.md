@@ -49,6 +49,19 @@ Docker: `docker compose up -d` · `down` (keep data) · `down -v` (wipe).
 - `STORAGE_PROVIDER=cloudinary` + the four `CLOUDINARY_*` values — enables media uploads (Cloudinary dashboard → Settings → API Keys; the API secret is server-only). Left unset, media endpoints return 503.
 - `STAFF_PASSWORD` — shared password for the seeded admin logins; rotate for production.
 
+`fd/.env.local` (copy from `fd/.env.example`):
+
+- `NEXT_PUBLIC_API_URL` — the public URL of the deployed backend, without a trailing
+  slash (for example, `https://api.example.com`). This must be set in the frontend
+  deployment environment; production builds fail clearly when it is missing instead
+  of trying to call `localhost`.
+
+For a Vercel deployment, deploy `bd/` as its own project and set its backend
+environment variables (`DATABASE_URL`, JWT secrets, `CORS_ORIGIN`, and the other
+values in `bd/.env.example`). Deploy `fd/` as a separate project with
+`NEXT_PUBLIC_API_URL` set to the backend's public URL. Set `CORS_ORIGIN` on the
+backend to the exact frontend origin, including its scheme.
+
 **Admin access:** log in as `manager` / `editor` / `edumanager` (all ADMIN, same admin side), or `POST /api/v1/user/auth/pin` with `ADMIN_PIN_CODE` (4–8 digits; empty disables; production refuses the default `1234`). Both issue the same JWT session.
 
 **Content & media:** live site text is stored per `page/key/locale` — public at `GET /api/v1/content/blocks/:page` (with SSE live updates via `/stream`), edited through the admin block endpoints (single-value `PUT`, defaults `ensure`, `history` audit). Media uploads (`POST /api/v1/admin/media`) are magic-byte verified, capped by `MAX_UPLOAD_MB`, and deleting a media row also deletes the Cloudinary asset.
