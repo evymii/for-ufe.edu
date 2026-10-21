@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { env } from "@/lib/env";
 import {
   liveGamesService,
   type LiveGameState,
@@ -29,7 +30,7 @@ export function LiveScoreDisplay({
       if (active && next) setState(next);
     });
     const stream = new EventSource(
-      `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010"}/api/v1/live-games/${gameId}/stream`,
+      `${env.apiUrl}/api/v1/live-games/${gameId}/stream`,
     );
     const refresh = () =>
       void liveGamesService.get(gameId).then(({ state: next }) => {

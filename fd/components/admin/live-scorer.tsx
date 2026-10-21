@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api-client";
+import { env } from "@/lib/env";
 import {
   liveGamesService,
   type LiveGameEvent,
@@ -66,7 +67,7 @@ export function LiveScorer() {
       })
       .catch(() => undefined);
     const stream = new EventSource(
-      `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4010"}/api/v1/live-games/${gameId}/stream`,
+      `${env.apiUrl}/api/v1/live-games/${gameId}/stream`,
     );
     stream.addEventListener("state_changed", () => {
       void liveGamesService.get(gameId).then(({ state: next }) => {
