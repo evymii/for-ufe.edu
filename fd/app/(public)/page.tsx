@@ -9,7 +9,6 @@ import {
   getHomeSpotlight,
 } from "@/components/team/home-spotlight";
 import { HomeTimeline } from "@/components/team/home-timeline";
-import { LiveScoreDisplay } from "@/components/team/live-score-display";
 import { NewsGrid, type NewsItem } from "@/components/team/news-grid";
 import { Reveal } from "@/components/team/reveal";
 import { ScheduleStrip } from "@/components/team/schedule-strip";
@@ -120,13 +119,6 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
-      {upcoming.slice(0, 5).map((game) => (
-        <LiveScoreDisplay
-          key={game.id}
-          gameId={game.id}
-          opponent={game.opponent}
-        />
-      ))}
       <Hero copy={heroData} historyIntro={historyIntro} stack={heroStack} />
 
       {/* Latest news — featured card + stacked cards */}
