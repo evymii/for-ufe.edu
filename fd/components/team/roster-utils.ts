@@ -3,6 +3,8 @@ import type { PlayerProfile } from "@/content/site";
 /** Player + resolved photo path, as prepared by the /players page. */
 export type RosterPlayer = Omit<PlayerProfile, "photo"> & {
   photo: null | string;
+  /** Admin-set vertical framing of the photo, 0 (top) – 100 (bottom). */
+  photoPosition?: null | number;
 };
 
 /** Uppercase base position ("Center · Double-double machine" → "CENTER"). */
