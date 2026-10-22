@@ -16,6 +16,7 @@ export function toRosterPlayer(row: PlayerRow): RosterPlayer {
     position: row.position ?? "",
     photo: row.photo,
     photoPosition: row.photoPosition ?? null,
+    photoScale: row.photoScale ?? null,
     heightCm: row.heightCm ?? 0,
     yearsOnTeam: extras.yearsOnTeam ?? "",
     yearsPlaying: extras.yearsPlaying ?? "",

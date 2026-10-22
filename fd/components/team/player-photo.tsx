@@ -16,6 +16,7 @@ export function PlayerCutout({
   fallback = "slot",
   anchor = "center",
   position = null,
+  scale = null,
   fallbackLabel,
   className,
   fallbackClassName,
@@ -34,12 +35,23 @@ export function PlayerCutout({
    * bottom anchor so a portrait can be nudged up/down inside the slot.
    */
   position?: null | number;
+  /**
+   * Admin-set rendered size, 40 (shrunken) – 150 (zoomed, clipped). The
+   * transform origin follows the position anchor, so scaling never detaches
+   * the photo from the edge it was pinned to.
+   */
+  scale?: null | number;
   /** Replaces the jersey number in the fallback slot (e.g. staff initials). */
   fallbackLabel?: string;
   className?: string;
   fallbackClassName?: string;
 }) {
   if (photo) {
+    const hasPosition = position !== null && position !== undefined;
+    const hasScale = scale !== null && scale !== undefined && scale !== 100;
+    // Keep the scale origin on the same edge object-position pins to.
+    const originY = hasPosition ? `${position}%` : "bottom";
+    const originX = anchor === "right" ? "right" : "center";
     return (
       <span
         className={cn(
@@ -58,11 +70,19 @@ export function PlayerCutout({
             anchor === "right" ? "object-right" : "object-center",
           )}
           style={
-            position === null
-              ? undefined
-              : {
-                  objectPosition: `${anchor === "right" ? "right" : "center"} ${position}%`,
+            hasPosition || hasScale
+              ? {
+                  ...(hasPosition
+                    ? { objectPosition: `${originX} ${originY}` }
+                    : {}),
+                  ...(hasScale
+                    ? {
+                        transform: `scale(${scale / 100})`,
+                        transformOrigin: `${originX} ${originY}`,
+                      }
+                    : {}),
                 }
+              : undefined
           }
         />
       </span>

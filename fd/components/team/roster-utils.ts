@@ -5,6 +5,8 @@ export type RosterPlayer = Omit<PlayerProfile, "photo"> & {
   photo: null | string;
   /** Admin-set vertical framing of the photo, 0 (top) – 100 (bottom). */
   photoPosition?: null | number;
+  /** Admin-set rendered size, 40 (shrunken) – 150 (zoomed). */
+  photoScale?: null | number;
 };
 
 /** Uppercase base position ("Center · Double-double machine" → "CENTER"). */

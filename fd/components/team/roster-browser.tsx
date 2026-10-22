@@ -377,6 +377,7 @@ function PlayerTableRow({
               number={player.number}
               photo={player.photo}
               position={player.photoPosition ?? null}
+              scale={player.photoScale ?? null}
               sizes="40px"
               fallbackClassName="[&>span]:text-3xl"
             />

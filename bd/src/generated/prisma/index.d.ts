@@ -5648,6 +5648,7 @@ export namespace Prisma {
     weightKg: number | null
     birthYear: number | null
     photoPosition: number | null
+    photoScale: number | null
     ppg: number | null
     rpg: number | null
     apg: number | null
@@ -5660,6 +5661,7 @@ export namespace Prisma {
     weightKg: number | null
     birthYear: number | null
     photoPosition: number | null
+    photoScale: number | null
     ppg: number | null
     rpg: number | null
     apg: number | null
@@ -5680,6 +5682,7 @@ export namespace Prisma {
     photo: string | null
     actionPhoto: string | null
     photoPosition: number | null
+    photoScale: number | null
     bio: string | null
     academicYear: string | null
     isCaptain: boolean | null
@@ -5706,6 +5709,7 @@ export namespace Prisma {
     photo: string | null
     actionPhoto: string | null
     photoPosition: number | null
+    photoScale: number | null
     bio: string | null
     academicYear: string | null
     isCaptain: boolean | null
@@ -5732,6 +5736,7 @@ export namespace Prisma {
     photo: number
     actionPhoto: number
     photoPosition: number
+    photoScale: number
     bio: number
     academicYear: number
     isCaptain: number
@@ -5753,6 +5758,7 @@ export namespace Prisma {
     weightKg?: true
     birthYear?: true
     photoPosition?: true
+    photoScale?: true
     ppg?: true
     rpg?: true
     apg?: true
@@ -5765,6 +5771,7 @@ export namespace Prisma {
     weightKg?: true
     birthYear?: true
     photoPosition?: true
+    photoScale?: true
     ppg?: true
     rpg?: true
     apg?: true
@@ -5785,6 +5792,7 @@ export namespace Prisma {
     photo?: true
     actionPhoto?: true
     photoPosition?: true
+    photoScale?: true
     bio?: true
     academicYear?: true
     isCaptain?: true
@@ -5811,6 +5819,7 @@ export namespace Prisma {
     photo?: true
     actionPhoto?: true
     photoPosition?: true
+    photoScale?: true
     bio?: true
     academicYear?: true
     isCaptain?: true
@@ -5837,6 +5846,7 @@ export namespace Prisma {
     photo?: true
     actionPhoto?: true
     photoPosition?: true
+    photoScale?: true
     bio?: true
     academicYear?: true
     isCaptain?: true
@@ -5951,6 +5961,7 @@ export namespace Prisma {
     photo: string | null
     actionPhoto: string | null
     photoPosition: number | null
+    photoScale: number | null
     bio: string | null
     academicYear: string | null
     isCaptain: boolean
@@ -5997,6 +6008,7 @@ export namespace Prisma {
     photo?: boolean
     actionPhoto?: boolean
     photoPosition?: boolean
+    photoScale?: boolean
     bio?: boolean
     academicYear?: boolean
     isCaptain?: boolean
@@ -6026,6 +6038,7 @@ export namespace Prisma {
     photo?: boolean
     actionPhoto?: boolean
     photoPosition?: boolean
+    photoScale?: boolean
     bio?: boolean
     academicYear?: boolean
     isCaptain?: boolean
@@ -6039,7 +6052,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type PlayerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "number" | "role" | "position" | "heightCm" | "weightKg" | "birthYear" | "hometown" | "photo" | "actionPhoto" | "photoPosition" | "bio" | "academicYear" | "isCaptain" | "ppg" | "rpg" | "apg" | "profile" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
+  export type PlayerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "number" | "role" | "position" | "heightCm" | "weightKg" | "birthYear" | "hometown" | "photo" | "actionPhoto" | "photoPosition" | "photoScale" | "bio" | "academicYear" | "isCaptain" | "ppg" | "rpg" | "apg" | "profile" | "sortOrder" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
 
   export type $PlayerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Player"
@@ -6058,6 +6071,7 @@ export namespace Prisma {
       photo: string | null
       actionPhoto: string | null
       photoPosition: number | null
+      photoScale: number | null
       bio: string | null
       academicYear: string | null
       isCaptain: boolean
@@ -6474,6 +6488,7 @@ export namespace Prisma {
     readonly photo: FieldRef<"Player", 'String'>
     readonly actionPhoto: FieldRef<"Player", 'String'>
     readonly photoPosition: FieldRef<"Player", 'Int'>
+    readonly photoScale: FieldRef<"Player", 'Int'>
     readonly bio: FieldRef<"Player", 'String'>
     readonly academicYear: FieldRef<"Player", 'String'>
     readonly isCaptain: FieldRef<"Player", 'Boolean'>
@@ -21458,6 +21473,7 @@ export namespace Prisma {
     photo: 'photo',
     actionPhoto: 'actionPhoto',
     photoPosition: 'photoPosition',
+    photoScale: 'photoScale',
     bio: 'bio',
     academicYear: 'academicYear',
     isCaptain: 'isCaptain',
@@ -22066,6 +22082,7 @@ export namespace Prisma {
     photo?: StringNullableFilter<"Player"> | string | null
     actionPhoto?: StringNullableFilter<"Player"> | string | null
     photoPosition?: IntNullableFilter<"Player"> | number | null
+    photoScale?: IntNullableFilter<"Player"> | number | null
     bio?: StringNullableFilter<"Player"> | string | null
     academicYear?: StringNullableFilter<"Player"> | string | null
     isCaptain?: BoolFilter<"Player"> | boolean
@@ -22093,6 +22110,7 @@ export namespace Prisma {
     photo?: SortOrder
     actionPhoto?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     bio?: SortOrder
     academicYear?: SortOrder
     isCaptain?: SortOrder
@@ -22123,6 +22141,7 @@ export namespace Prisma {
     photo?: StringNullableFilter<"Player"> | string | null
     actionPhoto?: StringNullableFilter<"Player"> | string | null
     photoPosition?: IntNullableFilter<"Player"> | number | null
+    photoScale?: IntNullableFilter<"Player"> | number | null
     bio?: StringNullableFilter<"Player"> | string | null
     academicYear?: StringNullableFilter<"Player"> | string | null
     isCaptain?: BoolFilter<"Player"> | boolean
@@ -22150,6 +22169,7 @@ export namespace Prisma {
     photo?: SortOrder
     actionPhoto?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     bio?: SortOrder
     academicYear?: SortOrder
     isCaptain?: SortOrder
@@ -22185,6 +22205,7 @@ export namespace Prisma {
     photo?: StringNullableWithAggregatesFilter<"Player"> | string | null
     actionPhoto?: StringNullableWithAggregatesFilter<"Player"> | string | null
     photoPosition?: IntNullableWithAggregatesFilter<"Player"> | number | null
+    photoScale?: IntNullableWithAggregatesFilter<"Player"> | number | null
     bio?: StringNullableWithAggregatesFilter<"Player"> | string | null
     academicYear?: StringNullableWithAggregatesFilter<"Player"> | string | null
     isCaptain?: BoolWithAggregatesFilter<"Player"> | boolean
@@ -23666,6 +23687,7 @@ export namespace Prisma {
     photo?: string | null
     actionPhoto?: string | null
     photoPosition?: number | null
+    photoScale?: number | null
     bio?: string | null
     academicYear?: string | null
     isCaptain?: boolean
@@ -23693,6 +23715,7 @@ export namespace Prisma {
     photo?: string | null
     actionPhoto?: string | null
     photoPosition?: number | null
+    photoScale?: number | null
     bio?: string | null
     academicYear?: string | null
     isCaptain?: boolean
@@ -23719,6 +23742,7 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     actionPhoto?: NullableStringFieldUpdateOperationsInput | string | null
     photoPosition?: NullableIntFieldUpdateOperationsInput | number | null
+    photoScale?: NullableIntFieldUpdateOperationsInput | number | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     academicYear?: NullableStringFieldUpdateOperationsInput | string | null
     isCaptain?: BoolFieldUpdateOperationsInput | boolean
@@ -23745,6 +23769,7 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     actionPhoto?: NullableStringFieldUpdateOperationsInput | string | null
     photoPosition?: NullableIntFieldUpdateOperationsInput | number | null
+    photoScale?: NullableIntFieldUpdateOperationsInput | number | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     academicYear?: NullableStringFieldUpdateOperationsInput | string | null
     isCaptain?: BoolFieldUpdateOperationsInput | boolean
@@ -23772,6 +23797,7 @@ export namespace Prisma {
     photo?: string | null
     actionPhoto?: string | null
     photoPosition?: number | null
+    photoScale?: number | null
     bio?: string | null
     academicYear?: string | null
     isCaptain?: boolean
@@ -23798,6 +23824,7 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     actionPhoto?: NullableStringFieldUpdateOperationsInput | string | null
     photoPosition?: NullableIntFieldUpdateOperationsInput | number | null
+    photoScale?: NullableIntFieldUpdateOperationsInput | number | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     academicYear?: NullableStringFieldUpdateOperationsInput | string | null
     isCaptain?: BoolFieldUpdateOperationsInput | boolean
@@ -23824,6 +23851,7 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     actionPhoto?: NullableStringFieldUpdateOperationsInput | string | null
     photoPosition?: NullableIntFieldUpdateOperationsInput | number | null
+    photoScale?: NullableIntFieldUpdateOperationsInput | number | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
     academicYear?: NullableStringFieldUpdateOperationsInput | string | null
     isCaptain?: BoolFieldUpdateOperationsInput | boolean
@@ -25536,6 +25564,7 @@ export namespace Prisma {
     photo?: SortOrder
     actionPhoto?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     bio?: SortOrder
     academicYear?: SortOrder
     isCaptain?: SortOrder
@@ -25555,6 +25584,7 @@ export namespace Prisma {
     weightKg?: SortOrder
     birthYear?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     ppg?: SortOrder
     rpg?: SortOrder
     apg?: SortOrder
@@ -25575,6 +25605,7 @@ export namespace Prisma {
     photo?: SortOrder
     actionPhoto?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     bio?: SortOrder
     academicYear?: SortOrder
     isCaptain?: SortOrder
@@ -25601,6 +25632,7 @@ export namespace Prisma {
     photo?: SortOrder
     actionPhoto?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     bio?: SortOrder
     academicYear?: SortOrder
     isCaptain?: SortOrder
@@ -25619,6 +25651,7 @@ export namespace Prisma {
     weightKg?: SortOrder
     birthYear?: SortOrder
     photoPosition?: SortOrder
+    photoScale?: SortOrder
     ppg?: SortOrder
     rpg?: SortOrder
     apg?: SortOrder

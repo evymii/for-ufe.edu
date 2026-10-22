@@ -121,6 +121,8 @@ export interface PlayerRow {
   actionPhoto: string | null;
   /** Vertical framing of `photo`, 0 (top) – 100 (bottom); null = default. */
   photoPosition: number | null;
+  /** Rendered size of `photo`, 40 (shrunken) – 150 (zoomed); null = 100. */
+  photoScale: number | null;
   bio: string | null;
   academicYear: string | null;
   isCaptain: boolean;

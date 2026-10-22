@@ -89,8 +89,14 @@ export type CollectionField =
       step?: number;
       /** Initial slider value on CREATE (edits use the stored value). */
       defaultValue?: number;
+      /** What an empty (null) value displays as — the visual default. */
+      emptyDisplayValue?: number;
       /** Another field holding an image URL — rendered as a live preview. */
       previewImageField?: string;
+      /** What the slider drives in that preview: placement or size. */
+      previewMode?: "position" | "scale";
+      /** Field whose live value is the preview's vertical placement (scale mode). */
+      previewImagePositionField?: string;
       /** Shown under the slider, explaining what the two ends mean. */
       hint?: string;
     }
@@ -111,6 +117,13 @@ export type CollectionField =
 
 type Row = Record<string, unknown> & { id: string };
 
+/** Form-state cell → number | null ("" and garbage become null). */
+function toNumberOrNull(value: string | boolean | undefined): null | number {
+  if (value === "" || value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export interface CollectionConfig {
   /** Page heading (Mongolian). */
   title: string;
@@ -129,6 +142,8 @@ export interface CollectionConfig {
     imageField: string;
     /** Field holding a 0–100 vertical framing applied to the card image. */
     imagePositionField?: string;
+    /** Field holding a 40–150 scale applied to the card image. */
+    imageScaleField?: string;
     /** Icon shown when the media URL is empty (per-collection flavor). */
     fallbackIcon?: LucideIcon;
     /** Field for the big faded watermark (jersey number, year…). */
@@ -302,9 +317,10 @@ function YouTubeField({
 
 /**
  * Slider for 0–100 style settings, with an optional live preview showing the
- * referenced image exactly as the public card will frame it. An empty value
- * (stored null) displays at `max` — the visual default — but still saves as
- * null until the slider is actually moved.
+ * referenced image exactly as the public card will frame it (an optional
+ * companion position field's live value is applied alongside the slider's
+ * own). An empty value (stored null) displays at `emptyDisplayValue` — the
+ * visual default — but still saves as null until the slider is moved.
  */
 function RangeField({
   id,
@@ -313,7 +329,10 @@ function RangeField({
   max,
   step,
   hint,
+  emptyDisplayValue,
   previewUrl,
+  previewMode = "position",
+  previewPosition,
   onChange,
 }: {
   id: string;
@@ -322,10 +341,24 @@ function RangeField({
   max: number;
   step: number;
   hint?: string;
+  emptyDisplayValue: number;
   previewUrl: null | string;
+  /** What the slider drives in the preview: vertical placement or size. */
+  previewMode?: "position" | "scale";
+  /** Live value of the photo-position field, for the scale slider's preview. */
+  previewPosition: null | number;
   onChange: (next: string) => void;
 }) {
-  const shown = value === "" ? max : Number(value);
+  const shown = value === "" ? emptyDisplayValue : Number(value);
+  const position = previewPosition ?? 100;
+  const previewStyle =
+    previewMode === "scale"
+      ? {
+          objectPosition: `center ${position}%`,
+          transform: `scale(${shown / 100})`,
+          transformOrigin: `center ${position}%`,
+        }
+      : { objectPosition: `center ${shown}%` };
   return (
     <div className="grid gap-2">
       <div className="flex items-center gap-3">
@@ -353,7 +386,7 @@ function RangeField({
             src={previewUrl}
             alt=""
             className="h-full w-full object-contain"
-            style={{ objectPosition: `center ${shown}%` }}
+            style={previewStyle}
           />
         </div>
       ) : null}
@@ -528,6 +561,13 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
                     : null
                   : null
               }
+              imageScale={
+                config.card.imageScaleField
+                  ? typeof row[config.card.imageScaleField] === "number"
+                    ? (row[config.card.imageScaleField] as number)
+                    : null
+                  : null
+              }
               fallbackIcon={config.card.fallbackIcon ?? ImageIcon}
               watermark={
                 config.card.watermarkField
@@ -666,11 +706,22 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
                           max={field.max}
                           step={field.step ?? 1}
                           hint={field.hint}
+                          emptyDisplayValue={
+                            field.emptyDisplayValue ?? field.max
+                          }
                           previewUrl={
                             field.previewImageField
                               ? String(
                                   form[field.previewImageField] ?? "",
                                 ).trim() || null
+                              : null
+                          }
+                          previewMode={field.previewMode}
+                          previewPosition={
+                            field.previewImagePositionField
+                              ? toNumberOrNull(
+                                  form[field.previewImagePositionField],
+                                )
                               : null
                           }
                           onChange={(next) =>

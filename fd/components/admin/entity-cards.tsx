@@ -104,6 +104,8 @@ export interface EntityCardProps {
   watermark?: null | string;
   /** Vertical framing of the image, 0 (top) – 100 (bottom); null = default. */
   imagePosition?: null | number;
+  /** Rendered size of the image, 40 (shrunken) – 150 (zoomed); null = 100. */
+  imageScale?: null | number;
   /** Small pill(s) on the media zone, top-left. */
   pills?: React.ReactNode;
   title: React.ReactNode;
@@ -121,6 +123,7 @@ export function EntityCard({
   fallbackIcon: Icon,
   watermark,
   imagePosition,
+  imageScale,
   pills,
   title,
   meta,
@@ -143,11 +146,19 @@ export function EntityCard({
             src={image}
             alt=""
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            style={
-              imagePosition === null || imagePosition === undefined
-                ? undefined
-                : { objectPosition: `center ${imagePosition}%` }
-            }
+            style={{
+              ...(imagePosition === null || imagePosition === undefined
+                ? {}
+                : { objectPosition: `center ${imagePosition}%` }),
+              ...(imageScale === null ||
+              imageScale === undefined ||
+              imageScale === 100
+                ? {}
+                : {
+                    transform: `scale(${imageScale / 100})`,
+                    transformOrigin: `center ${imagePosition ?? 100}%`,
+                  }),
+            }}
           />
         ) : (
           <div className="text-muted-foreground/30 flex h-full w-full items-center justify-center">

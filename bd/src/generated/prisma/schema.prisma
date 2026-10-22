@@ -87,6 +87,9 @@ model Player {
   // Vertical framing of `photo` inside fixed-ratio slots, 0 (top) – 100
   // (bottom). Null keeps the default bottom-anchored look.
   photoPosition Int?
+  // Rendered size of `photo` inside the slot, 40 (shrunken) – 150 (zoomed
+  // in, clipped by the slot). Null/100 = natural contain-fit size.
+  photoScale    Int?
   bio           String?
   academicYear  String?
   isCaptain     Boolean  @default(false)
