@@ -40,12 +40,19 @@ interface Envelope<T> {
   error?: ApiErrorBody;
 }
 
+interface RawOutcome<T> {
+  body: Envelope<T> | null;
+  /** True only when fetch itself threw — the server never answered. */
+  networkError: boolean;
+  status: number;
+}
+
 const REFRESH_PATH = "/api/v1/user/auth/refresh";
 
 async function rawRequest<T>(
   path: string,
   init: RequestInit,
-): Promise<Envelope<T> | null> {
+): Promise<RawOutcome<T>> {
   const headers = new Headers(init.headers);
   if (
     init.body !== undefined &&
@@ -66,13 +73,16 @@ async function rawRequest<T>(
       credentials: "include",
     });
   } catch {
-    // Network failure (backend down, DNS, offline) — surfaces as a null
-    // envelope so callers always receive an ApiClientError, never a raw
-    // TypeError.
-    return null;
+    // Network failure (backend down, DNS, offline) — surfaces without a body
+    // so callers always receive an ApiClientError, never a raw TypeError.
+    return { body: null, networkError: true, status: 0 };
   }
 
-  return (await response.json().catch(() => null)) as Envelope<T> | null;
+  return {
+    body: (await response.json().catch(() => null)) as Envelope<T> | null,
+    networkError: false,
+    status: response.status,
+  };
 }
 
 async function request<T>(
@@ -80,18 +90,21 @@ async function request<T>(
   init: RequestInit,
   allowRetry = true,
 ): Promise<T> {
-  const body = await rawRequest<T>(path, init);
+  const { body, networkError, status } = await rawRequest<T>(path, init);
 
   if (body?.success && body.data !== undefined) {
     return body.data;
   }
 
   // Expired access token: silently refresh once via the httpOnly cookie,
-  // then replay the original request.
+  // then replay the original request. A network blip is worth one retry too —
+  // but a REAL HTTP answer without our JSON envelope (e.g. Vercel's plain-text
+  // 413 FUNCTION_PAYLOAD_TOO_LARGE on oversized uploads) would fail identically
+  // on replay, so it is reported as-is instead of pointlessly duplicated.
   if (
     allowRetry &&
     path !== REFRESH_PATH &&
-    (body?.error?.code === "UNAUTHORIZED" || body === null)
+    (networkError || body?.error?.code === "UNAUTHORIZED")
   ) {
     const refreshed = await refreshSession().catch(() => null);
     if (refreshed) {
@@ -99,10 +112,19 @@ async function request<T>(
     }
   }
 
+  if (networkError) {
+    throw new ApiClientError(
+      0,
+      "NETWORK_ERROR",
+      "Could not reach the API. Is the backend running?",
+    );
+  }
+
   throw new ApiClientError(
-    0,
-    body?.error?.code ?? "NETWORK_ERROR",
-    body?.error?.message ?? "Could not reach the API. Is the backend running?",
+    status,
+    body?.error?.code ?? "HTTP_ERROR",
+    body?.error?.message ??
+      `The API returned HTTP ${status} without an error body.`,
     body?.error?.details,
   );
 }
@@ -141,7 +163,7 @@ let refreshInFlight: null | Promise<AuthPayload> = null;
 export async function refreshSession(): Promise<AuthPayload> {
   if (refreshInFlight) return refreshInFlight;
   refreshInFlight = (async () => {
-    const body = await rawRequest<AuthPayload>(REFRESH_PATH, {
+    const { body } = await rawRequest<AuthPayload>(REFRESH_PATH, {
       method: "POST",
     });
     if (!body?.success || !body.data) {

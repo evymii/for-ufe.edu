@@ -1,10 +1,11 @@
 import type { Prisma } from '../../generated/prisma/client.js';
 
+import { MEDIA_FOLDER_PATTERN } from '../../config/constants.js';
 import { env } from '../../config/env.js';
 import { ApiError } from '../../lib/ApiError.js';
 import { logger } from '../../lib/logger.js';
 import { prisma } from '../../lib/prisma.js';
-import { deleteImage, uploadImage } from './storage.service.js';
+import { deleteImage, fetchImageAsset, uploadImage } from './storage.service.js';
 
 /** Fields safe to return to clients. */
 const MEDIA_SELECT = {
@@ -36,6 +37,61 @@ export async function listMedia(query: { limit: number; offset: number }) {
     items: items.map(({ uploader, ...item }) => ({ ...item, uploadedBy: uploader?.email ?? null })),
     pagination: { limit: query.limit, offset: query.offset, total },
   };
+}
+
+/**
+ * Registers a browser → Cloudinary direct upload (the Vercel-proof path: the
+ * image bytes never travel through bd, so the 4.5 MB function body cap does
+ * not apply). The publicId must live under our server-signed folder — that
+ * prefix is only writable with a signature this server issued — and all row
+ * metadata (url, dimensions, size, MIME) is read back from Cloudinary, never
+ * trusted from the client. Rejected assets are best-effort deleted so a
+ * refused register does not leave orphans in the account.
+ */
+export async function registerDirectMedia(input: {
+  adminId: string;
+  altText?: string | undefined;
+  publicId: string;
+}) {
+  const root = `${env.CLOUDINARY_FOLDER}/`;
+  const rest = input.publicId.slice(root.length);
+  const subfolder = rest.split('/')[0] ?? '';
+  const filename = rest.slice(subfolder.length + 1);
+  if (
+    !input.publicId.startsWith(root) ||
+    !MEDIA_FOLDER_PATTERN.test(subfolder) ||
+    !filename ||
+    filename.includes('/')
+  ) {
+    throw ApiError.badRequest('publicId is outside this server’s upload folder');
+  }
+
+  const asset = await fetchImageAsset(input.publicId);
+  if (asset.bytes > env.MAX_UPLOAD_MB * 1024 * 1024) {
+    await deleteImage(input.publicId).catch(() => undefined);
+    throw ApiError.payloadTooLarge(`File exceeds the ${env.MAX_UPLOAD_MB} MB upload limit`);
+  }
+
+  try {
+    return await prisma.media.create({
+      data: {
+        altText: input.altText ?? null,
+        folder: subfolder,
+        height: asset.height,
+        mime: asset.mime,
+        provider: env.STORAGE_PROVIDER,
+        publicId: asset.publicId,
+        sizeBytes: asset.bytes,
+        uploadedBy: input.adminId,
+        url: asset.url,
+        width: asset.width,
+      },
+      select: MEDIA_SELECT,
+    });
+  } catch (error) {
+    logger.error({ err: error, publicId: input.publicId }, 'Direct media register DB write failed');
+    throw error;
+  }
 }
 
 /**

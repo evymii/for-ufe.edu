@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 
 import { ApiError } from '../../lib/ApiError.js';
 import * as mediaService from '../../services/media/media.service.js';
+import { signDirectUpload } from '../../services/media/storage.service.js';
 import { ok } from '../../utils/http.js';
 import { mediaUploadFieldsSchema } from '../../validators/admin/media.validators.js';
 
@@ -11,9 +12,33 @@ import { mediaUploadFieldsSchema } from '../../validators/admin/media.validators
  * layer only maps HTTP to service calls.
  */
 
+/**
+ * Step 1 of the direct-upload path: hands the browser signed Cloudinary
+ * params so the image bytes can travel browser → Cloudinary without passing
+ * through bd (Vercel caps function bodies at 4.5 MB).
+ */
+export async function directUploadParams(req: Request, res: Response): Promise<void> {
+  requireUser(req);
+  const { folder } = req.body as { folder: string };
+  ok(res, { params: signDirectUpload(folder) });
+}
+
 export async function listMedia(req: Request, res: Response): Promise<void> {
   const query = req.query as unknown as { limit: number; offset: number };
   ok(res, await mediaService.listMedia(query));
+}
+
+/** Step 2: persists the already-uploaded asset as a media row. */
+export async function registerDirectMedia(req: Request, res: Response): Promise<void> {
+  const admin = requireUser(req);
+  const { alt, publicId } = req.body as { alt?: string; publicId: string };
+
+  const media = await mediaService.registerDirectMedia({
+    adminId: admin.id,
+    altText: alt,
+    publicId,
+  });
+  ok(res, { media }, 201);
 }
 
 export async function removeMedia(req: Request, res: Response): Promise<void> {

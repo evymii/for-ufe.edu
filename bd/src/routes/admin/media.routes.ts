@@ -8,7 +8,9 @@ import { validate } from '../../middleware/validate.js';
 import {
   listMediaQuerySchema,
   mediaAltPatchSchema,
+  mediaDirectParamsSchema,
   mediaIdParamSchema,
+  mediaRegisterSchema,
 } from '../../validators/admin/media.validators.js';
 
 /**
@@ -28,6 +30,21 @@ adminMediaRouter.post(
   uploadLimiter,
   uploadSingleImage('image'),
   asyncHandler(mediaController.uploadMedia),
+);
+
+// Direct-upload path for files larger than the Vercel 4.5 MB body cap:
+// browser → Cloudinary with signed params, then a register call per asset.
+adminMediaRouter.post(
+  '/direct-params',
+  validate({ body: mediaDirectParamsSchema }),
+  asyncHandler(mediaController.directUploadParams),
+);
+
+adminMediaRouter.post(
+  '/register',
+  uploadLimiter,
+  validate({ body: mediaRegisterSchema }),
+  asyncHandler(mediaController.registerDirectMedia),
 );
 
 adminMediaRouter.patch(

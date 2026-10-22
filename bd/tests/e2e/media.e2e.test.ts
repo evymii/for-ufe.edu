@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,6 +7,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // app + test database; only the network call to the provider is fake.
 vi.mock('cloudinary', () => ({
   v2: {
+    api: {
+      resource: vi.fn(async (publicId: string) => ({
+        bytes: 1_000,
+        format: 'png',
+        height: 4,
+        public_id: publicId,
+        secure_url: `https://res.cloudinary.com/test/image/upload/${publicId}.png`,
+        width: 6,
+      })),
+    },
     config: vi.fn(),
     uploader: {
       destroy: vi.fn(async () => ({ result: 'ok' })),
@@ -53,6 +63,7 @@ const upload = (bearer: string) =>
 
 beforeEach(async () => {
   vi.mocked(cloudinary.uploader.destroy).mockClear();
+  vi.mocked(cloudinary.api.resource).mockClear();
   await prisma.media.deleteMany({});
 });
 
@@ -229,5 +240,163 @@ describe('DELETE /api/v1/admin/media/:id', () => {
       .set('Authorization', bearer);
 
     expect(res.status).toBe(404);
+  });
+});
+
+describe('POST /api/v1/admin/media/direct-params (signed direct upload)', () => {
+  it('returns params whose signature matches Cloudinary’s sha1(folder&timestamp + secret) scheme', async () => {
+    const bearer = await adminBearer();
+
+    const res = await request(app)
+      .post(`${API}/admin/media/direct-params`)
+      .set('Authorization', bearer)
+      .send({});
+
+    expect(res.status).toBe(200);
+    const params = res.body.data.params as {
+      apiKey: string;
+      cloudName: string;
+      folder: string;
+      signature: string;
+      timestamp: number;
+    };
+    expect(params).toMatchObject({
+      apiKey: 'test-key',
+      cloudName: 'test-cloud',
+      folder: 'test-folder/uploads',
+    });
+    const expected = createHash('sha1')
+      .update(`folder=${params.folder}&timestamp=${params.timestamp}test-secret`)
+      .digest('hex');
+    expect(params.signature).toBe(expected);
+  });
+
+  it('accepts a valid subfolder but rejects an arbitrary one', async () => {
+    const bearer = await adminBearer();
+
+    const ok = await request(app)
+      .post(`${API}/admin/media/direct-params`)
+      .set('Authorization', bearer)
+      .send({ folder: 'brand' });
+    expect(ok.status).toBe(200);
+    expect(ok.body.data.params).toMatchObject({ folder: 'test-folder/brand' });
+
+    const bad = await request(app)
+      .post(`${API}/admin/media/direct-params`)
+      .set('Authorization', bearer)
+      .send({ folder: 'Not_A-Folder' });
+    expect(bad.status).toBe(400);
+  });
+
+  it('rejects unauthenticated (401) and USER-role (403) requests', async () => {
+    const anon = await request(app).post(`${API}/admin/media/direct-params`).send({});
+    expect(anon.status).toBe(401);
+
+    const user = await createTestUser();
+    const session = await login(user.email, user.password);
+    const forbidden = await request(app)
+      .post(`${API}/admin/media/direct-params`)
+      .set('Authorization', `Bearer ${session.accessToken}`)
+      .send({});
+    expect(forbidden.status).toBe(403);
+  });
+});
+
+describe('POST /api/v1/admin/media/register (direct upload, step 2)', () => {
+  it('creates a media row from provider-verified asset data', async () => {
+    const bearer = await adminBearer();
+
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .set('Authorization', bearer)
+      .send({ alt: 'Direct upload', publicId: 'test-folder/uploads/e2e-direct-1' });
+
+    expect(res.status).toBe(201);
+    // Metadata comes from the Cloudinary Admin API mock, not the client body.
+    expect(res.body.data.media).toMatchObject({
+      altText: 'Direct upload',
+      folder: 'uploads',
+      mime: 'image/png',
+      provider: 'cloudinary',
+      publicId: 'test-folder/uploads/e2e-direct-1',
+      sizeBytes: 1_000,
+      url: 'https://res.cloudinary.com/test/image/upload/test-folder/uploads/e2e-direct-1.png',
+    });
+    expect(await prisma.media.count()).toBe(1);
+  });
+
+  it('rejects a publicId outside this server’s folder', async () => {
+    const bearer = await adminBearer();
+
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .set('Authorization', bearer)
+      .send({ publicId: 'evil-folder/uploads/x' });
+
+    expect(res.status).toBe(400);
+    expect(await prisma.media.count()).toBe(0);
+  });
+
+  it('rejects an asset Cloudinary does not know about', async () => {
+    const bearer = await adminBearer();
+    vi.mocked(cloudinary.api.resource).mockRejectedValueOnce(new Error('not found'));
+
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .set('Authorization', bearer)
+      .send({ publicId: 'test-folder/uploads/never-uploaded' });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects a non-allowlisted format (e.g. SVG)', async () => {
+    const bearer = await adminBearer();
+    vi.mocked(cloudinary.api.resource).mockResolvedValueOnce({
+      bytes: 100,
+      format: 'svg',
+      height: 4,
+      secure_url: 'https://res.cloudinary.com/test/image/upload/x.svg',
+      width: 6,
+    });
+
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .set('Authorization', bearer)
+      .send({ publicId: 'test-folder/uploads/x' });
+
+    expect(res.status).toBe(400);
+    expect(await prisma.media.count()).toBe(0);
+  });
+
+  it('rejects an oversized asset with 413 AND deletes it from the provider', async () => {
+    const bearer = await adminBearer();
+    vi.mocked(cloudinary.api.resource).mockResolvedValueOnce({
+      bytes: 2_000_000, // MAX_UPLOAD_MB=1 in tests
+      format: 'png',
+      height: 4,
+      secure_url: 'https://res.cloudinary.com/test/image/upload/big.png',
+      width: 6,
+    });
+
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .set('Authorization', bearer)
+      .send({ publicId: 'test-folder/uploads/big' });
+
+    expect(res.status).toBe(413);
+    expect(res.body.error.code).toBe('FILE_TOO_LARGE');
+    expect(cloudinary.uploader.destroy).toHaveBeenCalledWith(
+      'test-folder/uploads/big',
+      expect.objectContaining({ invalidate: true }),
+    );
+    expect(await prisma.media.count()).toBe(0);
+  });
+
+  it('rejects an unauthenticated request with 401', async () => {
+    const res = await request(app)
+      .post(`${API}/admin/media/register`)
+      .send({ publicId: 'test-folder/uploads/x' });
+
+    expect(res.status).toBe(401);
   });
 });

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { uploadAdminImage } from "@/lib/admin/media-upload";
 import { ApiClientError, api } from "@/lib/api-client";
 
 interface BrandData {
@@ -121,14 +122,8 @@ function GeneralForm({
   const uploadLogo = async (file: File, key: "logo" | "logoDark") => {
     setUploading(true);
     try {
-      const body = new FormData();
-      body.append("image", file);
-      body.append("alt", "logo");
-      const result = await api.postForm<{ media: { url: string } }>(
-        "/api/v1/admin/media",
-        body,
-      );
-      setBrand((prev) => ({ ...prev, [key]: result.media.url }));
+      const url = await uploadAdminImage(file, "logo");
+      setBrand((prev) => ({ ...prev, [key]: url }));
       toast.success("Лого хуулагдлаа — Хадгалах товч дарна уу");
     } catch (err) {
       toast.error(

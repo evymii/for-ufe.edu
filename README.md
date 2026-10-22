@@ -66,7 +66,7 @@ separate frontend and backend origins; both deployments must use HTTPS.
 
 **Admin access:** log in as `manager` / `editor` / `edumanager` (all ADMIN, same admin side), or `POST /api/v1/user/auth/pin` with `ADMIN_PIN_CODE` (4–8 digits; empty disables; production refuses the default `1234`). Both issue the same JWT session.
 
-**Content & media:** live site text is stored per `page/key/locale` — public at `GET /api/v1/content/blocks/:page` (with SSE live updates via `/stream`), edited through the admin block endpoints (single-value `PUT`, defaults `ensure`, `history` audit). Media uploads (`POST /api/v1/admin/media`) are magic-byte verified, capped by `MAX_UPLOAD_MB`, and deleting a media row also deletes the Cloudinary asset.
+**Content & media:** live site text is stored per `page/key/locale` — public at `GET /api/v1/content/blocks/:page` (with SSE live updates via `/stream`), edited through the admin block endpoints (single-value `PUT`, defaults `ensure`, `history` audit). Media uploads are format-verified and capped by `MAX_UPLOAD_MB`; deleting a media row also deletes the Cloudinary asset. The admin UI uploads browser → Cloudinary **directly** with server-signed params (`POST /api/v1/admin/media/direct-params`, then `/register` with the resulting `publicId`) because Vercel caps function request bodies at 4.5 MB — larger images can never travel through bd. The proxied multipart `POST /api/v1/admin/media` remains for self-hosted deployments under that cap.
 
 ## CMS architecture & update flow
 

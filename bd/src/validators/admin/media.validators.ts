@@ -34,3 +34,19 @@ export const mediaUploadFieldsSchema = z.object({
 });
 
 export type MediaUploadFields = z.infer<typeof mediaUploadFieldsSchema>;
+
+/** Body for POST /admin/media/direct-params — subfolder is optional. */
+export const mediaDirectParamsSchema = z.object({
+  folder: z
+    .string()
+    .regex(MEDIA_FOLDER_PATTERN, {
+      message: 'folder must be 1–32 chars of lowercase letters, digits and dashes',
+    })
+    .default('uploads'),
+});
+
+/** Cloudinary public_id of an already-direct-uploaded image (`folder/name`). */
+export const mediaRegisterSchema = z.object({
+  alt: z.string().trim().min(1).max(MEDIA_ALT_MAX_LENGTH).optional(),
+  publicId: z.string().trim().min(3).max(300),
+});

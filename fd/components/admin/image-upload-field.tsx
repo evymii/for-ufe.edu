@@ -13,13 +13,14 @@ import {
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
-import { ApiClientError, api } from "@/lib/api-client";
+import { uploadAdminImage } from "@/lib/admin/media-upload";
+import { ApiClientError } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 /**
  * Cloudinary-backed image inputs shared by every admin create/edit dialog
- * (collection manager + CMS resource panel). One POST /admin/media per file,
- * sequential for batches so the upload rate limiter is never tripped.
+ * (collection manager + CMS resource panel). Files upload browser →
+ * Cloudinary directly (signed by bd), one image at a time per request.
  */
 
 /** Mirrors the backend multer cap (MAX_UPLOAD_MB, default 20). */
@@ -36,14 +37,7 @@ function validateFile(file: File): string | null {
 }
 
 async function uploadImage(file: File): Promise<string> {
-  const body = new FormData();
-  body.append("image", file);
-  body.append("alt", `upload-${file.name}`);
-  const result = await api.postForm<{ media: { url: string } }>(
-    "/api/v1/admin/media",
-    body,
-  );
-  return result.media.url;
+  return uploadAdminImage(file, `upload-${file.name}`);
 }
 
 /** Drop-zone state helper: highlight while dragging, collect image files on drop. */

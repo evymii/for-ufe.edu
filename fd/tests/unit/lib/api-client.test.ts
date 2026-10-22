@@ -100,6 +100,35 @@ describe("api client", () => {
     );
   });
 
+  it("reports a real HTTP answer without our envelope as HTTP_ERROR with its status (no replay)", async () => {
+    // Vercel answers oversized function bodies with a plain-text 413 — the
+    // api client must say "413", not the misleading "backend not running".
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response("FUNCTION_PAYLOAD_TOO_LARGE", {
+        status: 413,
+        headers: { "Content-Type": "text/plain" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api, ApiClientError } = await importFreshClient();
+    const error = await api
+      .postForm("/api/v1/admin/media", new FormData())
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiClientError);
+    expect((error as InstanceType<typeof ApiClientError>).status).toBe(413);
+    expect((error as InstanceType<typeof ApiClientError>).code).toBe(
+      "HTTP_ERROR",
+    );
+    expect((error as InstanceType<typeof ApiClientError>).message).toContain(
+      "413",
+    );
+    // No silent refresh/replay: the answer was a hard HTTP error, and
+    // replaying would re-upload the whole file for nothing.
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it("silently refreshes once after a 401 and replays the request with the new token", async () => {
     const payload: AuthPayload = {
       user,
