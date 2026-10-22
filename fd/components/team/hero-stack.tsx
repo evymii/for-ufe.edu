@@ -53,7 +53,7 @@ export function HeroStack({ figures }: { figures: HeroFigure[] }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-[300px] w-full [mask-image:linear-gradient(to_top,transparent_0px,black_56px)] md:h-[360px] xl:h-[420px]"
+      className="relative h-[400px] w-full [mask-image:linear-gradient(to_top,transparent_0px,black_56px)] md:h-[480px] xl:h-[560px]"
     >
       {figures.slice(0, 3).map((figure, index) => (
         <Figure

@@ -62,7 +62,7 @@ export default async function HomePage() {
     gameRows,
     spotlight,
     gallery,
-    heroStack,
+    heroTrios,
   ] = await Promise.all([
     getPageCopy("home", "hero"),
     getPageCopy("home", "stats"),
@@ -119,7 +119,7 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
-      <Hero copy={heroData} historyIntro={historyIntro} stack={heroStack} />
+      <Hero copy={heroData} historyIntro={historyIntro} trios={heroTrios} />
 
       {/* Latest news — featured card + stacked cards */}
       <section aria-label={newsMeta.label} className="bg-paper">

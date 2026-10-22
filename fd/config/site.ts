@@ -15,7 +15,17 @@ export const siteConfig = {
    * roster trio (background stripped → transparent WebP). Empty string
    * falls back to the stacked player cutouts.
    */
-  heroGroupImage: "/images/hero/champions.webp",
+  heroGroupImage: "/images/hero/champions-clean.webp",
+  /**
+   * Roster trios on the hero slides after the group photo — one array per
+   * slide, [frontPopout, leftBehind, rightBehind] jersey numbers. #22 holds
+   * the ball, so he fronts the first trio. Numbers missing from the roster
+   * are skipped; with no matches the hero falls back to ranked slices.
+   */
+  heroFigureNumbers: [
+    [22, 14, 3],
+    [11, 5, 34],
+  ],
 } as const;
 
 export const publicNav = [
