@@ -83,19 +83,48 @@ export async function uploadImage(buffer: Buffer, subfolder: string): Promise<St
     // Provider-side failure (quota, network, auth): log details server-side,
     // surface only a safe message.
     if (error instanceof ApiError) throw error;
-    const providerMessage =
-      error instanceof Error ? error.message.slice(0, 300) : 'Unknown provider error';
-    const providerError =
-      error instanceof Error
-        ? {
-            httpCode: 'http_code' in error ? error.http_code : undefined,
-            message: providerMessage,
-            name: error.name,
-          }
-        : { error };
+    const providerError = providerErrorDetails(error);
     logger.error({ err: providerError }, 'Cloudinary upload failed');
-    throw ApiError.serviceUnavailable(`Image storage rejected the upload: ${providerMessage}`);
+    throw ApiError.serviceUnavailable(
+      `Image storage rejected the upload: ${providerError.message}`,
+    );
   }
+}
+
+function providerErrorDetails(error: unknown): {
+  httpCode?: number;
+  message: string;
+  name?: string;
+} {
+  if (error instanceof Error) {
+    const withHttpCode = error as Error & { http_code?: unknown };
+    return {
+      httpCode: typeof withHttpCode.http_code === 'number' ? withHttpCode.http_code : undefined,
+      message: error.message.slice(0, 300),
+      name: error.name,
+    };
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const provider = error as {
+      error?: { message?: unknown };
+      http_code?: unknown;
+      message?: unknown;
+      name?: unknown;
+    };
+    return {
+      httpCode: typeof provider.http_code === 'number' ? provider.http_code : undefined,
+      message:
+        typeof provider.message === 'string'
+          ? provider.message.slice(0, 300)
+          : typeof provider.error?.message === 'string'
+            ? provider.error.message.slice(0, 300)
+            : 'Unknown provider error',
+      name: typeof provider.name === 'string' ? provider.name : undefined,
+    };
+  }
+
+  return { message: 'Unknown provider error' };
 }
 
 function requireConfigured(): void {
