@@ -17,7 +17,9 @@ const nextConfig: NextConfig = {
       { source: "/toglogchid", destination: "/players", permanent: true },
       { source: "/player", destination: "/players", permanent: true },
       { source: "/tuuh", destination: "/history", permanent: true },
-      { source: "/udirdlaga", destination: "/staff", permanent: true },
+      { source: "/udirdlaga", destination: "/front-office", permanent: true },
+      // /staff merged into the front-office directory page.
+      { source: "/staff", destination: "/front-office", permanent: true },
     ];
   },
 };

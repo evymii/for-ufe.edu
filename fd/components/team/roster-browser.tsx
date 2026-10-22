@@ -294,7 +294,7 @@ function PlayerTable({
             <div
               className={cn(
                 ROW_GRID,
-                "border-line bg-paper sticky top-[72px] z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
+                "border-line bg-paper sticky top-0 z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
               )}
             >
               {COLUMNS.map((column) => (

@@ -19,6 +19,7 @@ const GROUPS: Array<{ value: ExecutiveGroup; label: string }> = [
   { value: "OPERATIONS", label: "Спортын алба" },
   { value: "BUSINESS", label: "Бизнес" },
   { value: "COACHES", label: "Дасгалжуулагчид" },
+  { value: "STAFF", label: "Ажилтнууд" },
 ];
 
 const GROUP_LABEL: Record<ExecutiveGroup, string> = Object.fromEntries(
