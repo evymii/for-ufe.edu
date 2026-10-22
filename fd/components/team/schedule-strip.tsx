@@ -36,12 +36,11 @@ function gameDate(iso: string) {
 
 function gameTime(iso: string) {
   return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
+    hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
     timeZone: "Asia/Ulaanbaatar",
-  })
-    .format(new Date(iso))
-    .toUpperCase();
+  }).format(new Date(iso));
 }
 
 function clock(value: number): string {
@@ -165,8 +164,8 @@ function ScheduleCard({ game }: { game: GameRow }) {
                 VS
               </span>
               {!isFinal && !isCancelled && (
-                <span className="mt-2 block text-[10px] font-semibold tracking-[0.1em] text-white/70 uppercase">
-                  {gameTime(game.tipsAt)}
+                <span className="mt-2 block text-[10px] font-semibold tracking-[0.08em] text-white/70 uppercase">
+                  {gameTime(game.tipsAt)} @ {game.venue}
                 </span>
               )}
             </>
