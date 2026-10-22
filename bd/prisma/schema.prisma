@@ -84,6 +84,9 @@ model Player {
   hometown     String?
   photo        String?
   actionPhoto  String?
+  // Vertical framing of `photo` inside fixed-ratio slots, 0 (top) – 100
+  // (bottom). Null keeps the default bottom-anchored look.
+  photoPosition Int?
   bio          String?
   academicYear String?
   isCaptain    Boolean  @default(false)

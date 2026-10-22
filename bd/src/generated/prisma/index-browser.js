@@ -165,6 +165,7 @@ exports.Prisma.PlayerScalarFieldEnum = {
   hometown: 'hometown',
   photo: 'photo',
   actionPhoto: 'actionPhoto',
+  photoPosition: 'photoPosition',
   bio: 'bio',
   academicYear: 'academicYear',
   isCaptain: 'isCaptain',

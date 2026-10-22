@@ -83,6 +83,20 @@ export type CollectionField =
   | {
       name: string;
       label: string;
+      type: "range";
+      min: number;
+      max: number;
+      step?: number;
+      /** Initial slider value on CREATE (edits use the stored value). */
+      defaultValue?: number;
+      /** Another field holding an image URL — rendered as a live preview. */
+      previewImageField?: string;
+      /** Shown under the slider, explaining what the two ends mean. */
+      hint?: string;
+    }
+  | {
+      name: string;
+      label: string;
       type: "list";
       /** Comma-separated in the editor, string[] over the wire. */
       placeholder?: string;
@@ -113,6 +127,8 @@ export interface CollectionConfig {
     aspect: "1/1" | "16/10" | "4/3" | "4/5";
     /** Field holding the media URL. */
     imageField: string;
+    /** Field holding a 0–100 vertical framing applied to the card image. */
+    imagePositionField?: string;
     /** Icon shown when the media URL is empty (per-collection flavor). */
     fallbackIcon?: LucideIcon;
     /** Field for the big faded watermark (jersey number, year…). */
@@ -142,7 +158,9 @@ function blankForm(config: CollectionConfig): Record<string, string | boolean> {
     form[field.name] =
       field.type === "checkbox"
         ? ("defaultChecked" in field && field.defaultChecked) === true
-        : "";
+        : field.type === "range" && field.defaultValue !== undefined
+          ? String(field.defaultValue)
+          : "";
   }
   return form;
 }
@@ -183,6 +201,9 @@ function formToPayload(
     if (field.type === "checkbox") {
       payload[field.name] = Boolean(value);
     } else if (field.type === "number") {
+      const text = String(value).trim();
+      payload[field.name] = text === "" ? null : Number(text);
+    } else if (field.type === "range") {
       const text = String(value).trim();
       payload[field.name] = text === "" ? null : Number(text);
     } else if (field.type === "list") {
@@ -272,6 +293,69 @@ function YouTubeField({
         <p className="text-destructive text-xs">
           YouTube линк эсвэл 11 тэмдэгт ID оруулна уу.
         </p>
+      ) : null}
+    </div>
+  );
+}
+
+// ─── Range field (slider with live framing preview) ─────────────────────────
+
+/**
+ * Slider for 0–100 style settings, with an optional live preview showing the
+ * referenced image exactly as the public card will frame it. An empty value
+ * (stored null) displays at `max` — the visual default — but still saves as
+ * null until the slider is actually moved.
+ */
+function RangeField({
+  id,
+  value,
+  min,
+  max,
+  step,
+  hint,
+  previewUrl,
+  onChange,
+}: {
+  id: string;
+  value: string;
+  min: number;
+  max: number;
+  step: number;
+  hint?: string;
+  previewUrl: null | string;
+  onChange: (next: string) => void;
+}) {
+  const shown = value === "" ? max : Number(value);
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center gap-3">
+        <input
+          id={id}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={shown}
+          onChange={(event) => onChange(event.target.value)}
+          className="border-input bg-background h-2 w-full cursor-pointer appearance-none rounded-full"
+        />
+        <span className="text-muted-foreground w-12 shrink-0 text-right font-mono text-xs">
+          {shown}%
+        </span>
+      </div>
+      {hint ? (
+        <p className="text-muted-foreground text-[11px] leading-snug">{hint}</p>
+      ) : null}
+      {previewUrl ? (
+        <div className="border-line bg-muted/30 relative aspect-[4/5] w-24 overflow-hidden rounded-md border">
+          {/* eslint-disable-next-line @next/next/no-img-element -- CMS field: arbitrary-origin URLs */}
+          <img
+            src={previewUrl}
+            alt=""
+            className="h-full w-full object-contain"
+            style={{ objectPosition: `center ${shown}%` }}
+          />
+        </div>
       ) : null}
     </div>
   );
@@ -437,6 +521,13 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
                   ? (row[config.card.imageField] as string)
                   : null
               }
+              imagePosition={
+                config.card.imagePositionField
+                  ? typeof row[config.card.imagePositionField] === "number"
+                    ? (row[config.card.imagePositionField] as number)
+                    : null
+                  : null
+              }
               fallbackIcon={config.card.fallbackIcon ?? ImageIcon}
               watermark={
                 config.card.watermarkField
@@ -562,6 +653,25 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
                             "placeholder" in field
                               ? field.placeholder
                               : undefined
+                          }
+                          onChange={(next) =>
+                            setForm((prev) => ({ ...prev, [field.name]: next }))
+                          }
+                        />
+                      ) : field.type === "range" ? (
+                        <RangeField
+                          id={`field-${field.name}`}
+                          value={String(form[field.name] ?? "")}
+                          min={field.min}
+                          max={field.max}
+                          step={field.step ?? 1}
+                          hint={field.hint}
+                          previewUrl={
+                            field.previewImageField
+                              ? String(
+                                  form[field.previewImageField] ?? "",
+                                ).trim() || null
+                              : null
                           }
                           onChange={(next) =>
                             setForm((prev) => ({ ...prev, [field.name]: next }))

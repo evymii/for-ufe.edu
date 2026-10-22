@@ -15,6 +15,7 @@ export function toRosterPlayer(row: PlayerRow): RosterPlayer {
     role: extras.roleLabel ?? (row.isCaptain ? "Багийн ахлагч" : undefined),
     position: row.position ?? "",
     photo: row.photo,
+    photoPosition: row.photoPosition ?? null,
     heightCm: row.heightCm ?? 0,
     yearsOnTeam: extras.yearsOnTeam ?? "",
     yearsPlaying: extras.yearsPlaying ?? "",

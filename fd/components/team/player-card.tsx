@@ -143,6 +143,7 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
             photo={player.photo}
             fallback="slot"
             anchor="center"
+            position={player.photoPosition ?? null}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
           />
         </div>

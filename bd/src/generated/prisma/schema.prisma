@@ -72,31 +72,34 @@ model NewsPost {
 }
 
 model Player {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  slug         String   @unique
-  number       Int?
-  role         String   @default("PLAYER") // PLAYER | COACH | STAFF
-  position     String? // Хамгаалагч | Довтлогч | Төв | албан тушаал
-  heightCm     Int?
-  weightKg     Int?
-  birthYear    Int?
-  hometown     String?
-  photo        String?
-  actionPhoto  String?
-  bio          String?
-  academicYear String?
-  isCaptain    Boolean  @default(false)
-  ppg          Float?
-  rpg          Float?
-  apg          Float?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  slug          String   @unique
+  number        Int?
+  role          String   @default("PLAYER") // PLAYER | COACH | STAFF
+  position      String? // Хамгаалагч | Довтлогч | Төв | албан тушаал
+  heightCm      Int?
+  weightKg      Int?
+  birthYear     Int?
+  hometown      String?
+  photo         String?
+  actionPhoto   String?
+  // Vertical framing of `photo` inside fixed-ratio slots, 0 (top) – 100
+  // (bottom). Null keeps the default bottom-anchored look.
+  photoPosition Int?
+  bio           String?
+  academicYear  String?
+  isCaptain     Boolean  @default(false)
+  ppg           Float?
+  rpg           Float?
+  apg           Float?
   // Display-only roster-card extras (yearsOnTeam, major, motto, achievements…)
   // edited as JSON in the admin panel. See PlayerProfileExtras in fd/types.
-  profile      Json?
-  sortOrder    Int      @default(0)
-  isPublic     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  profile       Json?
+  sortOrder     Int      @default(0)
+  isPublic      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([isPublic, sortOrder])
 }

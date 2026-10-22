@@ -15,6 +15,7 @@ export function PlayerCutout({
   sizes = "(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw",
   fallback = "slot",
   anchor = "center",
+  position = null,
   fallbackLabel,
   className,
   fallbackClassName,
@@ -28,6 +29,11 @@ export function PlayerCutout({
   fallback?: "none" | "slot";
   /** Horizontal anchor of the contained cutout — cards pin the figure to the right edge. */
   anchor?: "center" | "right";
+  /**
+   * Admin-set vertical framing, 0 (top) – 100 (bottom). Overrides the default
+   * bottom anchor so a portrait can be nudged up/down inside the slot.
+   */
+  position?: null | number;
   /** Replaces the jersey number in the fallback slot (e.g. staff initials). */
   fallbackLabel?: string;
   className?: string;
@@ -51,6 +57,13 @@ export function PlayerCutout({
             "object-contain object-bottom",
             anchor === "right" ? "object-right" : "object-center",
           )}
+          style={
+            position === null
+              ? undefined
+              : {
+                  objectPosition: `${anchor === "right" ? "right" : "center"} ${position}%`,
+                }
+          }
         />
       </span>
     );

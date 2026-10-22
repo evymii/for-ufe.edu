@@ -119,6 +119,8 @@ export interface PlayerRow {
   hometown: string | null;
   photo: string | null;
   actionPhoto: string | null;
+  /** Vertical framing of `photo`, 0 (top) – 100 (bottom); null = default. */
+  photoPosition: number | null;
   bio: string | null;
   academicYear: string | null;
   isCaptain: boolean;

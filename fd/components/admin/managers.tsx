@@ -49,6 +49,17 @@ const PLAYER_FIELDS: CollectionConfig["fields"] = [
   { name: "hometown", label: "Төрсөн газар", type: "text" },
   { name: "academicYear", label: "Курс", type: "text" },
   { name: "photo", label: "Зураг (Cloudinary)", type: "image" },
+  {
+    name: "photoPosition",
+    label: "Зургийн байрлал (дээш/доош)",
+    type: "range",
+    min: 0,
+    max: 100,
+    step: 5,
+    defaultValue: 100,
+    previewImageField: "photo",
+    hint: "Зургийн харагдах байдлыг дээш (0%) эсвэл доош (100%) чиглэлд гялсуулна — 100% нь үндсэн байрлал.",
+  },
   { name: "actionPhoto", label: "Нэмэлт зураг", type: "image" },
   { name: "bio", label: "Товч танилцуулга", type: "textarea" },
   { name: "ppg", label: "PPG", type: "number", step: 0.1 },
@@ -68,6 +79,7 @@ const PLAYER_FIELDS: CollectionConfig["fields"] = [
 const playerCard: CollectionConfig["card"] = {
   aspect: "4/5",
   imageField: "photo",
+  imagePositionField: "photoPosition",
   watermarkField: "number",
   pills: (row) => (
     <>

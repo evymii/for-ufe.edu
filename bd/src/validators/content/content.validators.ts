@@ -112,6 +112,7 @@ const playerFields = {
   name: text(80),
   number: optionalInt(0, 99),
   photo: optionalText(600),
+  photoPosition: optionalInt(0, 100),
   position: optionalText(60),
   ppg: optionalFloat(0, 60),
   profile: playerProfileSchema.nullish(),
