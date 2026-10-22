@@ -27,7 +27,7 @@ export default async function PublicLayout({
   });
 
   return (
-    <div className="bg-paper text-ink flex min-h-svh flex-col font-sans antialiased">
+    <div className="public-site bg-paper text-ink flex min-h-svh flex-col overflow-x-clip font-sans antialiased">
       <a href="#content" className="skip-link">
         Агуулга руу алхах
       </a>

@@ -122,22 +122,26 @@ export function Hero({
   return (
     <section
       aria-label={copy.title}
-      className="bg-paper px-4 py-4 sm:px-6 sm:py-6"
+      className="bg-paper"
       onKeyDown={(event) => {
         if (event.key === "ArrowRight") go(index + 1);
         if (event.key === "ArrowLeft") go(index - 1);
       }}
     >
-      <div className="bg-ink relative mx-auto flex min-h-[560px] max-w-[1400px] items-end overflow-hidden rounded-xl text-white sm:min-h-[520px] md:min-h-[540px]">
+      <div className="relative flex min-h-[68svh] items-end overflow-hidden border-t border-white/70 bg-[#09183a] text-white sm:min-h-[64svh]">
         <div
           ref={parallaxRef}
           className="absolute inset-0 will-change-transform"
         >
-          <WaveField height={560} />
+          <WaveField height={700} />
         </div>
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,.85),rgba(0,0,0,0)_60%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#10151c]"
         />
         {/* Stacked player trio — decorative, right rail, above the gradient
             but under the slide copy (DOM order) so controls stay visible. */}
@@ -148,7 +152,7 @@ export function Hero({
         ) : null}
         <TeamMark className="absolute top-8 right-6 hidden h-14 w-14 text-white/20 lg:block" />
 
-        <div className="team-shell team-shell-wide relative w-full pb-6 sm:pb-10 md:pb-12">
+        <div className="team-shell team-shell-wide relative w-full py-8 sm:py-10 md:py-12">
           <div className="hero-slides grid">
             {slides.map((slide, slideIndex) => (
               <div
@@ -166,18 +170,18 @@ export function Hero({
                 }
                 className="hero-slide"
               >
-                <div className="team-shell team-shell-wide flex h-full w-full">
-                  <div className="flex h-full max-w-[780px] flex-col gap-4 lg:max-w-[600px] xl:max-w-[660px]">
-                    <p className="text-[12px] font-semibold tracking-[0.12em] text-white/60 uppercase">
+                <div className="team-shell team-shell-wide flex w-full">
+                  <div className="flex max-w-[780px] flex-col gap-3 text-white lg:max-w-[600px] xl:max-w-[660px]">
+                    <p className="text-[12px] font-semibold tracking-[0.12em] text-white uppercase">
                       {slide.kicker}
                     </p>
-                    <h1 className="font-display text-[clamp(36px,8vw,72px)] leading-[0.98] font-bold tracking-[0.02em] uppercase sm:text-[clamp(40px,7vw,72px)]">
+                    <h1 className="font-display max-w-[620px] text-[clamp(30px,6vw,56px)] leading-[1] font-bold tracking-[0.02em] text-white uppercase sm:text-[clamp(34px,5vw,56px)]">
                       {slide.headline}
                     </h1>
-                    <p className="max-w-[560px] text-base leading-[1.5] text-white/70">
+                    <p className="max-w-[520px] text-[15px] leading-[1.55] text-white/90">
                       {slide.subline}
                     </p>
-                    <div className="mt-auto flex flex-wrap items-center gap-3 pt-8 sm:gap-6">
+                    <div className="flex flex-wrap items-center gap-3 pt-3 sm:gap-5">
                       <TeamButton
                         variant="dark"
                         href={slide.primary.href}
@@ -202,7 +206,7 @@ export function Hero({
           </div>
 
           {/* Controls: progress bars + 44px arrows */}
-          <div className="mt-6 flex items-center justify-between gap-4 sm:mt-8">
+          <div className="mt-8 flex items-center justify-between gap-4 sm:mt-10">
             <div
               className="flex items-center gap-2"
               role="tablist"

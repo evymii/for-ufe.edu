@@ -119,19 +119,20 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
+      <div aria-hidden="true" className="h-20 bg-[#05070b]" />
       <Hero copy={heroData} historyIntro={historyIntro} stack={heroStack} />
 
       {/* Latest news — featured card + stacked cards */}
       <section aria-label={newsMeta.label} className="bg-paper">
-        <div className="team-shell team-shell-wide py-16 md:py-24">
+        <div className="team-shell team-shell-wide py-10 md:py-14">
           <Reveal>
             <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
-              <h2 className="font-display text-ink text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] uppercase">
+              <h2 className="font-display text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] text-white uppercase">
                 {newsMeta.heading}
               </h2>
               <Link
                 href={routes.site.schedule}
-                className="group text-mute hover:text-ink flex min-h-11 items-center gap-1.5 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
+                className="group flex min-h-11 items-center gap-1.5 text-[12px] font-semibold tracking-[0.12em] text-white uppercase transition-colors hover:text-white/80"
               >
                 Бүх тоглолт
                 <ArrowRight
@@ -152,10 +153,7 @@ export default async function HomePage() {
       </section>
 
       {/* Numbers rail — big condensed stats on hairlines */}
-      <section
-        aria-label="Тоонууд"
-        className="border-line bg-paper-soft border-y"
-      >
+      <section aria-label="Тоонууд" className="border-brand bg-brand border-y">
         <div className="team-shell team-shell-wide grid grid-cols-2 gap-y-10 py-14 md:grid-cols-4 md:py-16">
           {numbers.map((stat, index) => (
             <Reveal
@@ -163,10 +161,10 @@ export default async function HomePage() {
               delay={index * 60}
               className="md:border-line md:pl-8 md:first:border-0 md:first:pl-0"
             >
-              <p className="font-display text-ink text-[clamp(40px,5vw,56px)] leading-none font-bold tracking-[0.02em]">
+              <p className="font-display text-[clamp(40px,5vw,56px)] leading-none font-bold tracking-[0.02em] text-white">
                 {stat.value}
               </p>
-              <p className="text-mute mt-3 max-w-[180px] text-[13px] leading-[1.5]">
+              <p className="mt-3 max-w-[180px] text-[13px] leading-[1.5] text-white/75">
                 {stat.label}
               </p>
             </Reveal>

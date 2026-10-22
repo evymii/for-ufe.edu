@@ -1,4 +1,5 @@
-import { BallMark } from "@/components/team/photo-slot";
+import Image from "next/image";
+
 import { siteConfig } from "@/config/site";
 import type { ContactInfo } from "@/types/content";
 
@@ -13,9 +14,13 @@ export function SiteFooter({ info }: { info: ContactInfo }) {
     <footer className="bg-ink text-white">
       <div className="team-shell space-y-5 py-10">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-8 items-center justify-center rounded-full bg-white/10">
-            <BallMark className="size-4" />
-          </span>
+          <Image
+            src="/ufe-logo.png"
+            alt="UFE Broncos"
+            width={32}
+            height={32}
+            className="size-8"
+          />
           <p className="font-display text-sm font-bold tracking-[0.08em] uppercase">
             {siteConfig.shortName}
           </p>

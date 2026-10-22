@@ -110,7 +110,7 @@ export function HomeTimeline() {
   return (
     <section
       aria-labelledby="home-history-title"
-      className="overflow-hidden bg-[#202020] text-white"
+      className="overflow-hidden bg-[#05070b] text-white"
     >
       <div className="team-shell team-shell-wide py-8 md:py-10">
         <Reveal>
@@ -177,7 +177,7 @@ export function HomeTimeline() {
                     className={`relative z-[1] size-4 rounded-full border-2 transition-[transform,box-shadow] duration-200 ease-out group-hover:scale-110 ${
                       "medal" in entry
                         ? medalStyles[entry.medal].marker
-                        : "border-white/70 bg-[#202020] group-hover:shadow-[0_0_0_4px_rgba(255,255,255,0.1)]"
+                        : "border-white/70 bg-[#05070b] group-hover:shadow-[0_0_0_4px_rgba(255,255,255,0.1)]"
                     } ${above ? "translate-y-[-7px]" : "translate-y-[7px]"}`}
                   >
                     <span

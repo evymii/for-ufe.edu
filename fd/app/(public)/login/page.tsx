@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Suspense } from "react";
 
 import { FadeIn } from "@/components/motion";
-import { BallMark } from "@/components/team/photo-slot";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoginForm } from "@/components/user/login-form";
 
@@ -39,9 +38,13 @@ export default function LoginPage() {
         <p className="font-display absolute inset-0 flex items-center justify-center text-[clamp(28px,3.5vw,48px)] font-bold tracking-[0.02em] text-white uppercase">
           UFE BASKETBALL
         </p>
-        <span className="absolute top-6 left-6 flex size-12 items-center justify-center rounded-full border border-white/25 sm:top-10 sm:left-10">
-          <BallMark className="size-6" />
-        </span>
+        <Image
+          src="/ufe-logo.png"
+          alt="UFE Broncos"
+          width={64}
+          height={64}
+          className="absolute top-6 left-6 size-16 sm:top-10 sm:left-10"
+        />
       </FadeIn>
 
       {/* Form panel */}

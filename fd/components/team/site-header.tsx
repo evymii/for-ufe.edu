@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
-import { BallMark } from "@/components/team/photo-slot";
 import { routes } from "@/config/routes";
 import { publicNav, siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -61,7 +61,7 @@ export function SiteHeader() {
                     target="_blank"
                     rel="noreferrer"
                     tabIndex={duplicate ? -1 : undefined}
-                    className="team-focus text-[12px] font-medium tracking-[0.12em] uppercase transition-opacity hover:opacity-70"
+                    className="team-focus text-[12px] font-medium tracking-[0.12em] text-white uppercase transition-opacity hover:opacity-70"
                   >
                     {siteConfig.university}
                   </a>
@@ -75,23 +75,27 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <header className="border-line bg-paper sticky top-0 z-40 border-b">
+      <header className="bg-brand relative z-40 min-h-[72px] border-b border-white/20 text-white">
         {/* Main nav — constant 72px with no scroll-driven animation. */}
         <div className="flex items-center">
-          <div className="team-shell flex h-[72px] w-full items-center justify-between gap-3 sm:gap-6">
+          <div className="team-shell relative flex h-[72px] min-h-[72px] w-full items-center justify-between gap-3 sm:gap-6">
             <Link
               href={routes.home}
               className="team-focus flex min-w-0 shrink-0 items-center gap-2 sm:gap-3"
               aria-label={`${siteConfig.name} — нүүр хуудас`}
             >
-              <span className="bg-ink text-paper flex size-10 items-center justify-center rounded-full md:size-12">
-                <BallMark className="size-5 md:size-6" />
-              </span>
+              <Image
+                src="/ufe-logo.png"
+                alt="UFE Broncos"
+                width={48}
+                height={48}
+                className="relative z-10 size-10 shrink-0 md:size-12"
+              />
               <span className="flex min-w-0 flex-col leading-none">
-                <span className="font-display text-ink text-base font-bold tracking-[0.04em] uppercase sm:text-lg">
+                <span className="font-display text-base font-bold tracking-[0.04em] text-white uppercase sm:text-lg">
                   СЭЗИС
                 </span>
-                <span className="text-mute hidden max-w-[132px] truncate text-[9px] font-medium tracking-[0.16em] uppercase sm:block lg:max-w-[144px]">
+                <span className="hidden max-w-[132px] truncate text-[9px] font-medium tracking-[0.16em] text-white/70 uppercase sm:block lg:max-w-[144px]">
                   {siteConfig.headerSubtitle}
                 </span>
               </span>
@@ -99,7 +103,7 @@ export function SiteHeader() {
 
             <nav
               aria-label="Үндсэн цэс"
-              className="hidden min-w-0 flex-1 items-center justify-center gap-4 lg:flex xl:gap-6"
+              className="absolute left-1/2 hidden min-w-0 -translate-x-1/2 items-center justify-center gap-4 lg:flex xl:gap-6"
             >
               {publicNav.map((item) => (
                 <Link
@@ -109,8 +113,8 @@ export function SiteHeader() {
                   className={cn(
                     "font-display nav-underline team-focus flex h-full shrink-0 items-center px-1 text-sm font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-colors",
                     isActive(item.href)
-                      ? "text-ink"
-                      : "text-mute hover:text-ink",
+                      ? "text-white"
+                      : "text-white/70 hover:text-white",
                   )}
                 >
                   {item.label}
@@ -125,7 +129,7 @@ export function SiteHeader() {
                 onClick={() => setMenuOpen(true)}
                 aria-label="Цэс нээх"
                 aria-expanded={menuOpen}
-                className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70 lg:hidden"
+                className="team-focus flex size-11 items-center justify-center text-white transition-opacity hover:opacity-70 lg:hidden"
               >
                 <Menu className="size-6" />
               </button>
@@ -136,13 +140,13 @@ export function SiteHeader() {
         {/* Mobile drawer — full-screen panel sliding in from the right */}
         <div
           className={cn(
-            "bg-paper fixed inset-0 z-50 flex flex-col transition-transform duration-[280ms] ease-out lg:hidden",
+            "bg-ink fixed inset-0 z-50 flex flex-col transition-transform duration-[280ms] ease-out lg:hidden",
             menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
           )}
           aria-hidden={!menuOpen}
         >
-          <div className="team-shell border-line flex h-14 items-center justify-between border-b">
-            <span className="font-display text-ink text-lg font-bold tracking-[0.04em] uppercase">
+          <div className="team-shell flex h-14 items-center justify-between border-b border-white/20">
+            <span className="font-display text-lg font-bold tracking-[0.04em] text-white uppercase">
               СЭЗИС
             </span>
             <button
@@ -150,7 +154,7 @@ export function SiteHeader() {
               onClick={() => setMenuOpen(false)}
               aria-label="Цэс хаах"
               tabIndex={menuOpen ? 0 : -1}
-              className="text-ink team-focus flex size-11 items-center justify-center transition-opacity hover:opacity-70"
+              className="team-focus flex size-11 items-center justify-center text-white transition-opacity hover:opacity-70"
             >
               <X className="size-6" />
             </button>

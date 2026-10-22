@@ -125,16 +125,22 @@ function ScheduleCard({ game }: { game: GameRow }) {
     <Link
       href={routes.site.game(game.id)}
       aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? "live" : isFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
-      className="group/card border-ink bg-ink focus-visible:outline-ink hover:border-brand-2 flex h-[128px] w-full shrink-0 snap-start flex-col justify-between border p-4 text-white transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
+      className="group/card focus-visible:outline-brand relative flex h-[112px] w-full shrink-0 snap-start flex-col justify-between overflow-hidden border border-white bg-[#0d1f4a] p-3 text-white transition-[box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
     >
-      <div className="grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-4">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[#174a45] [clip-path:polygon(52%_0,100%_0,100%_100%,48%_100%)]"
+      />
+      <div className="relative z-10 grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="min-w-0 text-center">
           <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
             BRONCOS
           </span>
-          <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
-            {teamScore ?? "—"}
-          </span>
+          {teamScore !== null && (
+            <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
+              {teamScore}
+            </span>
+          )}
         </div>
 
         <div className="text-center">
@@ -176,9 +182,11 @@ function ScheduleCard({ game }: { game: GameRow }) {
           <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
             {opponentName}
           </span>
-          <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
-            {opponentScore ?? "—"}
-          </span>
+          {opponentScore !== null && (
+            <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
+              {opponentScore}
+            </span>
+          )}
         </div>
       </div>
     </Link>
@@ -189,14 +197,14 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
   return (
     <section
       aria-label="Сүүлийн үр дүн болон удахгүй болох тоглолтууд"
-      className="border-line bg-paper-soft border-b"
+      className="border-line w-full overflow-hidden border-b bg-[#1b222b]"
     >
-      <div className="px-2 py-2 sm:px-4">
+      <div className="px-2 py-5 sm:px-4">
         <div
           role="region"
           aria-label="Тоглолтын хуваарь"
           tabIndex={0}
-          className="no-scrollbar focus-visible:ring-ink flex min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-inset"
+          className="no-scrollbar focus-visible:ring-ink flex max-w-full min-w-0 overflow-x-auto overflow-y-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         >
           {games.length ? (
             games.map((game) => <ScheduleCard key={game.id} game={game} />)

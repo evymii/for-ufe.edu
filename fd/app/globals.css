@@ -54,9 +54,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Team site design system (editorial black & white sports media) ─────────
+/* ─── Team site design system (Broncos black, blue & white) ─────────────────
    Semantic tokens consumed by app/(public) via bg-paper / text-ink /
-   border-line / bg-brand etc. Light-only — no dark counterpart.
+   border-line / bg-brand etc. White surfaces with black anchors and royal-blue
+   action states.
    The admin & user areas keep the shadcn vars further below untouched. */
 @theme inline {
   --color-paper: var(--paper);
@@ -79,16 +80,57 @@
 
 :root {
   --paper: #ffffff;
-  --paper-soft: #f2f2f0;
-  --ink: #0b0b0c;
-  --mute: #5a5a57;
-  --line: #d9d9d6;
-  --brand: #0b0b0c;
-  --brand-2: #3a3a38;
+  --paper-soft: #f1f4f9;
+  --ink: #05070b;
+  --mute: #536070;
+  --line: #d3d9e2;
+  --brand: #17439b;
+  --brand-2: #2d62c6;
   --brand-contrast: #ffffff;
-  --gold: #0b0b0c;
-  /* Strictly monochrome: accents, pills, tags and active states all use
-     ink/paper/line — no hue anywhere on the site. */
+  --gold: #ffffff;
+}
+
+.public-site {
+  --paper: #10151c;
+  --paper-soft: #1b222b;
+  --ink: #05070b;
+  --mute: #b7c2d0;
+  --line: #465467;
+  --brand: #17439b;
+  --brand-2: #2d62c6;
+  --brand-contrast: #ffffff;
+  --gold: #ffffff;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(
+      circle at 20% 20%,
+      rgb(5 7 11 / 0.035) 0 0.7px,
+      transparent 0.8px
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgb(5 7 11 / 0.025) 0 0.6px,
+      transparent 0.7px
+    );
+  background-size:
+    7px 7px,
+    11px 11px;
+}
+
+.public-site .bg-paper {
+  background-color: transparent;
+}
+
+.public-site .text-ink {
+  color: #ffffff;
+}
+
+.public-site .text-mute {
+  color: #b7c2d0;
+}
+
+.public-site .border-ink {
+  border-color: #ffffff;
 }
 
 :root {

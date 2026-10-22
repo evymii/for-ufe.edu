@@ -55,8 +55,8 @@ export function StaffSubnav() {
             className={cn(
               "font-display flex h-12 shrink-0 items-center border-b-2 text-[15px] font-semibold tracking-[0.06em] uppercase transition-colors",
               active === section.id
-                ? "border-ink text-ink"
-                : "text-mute hover:text-ink border-transparent",
+                ? "border-brand text-brand"
+                : "text-mute hover:text-brand border-transparent",
             )}
           >
             {section.label}
