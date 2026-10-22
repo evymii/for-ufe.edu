@@ -129,7 +129,12 @@ function ExecutiveCard({
         className="team-focus block w-full text-left"
       >
         {/* Portrait panel — 392×320, grayscale resolving to color on hover */}
-        <div className="bg-paper-soft relative h-[300px] overflow-hidden md:h-[320px]">
+        <div
+          className={cn(
+            "relative h-[300px] overflow-hidden md:h-[320px]",
+            member.photo ? "bg-paper-soft" : "bg-ink",
+          )}
+        >
           {member.photo ? (
             <>
               <span
@@ -149,18 +154,26 @@ function ExecutiveCard({
               </div>
             </>
           ) : (
-            /* No photo yet — a designed silhouette state, not a blank box:
-               centered monogram medallion with the person's title. */
-            <span className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 px-6 text-center">
-              <span className="border-line text-mute/50 font-display flex size-24 items-center justify-center rounded-full border text-[28px] font-bold tracking-[0.04em]">
-                {initialsOf(member.name)}
+            /* No photo yet — dark editorial monogram panel that mirrors the
+               bio drawer's hero treatment, so the grid reads as designed. */
+            <>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-4 border border-white/10"
+              />
+              <span className="absolute inset-0 z-[5] flex items-center justify-center">
+                <span className="font-display text-[110px] leading-none font-bold tracking-[0.02em] text-transparent transition-all duration-300 [-webkit-text-stroke:2px_rgba(255,255,255,0.4)] group-hover:[-webkit-text-stroke-color:rgba(255,255,255,0.7)]">
+                  {initialsOf(member.name)}
+                </span>
               </span>
-              <span className="text-mute/70 text-[12px] font-semibold tracking-[0.12em] uppercase">
-                {member.title}
-              </span>
-            </span>
+            </>
           )}
-          <span className="bg-ink text-paper absolute right-3 bottom-3 z-10 px-2 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <span
+            className={cn(
+              "absolute right-3 bottom-3 z-10 px-2 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+              member.photo ? "bg-ink text-paper" : "bg-paper text-ink",
+            )}
+          >
             Профайл →
           </span>
         </div>
