@@ -125,7 +125,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
     <Link
       href={routes.site.game(game.id)}
       aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? "live" : isFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
-      className="group/card focus-visible:outline-brand relative flex h-[112px] w-full shrink-0 snap-start flex-col justify-between overflow-hidden border border-white bg-[#0d1f4a] p-3 text-white transition-[box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
+      className="group/card focus-visible:outline-brand relative flex h-[112px] w-full shrink-0 snap-start flex-col justify-between overflow-hidden border-2 border-[#101827] bg-[#0d1f4a] p-3 text-white shadow-[0_3px_0_#101827] transition-[box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
     >
       <span
         aria-hidden="true"
@@ -134,7 +134,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
       <div className="relative z-10 grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="min-w-0 text-center">
           <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-            BRONCOS
+            UFE BRONCOS
           </span>
           {teamScore !== null && (
             <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
@@ -180,7 +180,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
 
         <div className="min-w-0 text-center">
           <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-            {opponentName}
+            NUM {opponentName}
           </span>
           {opponentScore !== null && (
             <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
@@ -197,9 +197,9 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
   return (
     <section
       aria-label="Сүүлийн үр дүн болон удахгүй болох тоглолтууд"
-      className="border-line w-full overflow-hidden border-b bg-[#151a22]"
+      className="border-line w-full overflow-hidden border-b bg-[#e7e6e1]"
     >
-      <div className="px-2 py-5 sm:px-4">
+      <div className="py-5">
         <div
           role="region"
           aria-label="Тоглолтын хуваарь"
