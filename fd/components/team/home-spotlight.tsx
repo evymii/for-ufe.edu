@@ -9,7 +9,7 @@ import { Reveal } from "@/components/team/reveal";
 import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
 import { playerProfiles, staff } from "@/content/site";
-import { getPlayers, getStaff } from "@/lib/content";
+import { getExecutives, getPlayers } from "@/lib/content";
 import { staffKey } from "@/lib/staff";
 import type { Executive, PlayerRow } from "@/types/content";
 
@@ -106,7 +106,8 @@ function captainCard(row: PlayerRow | null): SpotlightMember | null {
   };
 }
 
-/** Coach cards — bd/ STAFF rows first, static profiles as the fallback. */
+/** Coach cards — COACHES-group executives first (photo + bio from the
+ *  admin's Удирдлага tab), static profiles as the fallback. */
 function coachCards(rows: Executive[]): SpotlightMember[] {
   const toCard = (
     name: string,
@@ -123,7 +124,11 @@ function coachCards(rows: Executive[]): SpotlightMember[] {
   });
 
   const fromRows = rows
-    .filter((row) => row.title.toLowerCase().includes("дасгалжуулагч"))
+    .filter(
+      (row) =>
+        row.group === "COACHES" ||
+        row.title.toLowerCase().includes("дасгалжуулагч"),
+    )
     .slice(0, 2)
     .map((row) => toCard(row.name, row.title, row.bio ?? "", staffPhoto(row)));
   if (fromRows.length) return fromRows;
@@ -152,11 +157,14 @@ function coachCards(rows: Executive[]): SpotlightMember[] {
 
 /** Captain first, then the coaches — for the home spotlight grid. */
 export async function getHomeSpotlight(): Promise<SpotlightMember[]> {
-  const [playerRows, staffRows] = await Promise.all([getPlayers(), getStaff()]);
+  const [playerRows, executiveRows] = await Promise.all([
+    getPlayers(),
+    getExecutives(),
+  ]);
   const captain = captainCard(
     playerRows.find((player) => player.isCaptain) ?? null,
   );
-  const coaches = coachCards(staffRows);
+  const coaches = coachCards(executiveRows);
   return captain ? [captain, ...coaches] : coaches;
 }
 
