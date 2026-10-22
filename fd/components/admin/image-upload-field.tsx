@@ -22,8 +22,8 @@ import { cn } from "@/lib/utils";
  * sequential for batches so the upload rate limiter is never tripped.
  */
 
-/** Mirrors the backend multer cap (MAX_UPLOAD_MB, default 8). */
-const MAX_UPLOAD_MB = 8;
+/** Mirrors the backend multer cap (MAX_UPLOAD_MB, default 20). */
+const MAX_UPLOAD_MB = 20;
 
 function validateFile(file: File): string | null {
   if (!file.type.startsWith("image/")) {

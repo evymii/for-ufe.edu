@@ -18,7 +18,7 @@ const envSchema = z.object({
   JWT_ACCESS_SECRET: z.string().min(32, 'must be at least 32 characters'),
   JWT_REFRESH_SECRET: z.string().min(32, 'must be at least 32 characters'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
-  MAX_UPLOAD_MB: z.coerce.number().int().min(1).max(50).default(8),
+  MAX_UPLOAD_MB: z.coerce.number().int().min(1).max(50).default(20),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PIN_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(5),
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),
