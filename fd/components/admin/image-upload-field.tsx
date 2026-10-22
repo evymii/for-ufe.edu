@@ -211,7 +211,8 @@ export function ImageUploadField({
             {uploading ? "Хуулж байна…" : "Файл сонгох"}
           </button>
           <span className="text-muted-foreground text-[11px]">
-            Зурган дээр чирж оруулж болно · ≤{MAX_UPLOAD_MB}MB
+            Зурган дээр чирж оруулж болно · ≤{MAX_UPLOAD_MB}MB · том зураг
+            автоматаар багасгагдана
           </span>
         </div>
         <input
@@ -396,8 +397,8 @@ export function ImagesUploadField({
       <div className="flex items-center justify-between gap-2">
         <span className="text-muted-foreground text-[11px]">
           {urls.length > 0
-            ? `${urls.length} зураг · хулганаар чирж дарааллыг өөрчилнө · ≤${MAX_UPLOAD_MB}MB`
-            : `Олон зураг зэрэг сонгох боломжтой · ≤${MAX_UPLOAD_MB}MB`}
+            ? `${urls.length} зураг · хулганаар чирж дарааллыг өөрчилнө · ≤${MAX_UPLOAD_MB}MB · том зураг автоматаар багасгагдана`
+            : `Олон зураг зэрэг сонгох боломжтой · ≤${MAX_UPLOAD_MB}MB · том зураг автоматаар багасгагдана`}
         </span>
         <button
           type="button"

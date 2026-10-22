@@ -1,3 +1,4 @@
+import { compressForUpload } from "@/lib/admin/image-compress";
 import { ApiClientError, api } from "@/lib/api-client";
 
 /**
@@ -5,7 +6,8 @@ import { ApiClientError, api } from "@/lib/api-client";
  * caps function request bodies at 4.5 MB, so anything larger must travel
  * browser → Cloudinary directly. bd hands out short-lived signed params
  * (admin-only endpoint), then registers the finished asset so it lands in
- * the media library like any other upload.
+ * the media library like any other upload. Files over the Cloudinary plan's
+ * per-image cap are downscaled in the browser first (see image-compress).
  */
 
 interface DirectUploadParams {
@@ -21,11 +23,23 @@ interface CloudinaryUploadResponse {
   public_id?: string;
 }
 
+/** "File size too large. Got 11936151. Maximum is 10485760." → MB, readable. */
+function providerSizeMessage(message: string): string | null {
+  if (!/file size too large/i.test(message)) return null;
+  const match = /Maximum is (\d+)/u.exec(message);
+  const limitMb = match ? Math.round(Number(match[1]) / 1024 / 1024) : null;
+  return limitMb
+    ? `Image is above the storage plan's ${limitMb} MB per-image limit — resize it before uploading.`
+    : "Image is above the storage plan's per-image size limit — resize it before uploading.";
+}
+
 /** Uploads an image and returns its persisted media URL. */
 export async function uploadAdminImage(
   file: File,
   alt: string,
 ): Promise<string> {
+  file = await compressForUpload(file);
+
   const { params } = await api.post<{ params: DirectUploadParams }>(
     "/api/v1/admin/media/direct-params",
     {},
@@ -48,10 +62,12 @@ export async function uploadAdminImage(
     .json()
     .catch(() => null)) as CloudinaryUploadResponse | null;
   if (!response.ok || !body?.public_id) {
+    const providerMessage = body?.error?.message;
     throw new ApiClientError(
       response.status,
       "UPLOAD_FAILED",
-      body?.error?.message ??
+      (providerMessage && providerSizeMessage(providerMessage)) ??
+        providerMessage ??
         `Cloudinary upload failed (HTTP ${response.status})`,
     );
   }
