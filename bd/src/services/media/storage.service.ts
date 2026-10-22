@@ -83,16 +83,18 @@ export async function uploadImage(buffer: Buffer, subfolder: string): Promise<St
     // Provider-side failure (quota, network, auth): log details server-side,
     // surface only a safe message.
     if (error instanceof ApiError) throw error;
+    const providerMessage =
+      error instanceof Error ? error.message.slice(0, 300) : 'Unknown provider error';
     const providerError =
       error instanceof Error
         ? {
             httpCode: 'http_code' in error ? error.http_code : undefined,
-            message: error.message,
+            message: providerMessage,
             name: error.name,
           }
         : { error };
     logger.error({ err: providerError }, 'Cloudinary upload failed');
-    throw ApiError.serviceUnavailable('Image storage rejected the upload — try again later');
+    throw ApiError.serviceUnavailable(`Image storage rejected the upload: ${providerMessage}`);
   }
 }
 
