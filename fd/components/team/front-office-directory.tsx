@@ -147,8 +147,12 @@ function ExecutiveCard({
               />
             </div>
           ) : (
-            <span className="font-display text-mute/40 group-hover:text-mute/60 absolute inset-0 z-[5] flex items-center justify-center text-[64px] font-bold transition-colors duration-300">
-              {initialsOf(member.name)}
+            /* No photo yet — a designed silhouette state, not a blank box:
+               centered initials over a soft panel with a hairline frame. */
+            <span className="absolute inset-0 z-[5] flex items-center justify-center">
+              <span className="border-line text-mute/50 font-display flex size-24 items-center justify-center rounded-full border text-[28px] font-bold tracking-[0.04em]">
+                {initialsOf(member.name)}
+              </span>
             </span>
           )}
           <span className="bg-ink text-paper absolute right-3 bottom-3 z-10 px-2 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase opacity-0 transition-opacity duration-200 group-hover:opacity-100">
