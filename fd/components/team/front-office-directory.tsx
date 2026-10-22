@@ -130,28 +130,33 @@ function ExecutiveCard({
       >
         {/* Portrait panel — 392×320, grayscale resolving to color on hover */}
         <div className="bg-paper-soft relative h-[300px] overflow-hidden md:h-[320px]">
-          <span
-            aria-hidden="true"
-            className="font-display text-mute/20 pointer-events-none absolute -top-2 right-3 z-0 text-[120px] leading-none font-bold select-none"
-          >
-            {initialsOf(member.name)}
-          </span>
           {member.photo ? (
-            <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,transform] duration-300 group-hover:scale-[1.03] group-hover:grayscale-0">
-              <Image
-                src={member.photo}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-                className="object-contain object-bottom"
-              />
-            </div>
+            <>
+              <span
+                aria-hidden="true"
+                className="font-display text-mute/20 pointer-events-none absolute -top-2 right-3 z-0 text-[120px] leading-none font-bold select-none"
+              >
+                {initialsOf(member.name)}
+              </span>
+              <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,transform] duration-300 group-hover:scale-[1.03] group-hover:grayscale-0">
+                <Image
+                  src={member.photo}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                  className="object-contain object-bottom"
+                />
+              </div>
+            </>
           ) : (
             /* No photo yet — a designed silhouette state, not a blank box:
-               centered initials over a soft panel with a hairline frame. */
-            <span className="absolute inset-0 z-[5] flex items-center justify-center">
+               centered monogram medallion with the person's title. */
+            <span className="absolute inset-0 z-[5] flex flex-col items-center justify-center gap-3 px-6 text-center">
               <span className="border-line text-mute/50 font-display flex size-24 items-center justify-center rounded-full border text-[28px] font-bold tracking-[0.04em]">
                 {initialsOf(member.name)}
+              </span>
+              <span className="text-mute/70 text-[12px] font-semibold tracking-[0.12em] uppercase">
+                {member.title}
               </span>
             </span>
           )}
