@@ -128,7 +128,7 @@ export function Hero({
         if (event.key === "ArrowLeft") go(index - 1);
       }}
     >
-      <div className="relative flex min-h-[68svh] items-end overflow-hidden border-t border-white/70 bg-[#09183a] text-white sm:min-h-[64svh]">
+      <div className="relative flex min-h-[76svh] items-end overflow-hidden border-t border-white/70 bg-[#09183a] text-white sm:min-h-[72svh]">
         <div
           ref={parallaxRef}
           className="absolute inset-0 will-change-transform"

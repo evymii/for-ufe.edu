@@ -197,7 +197,7 @@ export function ScheduleStrip({ games }: { games: GameRow[] }) {
   return (
     <section
       aria-label="Сүүлийн үр дүн болон удахгүй болох тоглолтууд"
-      className="border-line w-full overflow-hidden border-b bg-[#1b222b]"
+      className="border-line w-full overflow-hidden border-b bg-[#151a22]"
     >
       <div className="px-2 py-5 sm:px-4">
         <div

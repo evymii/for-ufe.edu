@@ -119,7 +119,6 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
-      <div aria-hidden="true" className="h-20 bg-[#05070b]" />
       <Hero copy={heroData} historyIntro={historyIntro} stack={heroStack} />
 
       {/* Latest news — featured card + stacked cards */}
@@ -127,12 +126,12 @@ export default async function HomePage() {
         <div className="team-shell team-shell-wide py-10 md:py-14">
           <Reveal>
             <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
-              <h2 className="font-display text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] text-white uppercase">
+              <h2 className="font-display text-brand text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] uppercase">
                 {newsMeta.heading}
               </h2>
               <Link
                 href={routes.site.schedule}
-                className="group flex min-h-11 items-center gap-1.5 text-[12px] font-semibold tracking-[0.12em] text-white uppercase transition-colors hover:text-white/80"
+                className="group flex min-h-11 items-center gap-1.5 text-[12px] font-semibold tracking-[0.12em] text-[#174a45] uppercase transition-colors hover:text-[#0f3632]"
               >
                 Бүх тоглолт
                 <ArrowRight

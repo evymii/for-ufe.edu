@@ -91,11 +91,11 @@
 }
 
 .public-site {
-  --paper: #10151c;
-  --paper-soft: #1b222b;
+  --paper: #f3f1ec;
+  --paper-soft: #e7e6e1;
   --ink: #05070b;
-  --mute: #b7c2d0;
-  --line: #465467;
+  --mute: #536070;
+  --line: #c8ccd1;
   --brand: #17439b;
   --brand-2: #2d62c6;
   --brand-contrast: #ffffff;
@@ -122,15 +122,15 @@
 }
 
 .public-site .text-ink {
-  color: #ffffff;
+  color: #05070b;
 }
 
 .public-site .text-mute {
-  color: #b7c2d0;
+  color: #536070;
 }
 
 .public-site .border-ink {
-  border-color: #ffffff;
+  border-color: #05070b;
 }
 
 :root {
