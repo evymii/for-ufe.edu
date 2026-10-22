@@ -307,30 +307,30 @@ function BioDrawer({
             </div>
             <div className="space-y-8 p-6 md:p-8">
               <div>
-                <p className="text-mute text-[13px] font-semibold tracking-[0.02em]">
+                <p className="text-brand text-[13px] font-semibold tracking-[0.02em]">
                   {member.title}
                 </p>
                 <h3 className="font-display text-ink mt-2 text-[32px] leading-none font-bold tracking-[0.02em] uppercase">
                   {member.name}
                 </h3>
                 {member.bio ? (
-                  <p className="text-mute mt-4 text-[15px] leading-[1.7]">
+                  <p className="text-ink/75 mt-4 text-[15px] leading-[1.7]">
                     {member.bio}
                   </p>
                 ) : null}
               </div>
 
               {member.bullets.length > 0 ? (
-                <div>
-                  <p className="eyebrow">Амжилтууд</p>
-                  <ul className="mt-3 space-y-2">
+                <div className="border-line border-t pt-6">
+                  <p className="eyebrow text-brand">Амжилтууд</p>
+                  <ul className="mt-4 space-y-3">
                     {member.bullets.map((bullet) => (
                       <li
                         key={bullet}
-                        className="text-mute flex gap-2.5 text-[14px] leading-[1.6]"
+                        className="text-ink/85 flex gap-3 text-[14.5px] leading-[1.6] font-medium"
                       >
                         <span
-                          className="bg-ink mt-2 size-1.5 shrink-0"
+                          className="bg-brand mt-[7px] size-2 shrink-0"
                           aria-hidden="true"
                         />
                         {bullet}
