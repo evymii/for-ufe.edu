@@ -50,8 +50,9 @@ export function FrontOfficeDirectory({ members }: { members: Executive[] }) {
 
   return (
     <>
-      {/* Sticky tab bar — sits under the solid header (72px mobile, 112px desktop) */}
-      <div className="border-line bg-paper sticky top-[72px] z-30 border-b md:top-28">
+      {/* Sticky tab bar — pins flush to the viewport top once the (non-sticky)
+          page header has scrolled away. */}
+      <div className="border-line bg-paper sticky top-0 z-30 border-b">
         <div className="team-shell flex h-12 items-stretch gap-6 overflow-x-auto md:gap-8">
           {available.map((group) => {
             const active = group.value === tab;

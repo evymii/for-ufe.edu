@@ -340,10 +340,12 @@ export function HistoryExperience({
 
   return (
     <>
-      {/* Sticky year rail — scroll-spy + reading progress */}
+      {/* Sticky year rail — scroll-spy + reading progress, in the nav blue.
+          Pins flush to the viewport top once the (non-sticky) page header
+          has scrolled away. */}
       <nav
         aria-label="Он цэс"
-        className="border-line bg-paper sticky top-[72px] z-30 h-14 border-b"
+        className="bg-brand sticky top-0 z-30 h-14 border-b border-white/20"
       >
         <div className="team-shell flex h-full items-center">
           <ul className="no-scrollbar flex items-center gap-1 overflow-x-auto">
@@ -361,8 +363,8 @@ export function HistoryExperience({
                     className={cn(
                       "font-display team-focus flex h-14 shrink-0 border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
                       active
-                        ? "border-ink text-ink"
-                        : "text-mute hover:text-ink border-transparent",
+                        ? "border-white text-white"
+                        : "border-transparent text-white/70 hover:text-white",
                     )}
                   >
                     {era.navLabel}
@@ -375,7 +377,7 @@ export function HistoryExperience({
         <div
           ref={barRef}
           aria-hidden="true"
-          className="bg-ink absolute bottom-0 left-0 h-0.5 w-full origin-left"
+          className="absolute bottom-0 left-0 h-0.5 w-full origin-left bg-white"
           style={{ transform: "scaleX(0)" }}
         />
       </nav>

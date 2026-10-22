@@ -50,7 +50,9 @@ const stringList = z.preprocess(
           .map((part) => part.trim())
           .filter(Boolean)
       : value,
-  z.array(z.string().trim().min(1).max(48)).max(12).optional(),
+  // 300 matches the player-achievement budget — seeded executive bullets
+  // run 60–85 chars, and the old 48 cap made any edit of those rows fail.
+  z.array(z.string().trim().min(1).max(300)).max(12).optional(),
 );
 
 const optionalBool = boolFlag.optional();

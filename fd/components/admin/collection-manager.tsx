@@ -471,8 +471,18 @@ export function CollectionManager({ config }: { config: CollectionConfig }) {
       const tag = tagForEndpoint(config.endpoint);
       if (tag) void revalidatePublicTag(tag);
     } catch (err) {
+      // Validation errors carry per-field details — surface the first one so
+      // "Invalid request data" alone never hides which field is the problem.
+      const firstDetail =
+        err instanceof ApiClientError && Array.isArray(err.details)
+          ? (err.details[0] as { message?: string; path?: string })
+          : null;
       toast.error(
-        err instanceof ApiClientError ? err.message : "Хадгалахад алдаа гарлаа",
+        err instanceof ApiClientError
+          ? firstDetail?.message
+            ? `${err.message} — ${firstDetail.path ? `«${firstDetail.path}» ` : ""}${firstDetail.message}`
+            : err.message
+          : "Хадгалахад алдаа гарлаа",
       );
     } finally {
       setSaving(false);
