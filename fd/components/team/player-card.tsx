@@ -1,11 +1,14 @@
-"use client";
-
-import { useState } from "react";
-import { ChevronDown, Trophy } from "lucide-react";
+import { ArrowRight, ChevronDown, Trophy } from "lucide-react";
+import Link from "next/link";
 
 import { PlayerCutout } from "@/components/team/player-photo";
 import type { RosterPlayer } from "@/components/team/roster-utils";
-import { basePosition, splitName } from "@/components/team/roster-utils";
+import {
+  basePosition,
+  playerAge,
+  playerHref,
+  splitName,
+} from "@/components/team/roster-utils";
 import { cn } from "@/lib/utils";
 
 /**
@@ -103,14 +106,14 @@ function MeasureCell({ label, value }: { label: string; value: string }) {
 
 /**
  * Editorial roster card: mist portrait panel with the 132px jersey numeral
- * watermark and position chip, stacked name, 3-up measurement strip behind
- * hairline rules, and a footer toggle expanding the full profile. Hover
- * lifts the card and grows a 4px ink top border.
+ * watermark, position chip beside the stacked name (kept OFF the photo so it
+ * never covers the player), 3-up measurement strip (height / age / weight)
+ * behind hairline rules, and a footer link to the player's detail page.
+ * Hover lifts the card and grows a 4px ink top border.
  */
 export function PlayerCard({ player }: { player: RosterPlayer }) {
-  const [expanded, setExpanded] = useState(false);
   const [firstName, lastName] = splitName(player.name);
-  const detailsId = `player-details-${player.number}`;
+  const age = playerAge(player.birthYear);
 
   return (
     <article className="border-line bg-paper group relative flex flex-col border transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]">
@@ -120,16 +123,13 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
         className="bg-ink absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-200 group-hover:scale-x-100"
       />
 
-      {/* Portrait panel: mist ground, watermark numeral, position chip */}
+      {/* Portrait panel: mist ground, watermark numeral, role pill */}
       <div className="bg-paper-soft relative h-[280px] overflow-hidden md:h-[300px]">
         <span
           aria-hidden="true"
           className="font-display text-mute/20 pointer-events-none absolute -top-2 right-2 z-0 text-[132px] leading-none font-bold select-none"
         >
           {String(player.number).padStart(2, "0")}
-        </span>
-        <span className="border-ink bg-paper text-ink absolute top-3 left-3 z-10 border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
-          {basePosition(player.position)}
         </span>
         {player.role ? (
           <span className="bg-ink text-paper absolute bottom-3 left-3 z-10 px-2 py-1 text-[11px] font-semibold tracking-[0.1em] uppercase">
@@ -150,8 +150,11 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
         </div>
       </div>
 
-      {/* Name block: small first name, big last name */}
+      {/* Name block: position chip, small first name, big last name */}
       <div className="px-4 pt-4">
+        <span className="border-ink text-ink mb-2 inline-block border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
+          {basePosition(player.position)}
+        </span>
         <p className="font-display text-mute text-[15px] leading-none font-semibold tracking-[0.06em] uppercase">
           {firstName}
         </p>
@@ -163,29 +166,26 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
       {/* Measurement strip behind hairline rules */}
       <div className="border-line mx-4 mt-3 grid grid-cols-3 border-y py-2.5">
         <MeasureCell label="Өндөр" value={`${player.heightCm}`} />
+        <MeasureCell label="Нас" value={age === null ? "—" : `${age}`} />
         <MeasureCell
-          label="Багт"
-          value={player.yearsOnTeam.replace(/ дэх жил| жил/, "")}
-        />
-        <MeasureCell
-          label="Тоглосон"
-          value={player.yearsPlaying.replace(/ жил/, "")}
+          label="Жин"
+          value={player.weightKg ? `${player.weightKg}` : "—"}
         />
       </div>
 
-      {/* Footer toggle + expandable profile */}
+      {/* Footer link to the full player page */}
       <div className="mt-auto pt-3">
-        <DetailsToggle
-          expanded={expanded}
-          onToggle={() => setExpanded((open) => !open)}
-          controlId={detailsId}
-        />
+        <Link
+          href={playerHref(player)}
+          className="text-mute hover:text-ink team-focus flex w-full items-center justify-between gap-2 border-t px-5 py-3.5 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            <Trophy className="size-4" aria-hidden="true" />
+            Дэлгэрэнгүй
+          </span>
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </Link>
       </div>
-      {expanded ? (
-        <div id={detailsId}>
-          <PlayerDetails player={player} />
-        </div>
-      ) : null}
     </article>
   );
 }

@@ -141,6 +141,19 @@ export async function getPlayers(): Promise<PlayerRow[]> {
   }));
 }
 
+/** One roster player by slug, for the /players/[slug] detail page. */
+export async function getPlayerRowBySlug(
+  slug: string,
+): Promise<PlayerRow | null> {
+  const data = await getJson<{ player: PlayerRow }>(
+    `/players/slug/${encodeURIComponent(slug)}`,
+    "players",
+  );
+  return data?.player
+    ? { ...data.player, profile: playerExtras(data.player.profile) }
+    : null;
+}
+
 export async function getPageCopy(
   page: string,
   section = "page",

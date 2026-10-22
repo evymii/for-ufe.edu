@@ -3,11 +3,27 @@ import type { PlayerProfile } from "@/content/site";
 /** Player + resolved photo path, as prepared by the /players page. */
 export type RosterPlayer = Omit<PlayerProfile, "photo"> & {
   photo: null | string;
+  /** URL slug — links to /players/<slug>. Static fallback uses player-<n>. */
+  slug: string;
+  birthYear?: null | number;
+  weightKg?: null | number;
   /** Admin-set vertical framing of the photo, 0 (top) – 100 (bottom). */
   photoPosition?: null | number;
   /** Admin-set rendered size, 40 (shrunken) – 150 (zoomed). */
   photoScale?: null | number;
 };
+
+/** Age from a birth year (render-time; drifts at most one revalidate). */
+export function playerAge(birthYear?: null | number): null | number {
+  if (!birthYear) return null;
+  const age = new Date().getFullYear() - birthYear;
+  return age >= 0 && age < 100 ? age : null;
+}
+
+/** Detail-page href for a roster player. */
+export function playerHref(player: Pick<RosterPlayer, "slug">): string {
+  return `/players/${player.slug}`;
+}
 
 /** Uppercase base position ("Center · Double-double machine" → "CENTER"). */
 export function basePosition(position: string) {

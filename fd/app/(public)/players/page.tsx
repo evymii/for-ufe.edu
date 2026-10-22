@@ -52,6 +52,8 @@ export default async function RosterPage() {
       ? playerRows.map(toRosterPlayer)
       : playerProfiles.map((player) => ({
           ...player,
+          // Static fallback has no slugs — detail pages use player-<number>.
+          slug: `player-${player.number}`,
           photo: player.photo ?? null,
         }))
   ).map((player) => ({ ...player, photo: resolvePhoto(player) }));

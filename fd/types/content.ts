@@ -116,6 +116,8 @@ export interface PlayerRow {
   role: PlayerRole;
   position: string | null;
   heightCm: number | null;
+  weightKg: number | null;
+  birthYear: number | null;
   hometown: string | null;
   photo: string | null;
   actionPhoto: string | null;
