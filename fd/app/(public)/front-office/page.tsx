@@ -27,9 +27,7 @@ export default async function FrontOfficePage() {
     <>
       <PageHero breadcrumb="Удирдлага" subtitle={intro} title="Удирдлага" />
       <Reveal delay={60}>
-        <FrontOfficeDirectory
-          members={members.filter((member) => member.group !== "COACHES")}
-        />
+        <FrontOfficeDirectory members={members} />
       </Reveal>
     </>
   );
