@@ -322,7 +322,9 @@ function BioDrawer({
 
               {member.bullets.length > 0 ? (
                 <div className="border-line border-t pt-6">
-                  <p className="eyebrow text-brand">Амжилтууд</p>
+                  <p className="text-brand text-[12px] font-semibold tracking-[0.12em] uppercase">
+                    Амжилтууд
+                  </p>
                   <ul className="mt-4 space-y-3">
                     {member.bullets.map((bullet) => (
                       <li
