@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -7,6 +8,7 @@ import { TeamButton } from "@/components/team/button";
 import { HeroStack, type HeroFigure } from "@/components/team/hero-stack";
 import { WaveField } from "@/components/team/wave-field";
 import { routes } from "@/config/routes";
+import { siteConfig } from "@/config/site";
 
 // ── Hero carousel ───────────────────────────────────────────────────────────
 // Responsive ink panel: wave-field texture, bottom gradient, condensed
@@ -143,9 +145,22 @@ export function Hero({
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#10151c]"
         />
-        {/* Stacked player trio — decorative, right rail, above the gradient
-            but under the slide copy (DOM order) so controls stay visible. */}
-        {stack.length > 0 ? (
+        {/* Hero visual — decorative, right rail, above the gradient but under
+            the slide copy (DOM order) so controls stay visible. A configured
+            group photo wins; otherwise the stacked player trio. */}
+        {siteConfig.heroGroupImage ? (
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[440px] items-end justify-center pr-10 pb-8 select-none lg:flex xl:w-[500px] xl:pr-14">
+            <Image
+              src={siteConfig.heroGroupImage}
+              alt=""
+              width={1046}
+              height={708}
+              priority={false}
+              sizes="(min-width: 1280px) 460px, 400px"
+              className="h-auto w-full"
+            />
+          </div>
+        ) : stack.length > 0 ? (
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[440px] items-end justify-center pr-10 select-none lg:flex xl:w-[500px] xl:pr-14">
             <HeroStack figures={stack} />
           </div>

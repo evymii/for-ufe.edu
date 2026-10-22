@@ -10,6 +10,12 @@ export const siteConfig = {
   university: "Санхүү, эдийн засгийн их сургууль",
   latinName: "UFE BASKETBALL",
   foundedYear: 1992,
+  /**
+   * Group photo shown on the homepage hero's right rail instead of the
+   * roster trio (background stripped → transparent WebP). Empty string
+   * falls back to the stacked player cutouts.
+   */
+  heroGroupImage: "/images/hero/champions.webp",
 } as const;
 
 export const publicNav = [
