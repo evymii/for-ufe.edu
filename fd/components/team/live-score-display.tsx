@@ -75,33 +75,36 @@ export function LiveScoreCenter({
   const isActive = state?.status === "LIVE" || state?.status === "HALFTIME";
   const scoredFinal = !rowIsFinal && state?.status === "FINAL" ? state : null;
 
+  // Numbers spread wide so each sits visually beside its team's logo.
   const bigScore = (team: number, opponent: number) => (
-    <p className="font-display my-2 text-[clamp(36px,8vw,56px)] leading-none font-bold tabular-nums">
-      {team}
-      <span className="text-mute mx-2 text-[0.7em]">–</span>
-      {opponent}
+    <p className="font-display my-2 flex items-center justify-center gap-x-[clamp(64px,10vw,200px)] text-[clamp(36px,8vw,56px)] leading-none font-bold text-white tabular-nums">
+      <span>{team}</span>
+      <span
+        aria-hidden="true"
+        className="text-[0.7em] font-normal text-white/40"
+      >
+        –
+      </span>
+      <span>{opponent}</span>
     </p>
   );
 
   if (isActive && state) {
     return (
       <div aria-live="polite" className="text-center">
-        <p className="text-mute flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-[0.14em] uppercase">
+        <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/50 uppercase">
           <span
             aria-hidden="true"
             className="size-1.5 animate-pulse rounded-full bg-red-500"
           />
-          <span className="text-red-600">
+          <span className="text-red-500">
             {state.status === "HALFTIME" ? "HALFTIME" : "LIVE"} · Q
             {state.period}
           </span>
         </p>
         {bigScore(state.teamScore, state.opponentScore)}
-        <p className="text-xs">
-          <strong className="text-ink tabular-nums">
-            {clock(displayClock)}
-          </strong>
-          <span className="text-mute"> · {dateLabel}</span>
+        <p className="text-xs text-white/70 tabular-nums">
+          {clock(displayClock)}
         </p>
       </div>
     );
@@ -110,28 +113,35 @@ export function LiveScoreCenter({
   if (scoredFinal) {
     return (
       <div className="text-center">
-        <p className="text-mute text-[10px] font-bold tracking-[0.14em] uppercase">
+        <p className="text-[10px] font-bold tracking-[0.14em] text-white/60 uppercase">
           {scoredFinal.teamScore > scoredFinal.opponentScore
             ? "FINAL · WIN"
             : "FINAL · LOSS"}
         </p>
         {bigScore(scoredFinal.teamScore, scoredFinal.opponentScore)}
-        <p className="text-mute text-xs">{dateLabel}</p>
+        <p className="text-xs text-white/50">{dateLabel}</p>
       </div>
     );
   }
 
   return (
     <div className="text-center">
-      <p className="text-mute text-[10px] font-bold tracking-[0.14em] uppercase">
+      <p className="text-[10px] font-bold tracking-[0.14em] text-white/60 uppercase">
         {rowLabel}
       </p>
-      <p className="font-display my-2 text-[clamp(36px,8vw,56px)] leading-none font-bold tabular-nums">
-        {rowIsFinal && rowTeamScore !== null ? rowTeamScore : "—"}
-        <span className="text-mute mx-2 text-[0.7em]">–</span>
-        {rowIsFinal && rowOpponentScore !== null ? rowOpponentScore : "—"}
+      <p className="font-display my-2 flex items-center justify-center gap-x-[clamp(64px,10vw,200px)] text-[clamp(36px,8vw,56px)] leading-none font-bold text-white tabular-nums">
+        <span>{rowIsFinal && rowTeamScore !== null ? rowTeamScore : "—"}</span>
+        <span
+          aria-hidden="true"
+          className="text-[0.7em] font-normal text-white/40"
+        >
+          –
+        </span>
+        <span>
+          {rowIsFinal && rowOpponentScore !== null ? rowOpponentScore : "—"}
+        </span>
       </p>
-      <p className="text-mute text-xs">{dateLabel}</p>
+      <p className="text-xs text-white/50">{dateLabel}</p>
     </div>
   );
 }

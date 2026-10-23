@@ -71,19 +71,16 @@ export default async function GameDetailsPage({
 
         <section
           aria-label={`${gameTitle(game)} тоглолтын үр дүн`}
-          className="border-line bg-paper mt-4 border"
+          className="mt-4 border-2 border-[#101827] bg-[#1e1e23] shadow-[0_3px_0_#101827]"
         >
-          <div className="bg-paper-soft grid items-center gap-5 px-5 py-7 sm:grid-cols-[1fr_auto_1fr] sm:px-8 md:py-9">
-            <div className="text-center sm:text-right">
-              <p className="text-mute text-[10px] font-bold tracking-[0.12em] uppercase">
-                {game.isHome ? "HOME" : "AWAY"}
-              </p>
+          <div className="grid items-center gap-10 px-6 py-8 sm:grid-cols-[1fr_auto_1fr] sm:px-14 md:py-10">
+            <div>
               <Image
                 src={UFE_LOGO_SRC}
                 alt="UFE Broncos"
                 width={192}
                 height={192}
-                className="mx-auto mt-2 h-[clamp(64px,10vw,96px)] w-auto sm:mx-0 sm:ml-auto"
+                className="mx-auto h-[clamp(64px,10vw,96px)] w-auto sm:translate-y-2"
               />
             </div>
 
@@ -98,27 +95,23 @@ export default async function GameDetailsPage({
               rowTeamScore={game.teamScore}
             />
 
-            <div className="text-center sm:text-left">
-              <p className="text-mute text-[10px] font-bold tracking-[0.12em] uppercase">
-                OPPONENT
-              </p>
+            <div>
               {opponentLogo ? (
                 <Image
                   src={opponentLogo}
                   alt={game.opponentShort ?? game.opponent}
                   width={192}
                   height={192}
-                  className="mx-auto mt-2 h-[clamp(64px,10vw,96px)] w-auto sm:mx-0"
+                  className="mx-auto h-[clamp(64px,10vw,96px)] w-auto sm:translate-y-2"
                 />
               ) : (
-                <h2 className="font-display mt-2 text-2xl font-bold tracking-[0.02em] uppercase sm:text-3xl">
+                <h2 className="font-display text-center text-2xl font-bold tracking-[0.02em] uppercase sm:text-3xl">
                   {game.opponentShort ?? game.opponent}
                 </h2>
               )}
-              <p className="text-mute mt-1 text-sm">{game.venue}</p>
             </div>
           </div>
-          <div className="border-line text-mute flex flex-wrap justify-center gap-x-6 gap-y-2 border-t px-4 py-3 text-[11px]">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-white/10 px-4 py-3 text-[11px] font-semibold tracking-[0.08em] text-white/60 uppercase">
             {game.round ? <span>{game.round}</span> : null}
             <span>{game.venue}</span>
             {game.status === "SCHEDULED" ? (
