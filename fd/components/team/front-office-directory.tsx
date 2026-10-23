@@ -130,7 +130,17 @@ function ExecutiveCard({ member }: { member: Executive }) {
               >
                 {initialsOf(member.name)}
               </span>
-              <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-0 group-hover:grayscale-0 group-hover:delay-200">
+              <div
+                className={cn(
+                  "absolute inset-0 z-[5] transition-[grayscale,opacity,transform] duration-300 group-hover:scale-[1.03]",
+                  hoverPhoto
+                    ? // Base of a hover card: full color, fading out beneath
+                      // the band as the alternate cutout wipes across.
+                      "group-hover:opacity-0 group-hover:delay-200"
+                    : // No alternate photo: keep the grayscale-to-color hover.
+                      "grayscale group-hover:grayscale-0",
+                )}
+              >
                 <Image
                   src={trimmedCutout(member.photo) ?? member.photo}
                   alt=""
@@ -141,10 +151,10 @@ function ExecutiveCard({ member }: { member: Executive }) {
               </div>
               {hoverPhoto ? (
                 <>
-                  {/* Alternate cutout — revealed left-to-right along the same
-                      diagonal the brand band rides, so the swap reads as one
-                      wipe instead of a crossfade of two cutouts. */}
-                  <div className="pointer-events-none absolute inset-0 z-[6] transition-[clip-path] duration-700 ease-in-out [-webkit-clip-path:polygon(-40%_0,-40%_0,-65%_100%,-65%_100%)] [clip-path:polygon(-40%_0,-40%_0,-65%_100%,-65%_100%)] group-hover:[-webkit-clip-path:polygon(-40%_0,140%_0,115%_100%,-65%_100%)] group-hover:[clip-path:polygon(-40%_0,140%_0,115%_100%,-65%_100%)]">
+                  {/* Alternate cutout — revealed along a "/" diagonal that
+                      travels from the bottom-left corner to the top-right,
+                      synced to the brand band below. */}
+                  <div className="pointer-events-none absolute inset-0 z-[6] transition-[clip-path] duration-700 ease-in-out [-webkit-clip-path:polygon(-90%_140%,-210%_140%,-110%_-40%,10%_-40%)] [clip-path:polygon(-90%_140%,-210%_140%,-110%_-40%,10%_-40%)] group-hover:[-webkit-clip-path:polygon(110%_140%,-210%_140%,-110%_-40%,210%_-40%)] group-hover:[clip-path:polygon(110%_140%,-210%_140%,-110%_-40%,210%_-40%)]">
                     <Image
                       src={hoverPhoto}
                       alt=""
@@ -153,10 +163,10 @@ function ExecutiveCard({ member }: { member: Executive }) {
                       className="object-contain object-bottom"
                     />
                   </div>
-                  {/* Brand-blue diagonal band sweeping corner to corner */}
+                  {/* Slim brand-blue band riding the same diagonal */}
                   <span
                     aria-hidden="true"
-                    className="bg-brand pointer-events-none absolute -inset-y-10 left-0 z-[7] w-1/3 -translate-x-[220%] -skew-x-12 transition-transform duration-700 ease-in-out group-hover:translate-x-[430%]"
+                    className="bg-brand pointer-events-none absolute top-1/2 left-1/2 z-[7] h-[260%] w-8 -translate-x-1/2 -translate-y-1/2 [translate:-315px_260px] rotate-[35deg] transition-[translate] duration-700 ease-in-out group-hover:[translate:315px_-260px]"
                   />
                 </>
               ) : null}
