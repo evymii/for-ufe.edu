@@ -114,13 +114,14 @@ function coachCards(rows: Executive[]): SpotlightMember[] {
     role: string,
     intro: string,
     photo: null | string,
+    href: string = routes.site.management,
   ): SpotlightMember => ({
     name,
     role,
     meta: intro,
     photo,
     watermark: initialsOf(name),
-    href: routes.site.management,
+    href,
   });
 
   const fromRows = rows
@@ -130,7 +131,15 @@ function coachCards(rows: Executive[]): SpotlightMember[] {
         row.title.toLowerCase().includes("дасгалжуулагч"),
     )
     .slice(0, 2)
-    .map((row) => toCard(row.name, row.title, row.bio ?? "", staffPhoto(row)));
+    .map((row) =>
+      toCard(
+        row.name,
+        row.title,
+        row.bio ?? "",
+        staffPhoto(row),
+        routes.site.managementMember(row.slug),
+      ),
+    );
   if (fromRows.length) return fromRows;
 
   return staff

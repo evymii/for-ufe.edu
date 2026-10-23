@@ -1,17 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import Link from "next/link";
 
+import { routes } from "@/config/routes";
 import type { Executive, ExecutiveGroup } from "@/types/content";
 import { cn } from "@/lib/utils";
 
 /**
  * Front office directory: sticky 48px tab bar (Ownership / Basketball ops /
  * Business / Coaches) and 392×440 executive cards whose grayscale portraits
- * resolve to color on hover (300ms) and open a 560px bio drawer sliding in
- * from the right (280ms, Esc closes).
+ * resolve to color on hover (300ms). Each card links to the member's own
+ * profile page (/front-office/[slug]) — same treatment as the roster.
  */
 
 const GROUPS: Array<{ value: ExecutiveGroup; label: string }> = [
@@ -44,10 +45,7 @@ export function FrontOfficeDirectory({ members }: { members: Executive[] }) {
   const [tab, setTab] = useState<ExecutiveGroup>(
     available[0]?.value ?? "OWNERSHIP",
   );
-  const [openSlug, setOpenSlug] = useState<string | null>(null);
-
   const groupMembers = members.filter((member) => member.group === tab);
-  const openMember = members.find((member) => member.slug === openSlug) ?? null;
 
   return (
     <>
@@ -98,34 +96,20 @@ export function FrontOfficeDirectory({ members }: { members: Executive[] }) {
           className="view-swap grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {groupMembers.map((member) => (
-            <ExecutiveCard
-              key={member.id}
-              member={member}
-              onOpen={() => setOpenSlug(member.slug)}
-            />
+            <ExecutiveCard key={member.id} member={member} />
           ))}
         </div>
       </section>
-
-      <BioDrawer member={openMember} onClose={() => setOpenSlug(null)} />
     </>
   );
 }
 
-function ExecutiveCard({
-  member,
-  onOpen,
-}: {
-  member: Executive;
-  onOpen: () => void;
-}) {
+function ExecutiveCard({ member }: { member: Executive }) {
   return (
     <article className="border-line bg-paper card-lift group relative border">
-      <button
-        type="button"
-        onClick={onOpen}
-        aria-haspopup="dialog"
-        aria-label={`${member.name} — профайл нээх`}
+      <Link
+        href={routes.site.managementMember(member.slug)}
+        aria-label={`${member.name} — профайл`}
         className="team-focus block w-full text-left"
       >
         {/* Portrait panel — 392×320, grayscale resolving to color on hover */}
@@ -190,161 +174,7 @@ function ExecutiveCard({
             </p>
           ) : null}
         </div>
-      </button>
+      </Link>
     </article>
-  );
-}
-
-/** 560px bio drawer: slides in from the right, backdrop fade, focus trap. */
-function BioDrawer({
-  member,
-  onClose,
-}: {
-  member: Executive | null;
-  onClose: () => void;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const restoreFocusRef = useRef<HTMLElement | null>(null);
-  const open = member !== null;
-
-  const trapFocus = useCallback((event: KeyboardEvent) => {
-    if (event.key !== "Tab" || !panelRef.current) return;
-    const focusables = panelRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    );
-    if (focusables.length === 0) return;
-    const first = focusables[0]!;
-    const last = focusables[focusables.length - 1]!;
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    restoreFocusRef.current = document.activeElement as HTMLElement | null;
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-      trapFocus(event);
-    };
-    window.addEventListener("keydown", onKey);
-    const timer = window.setTimeout(() => {
-      panelRef.current
-        ?.querySelector<HTMLElement>("[data-drawer-close]")
-        ?.focus();
-    }, 60);
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener("keydown", onKey);
-      window.clearTimeout(timer);
-      restoreFocusRef.current?.focus?.();
-    };
-  }, [open, onClose, trapFocus]);
-
-  return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 overflow-hidden",
-        open ? "pointer-events-auto" : "pointer-events-none",
-      )}
-      aria-hidden={!open}
-    >
-      <div
-        onClick={onClose}
-        className={cn(
-          "bg-ink/60 absolute inset-0 transition-opacity duration-[280ms]",
-          open ? "opacity-100" : "opacity-0",
-        )}
-      />
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={member ? `${member.name} — профайл` : "Профайл"}
-        className={cn(
-          "bg-paper absolute inset-y-0 right-0 flex w-full max-w-[560px] flex-col transition-transform duration-[280ms] ease-out",
-          open ? "translate-x-0" : "translate-x-full",
-        )}
-      >
-        <div className="border-line flex h-14 shrink-0 items-center justify-between border-b px-6">
-          <p className="eyebrow">{member ? GROUP_LABEL[member.group] : ""}</p>
-          <button
-            type="button"
-            onClick={onClose}
-            data-drawer-close
-            aria-label="Профайл хаах"
-            tabIndex={open ? 0 : -1}
-            className="text-mute hover:text-ink team-focus flex size-11 items-center justify-center transition-colors"
-          >
-            <X className="size-5" aria-hidden="true" />
-          </button>
-        </div>
-
-        {member ? (
-          <div className="flex-1 overflow-y-auto">
-            <div className="bg-ink relative h-[300px] overflow-hidden text-white">
-              <span
-                aria-hidden="true"
-                className="font-display pointer-events-none absolute -top-4 right-4 z-0 text-[150px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:2px_rgba(255,255,255,0.2)]"
-              >
-                {initialsOf(member.name)}
-              </span>
-              {member.photo ? (
-                <Image
-                  src={member.photo}
-                  alt=""
-                  fill
-                  sizes="560px"
-                  className="object-contain object-bottom"
-                />
-              ) : null}
-            </div>
-            <div className="space-y-8 p-6 md:p-8">
-              <div>
-                <p className="text-brand text-[13px] font-semibold tracking-[0.02em]">
-                  {member.title}
-                </p>
-                <h3 className="font-display text-ink mt-2 text-[32px] leading-none font-bold tracking-[0.02em] uppercase">
-                  {member.name}
-                </h3>
-                {member.bio ? (
-                  <p className="text-ink/75 mt-4 text-[15px] leading-[1.7]">
-                    {member.bio}
-                  </p>
-                ) : null}
-              </div>
-
-              {member.bullets.length > 0 ? (
-                <div className="border-line border-t pt-6">
-                  <p className="text-brand text-[12px] font-semibold tracking-[0.12em] uppercase">
-                    Амжилтууд
-                  </p>
-                  <ul className="mt-4 space-y-3">
-                    {member.bullets.map((bullet) => (
-                      <li
-                        key={bullet}
-                        className="text-ink/85 flex gap-3 text-[14.5px] leading-[1.6] font-medium"
-                      >
-                        <span
-                          className="bg-brand mt-[7px] size-2 shrink-0"
-                          aria-hidden="true"
-                        />
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
   );
 }

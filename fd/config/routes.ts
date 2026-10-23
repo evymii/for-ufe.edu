@@ -8,6 +8,8 @@ export const routes = {
     game: (gameId: string) => `/schedule/${encodeURIComponent(gameId)}`,
     history: "/history",
     management: "/front-office",
+    managementMember: (slug: string) =>
+      `/front-office/${encodeURIComponent(slug)}`,
     media: "/media",
     roster: "/players",
     schedule: "/schedule",
