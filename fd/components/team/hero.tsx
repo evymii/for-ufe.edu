@@ -3,11 +3,9 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { HeroStack, type HeroFigure } from "@/components/team/hero-stack";
 import { WaveField } from "@/components/team/wave-field";
 import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 
 // ── Hero carousel ───────────────────────────────────────────────────────────
 // Responsive ink panel: wave-field texture, bottom gradient, condensed
@@ -62,25 +60,14 @@ const AUTOPLAY_MS = 8000;
 export function Hero({
   copy,
   historyIntro,
-  trios = [],
 }: {
   copy: HeroCopy;
   historyIntro: string;
-  /** Roster trios on the right rail — one per carousel slide after the
-   *  group photo; each trio's first figure pops out front and center. */
-  trios?: HeroFigure[][];
 }) {
   const slides = buildSlides(copy, historyIntro);
   const [index, setIndex] = useState(0);
   const [progressKey, setProgressKey] = useState(0);
   const parallaxRef = useRef<HTMLDivElement>(null);
-
-  // Which visual the right rail shows per slide: the group photo on the
-  // first slide, then one roster trio per following slide. Falls back to the
-  // group photo when a slide has no trio configured.
-  const activeTrio =
-    index > 0 ? trios?.[(index - 1) % Math.max(1, trios.length)] : undefined;
-  const visual: "group" | "stack" = activeTrio?.length ? "stack" : "group";
 
   const go = useCallback(
     (next: number) => {
@@ -136,18 +123,11 @@ export function Hero({
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#10151c]"
         />
-        {/* Hero visual — decorative, right rail, above the gradient but under
-            the slide copy (DOM order) so controls stay visible. The carousel
-            shows the group photo on slide 1 and a roster trio on each slide
-            after; every layer stays mounted and crossfades with the slides. */}
+        {/* Hero visual — decorative group photo on the right rail, above the
+            gradient but under the slide copy (DOM order) so controls stay
+            visible. It stays on every slide; only the text panels rotate. */}
         {siteConfig.heroGroupImage ? (
-          <div
-            aria-hidden={visual !== "group"}
-            className={cn(
-              "pointer-events-none absolute inset-y-0 right-0 hidden w-[560px] items-end justify-end pr-6 transition-opacity duration-700 select-none lg:flex xl:w-[50vw] xl:max-w-[880px] xl:pr-10",
-              visual === "group" ? "opacity-100" : "opacity-0",
-            )}
-          >
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[560px] items-end justify-end pr-6 select-none lg:flex xl:w-[50vw] xl:max-w-[880px] xl:pr-10">
             <Image
               src={siteConfig.heroGroupImage}
               alt=""
@@ -159,23 +139,6 @@ export function Hero({
             />
           </div>
         ) : null}
-        {(trios ?? []).map((trio, trioIndex) =>
-          trio.length > 0 ? (
-            <div
-              key={trio.map((figure) => figure.number).join("-")}
-              aria-hidden={!(visual === "stack" && activeTrio === trio)}
-              className={cn(
-                "pointer-events-none absolute inset-y-0 right-0 hidden w-[560px] items-end justify-center pr-8 transition-opacity duration-700 select-none lg:flex xl:w-[50vw] xl:max-w-[880px] xl:pr-10",
-                visual === "stack" && activeTrio === trio
-                  ? "opacity-100"
-                  : "opacity-0",
-              )}
-              style={{ filter: "brightness(.84) contrast(1.04)" }}
-            >
-              <HeroStack key={trioIndex} figures={trio} />
-            </div>
-          ) : null,
-        )}
         {/* Brand wordmark — the provided UFE Basketball logo, its dark ink
             recolored white for the navy panel (see images/brand/). */}
         <Image

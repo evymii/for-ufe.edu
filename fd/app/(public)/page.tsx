@@ -5,7 +5,6 @@ import { Hero, type HeroCopy } from "@/components/team/hero";
 import { HomeGallery, getHomeGallery } from "@/components/team/home-gallery";
 import {
   HomeSpotlight,
-  getHeroFigures,
   getHomeSpotlight,
 } from "@/components/team/home-spotlight";
 import { HomeTimeline } from "@/components/team/home-timeline";
@@ -62,7 +61,6 @@ export default async function HomePage() {
     gameRows,
     spotlight,
     gallery,
-    heroTrios,
   ] = await Promise.all([
     getPageCopy("home", "hero"),
     getPageCopy("home", "stats"),
@@ -72,7 +70,6 @@ export default async function HomePage() {
     getGames(),
     getHomeSpotlight(),
     getHomeGallery(),
-    getHeroFigures(),
   ]);
 
   const heroData: HeroCopy = mergeCopy(
@@ -119,7 +116,7 @@ export default async function HomePage() {
       <ScheduleStrip
         games={selectedGames.sort((a, b) => a.tipsAt.localeCompare(b.tipsAt))}
       />
-      <Hero copy={heroData} historyIntro={historyIntro} trios={heroTrios} />
+      <Hero copy={heroData} historyIntro={historyIntro} />
 
       {/* Latest news — featured card + stacked cards */}
       <section aria-label={newsMeta.label} className="bg-paper">

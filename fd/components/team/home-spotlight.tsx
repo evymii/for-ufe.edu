@@ -3,11 +3,9 @@ import Link from "next/link";
 import path from "node:path";
 import { ArrowRight } from "lucide-react";
 
-import type { HeroFigure } from "@/components/team/hero-stack";
 import { PlayerCutout } from "@/components/team/player-photo";
 import { Reveal } from "@/components/team/reveal";
 import { routes } from "@/config/routes";
-import { siteConfig } from "@/config/site";
 import { playerProfiles, staff } from "@/content/site";
 import { getExecutives, getPlayers } from "@/lib/content";
 import { staffKey } from "@/lib/staff";
@@ -175,46 +173,6 @@ export async function getHomeSpotlight(): Promise<SpotlightMember[]> {
   );
   const coaches = coachCards(executiveRows);
   return captain ? [captain, ...coaches] : coaches;
-}
-
-/**
- * The hero's roster trios — one per carousel slide after the group photo.
- * Composition (who pops out front) is pinned by jersey number in
- * siteConfig.heroFigureNumbers: [front, leftBehind, rightBehind]. Numbers
- * missing from the roster are skipped; with no configured match (or no
- * config) it degrades to ranked slices: captain front, then by number.
- * E2E/test rows are skipped so junk data never reaches the hero.
- * (getPlayers()' fetch is deduped with getHomeSpotlight()'s call.)
- */
-export async function getHeroFigures(): Promise<HeroFigure[][]> {
-  const rows = (await getPlayers()).filter(
-    (player) => player.name && !/e2e|probe|тест/i.test(player.name),
-  );
-  const ranked = [...rows].sort(
-    (a, b) =>
-      Number(b.isCaptain) - Number(a.isCaptain) ||
-      (a.number ?? 99) - (b.number ?? 99),
-  );
-  const figureOf = (player: PlayerRow): HeroFigure => ({
-    name: player.name,
-    number: player.number,
-    photo: playerPhoto(player),
-  });
-
-  const configured = siteConfig.heroFigureNumbers
-    .map((numbers) =>
-      numbers
-        .map((number) => ranked.find((player) => player.number === number))
-        .filter((player): player is PlayerRow => Boolean(player))
-        .map(figureOf),
-    )
-    .filter((trio) => trio.length > 0);
-
-  if (configured.length > 0) return configured;
-
-  return [ranked.slice(0, 3), ranked.slice(3, 6)].map((slice) =>
-    slice.map(figureOf),
-  );
 }
 
 function SpotlightCard({ member }: { member: SpotlightMember }) {
