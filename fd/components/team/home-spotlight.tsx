@@ -222,7 +222,7 @@ function SpotlightCard({ member }: { member: SpotlightMember }) {
     <Link
       href={member.href}
       aria-label={`${member.name} — ${member.role}`}
-      className="team-focus border-line bg-paper group relative block border transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]"
+      className="team-focus border-line bg-paper group relative block h-full border transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]"
     >
       <span
         aria-hidden="true"
