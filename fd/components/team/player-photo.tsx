@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { trimmedCutout } from "@/lib/cutout";
 import { cn } from "@/lib/utils";
 
 /**
@@ -47,6 +48,7 @@ export function PlayerCutout({
   fallbackClassName?: string;
 }) {
   if (photo) {
+    const src = trimmedCutout(photo);
     const hasPosition = position !== null && position !== undefined;
     const hasScale = scale !== null && scale !== undefined && scale !== 100;
     // Keep the scale origin on the same edge object-position pins to.
@@ -60,7 +62,7 @@ export function PlayerCutout({
         )}
       >
         <Image
-          src={photo}
+          src={src ?? photo}
           alt={name}
           fill
           sizes={sizes}

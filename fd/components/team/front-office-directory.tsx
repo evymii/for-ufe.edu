@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { routes } from "@/config/routes";
+import { trimmedCutout } from "@/lib/cutout";
 import type { Executive, ExecutiveGroup } from "@/types/content";
 import { cn } from "@/lib/utils";
 
@@ -129,7 +130,7 @@ function ExecutiveCard({ member }: { member: Executive }) {
               </span>
               <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,transform] duration-300 group-hover:scale-[1.03] group-hover:grayscale-0">
                 <Image
-                  src={member.photo}
+                  src={trimmedCutout(member.photo) ?? member.photo}
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"

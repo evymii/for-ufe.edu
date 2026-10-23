@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageHero } from "@/components/team/page-hero";
 import { splitName } from "@/components/team/roster-utils";
 import { staff } from "@/content/site";
+import { trimmedCutout } from "@/lib/cutout";
 import { getExecutives } from "@/lib/content";
 import { staffKey } from "@/lib/staff";
 import type { Executive } from "@/types/content";
@@ -117,7 +118,7 @@ export default async function ExecutivePage({
                 {initials}
               </span>
               <Image
-                src={member.photo}
+                src={trimmedCutout(member.photo) ?? member.photo}
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 420px, 90vw"
