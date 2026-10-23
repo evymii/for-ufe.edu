@@ -20,6 +20,14 @@ function clock(value: number): string {
     .padStart(2, "0")}:${(value % 60).toString().padStart(2, "0")}`;
 }
 
+/** "7:43" → 463 seconds; null when it isn't a valid m:ss within 12:00. */
+function parseClock(value: string): number | null {
+  const match = value.trim().match(/^(\d{1,2}):([0-5]?\d)$/);
+  if (!match) return null;
+  const seconds = Number(match[1]) * 60 + Number(match[2]);
+  return seconds <= 720 ? seconds : null;
+}
+
 /**
  * Instant local projection of a scorer action so the controls react on
  * click, before the server confirms. Server state always wins when the
@@ -41,11 +49,35 @@ function projectAction(
   switch (payload.type) {
     case "start":
       next.status = "LIVE";
-      next.clockRunning = true;
+      next.clockRunning = next.clockSeconds > 0;
       break;
-    case "clock":
-      next.clockRunning = Boolean(payload.running);
+    case "clock": {
+      const seconds =
+        payload.seconds === undefined
+          ? next.clockSeconds
+          : Math.max(0, Math.min(720, Number(payload.seconds)));
+      next.clockSeconds = seconds;
+      next.clockRunning = Boolean(payload.running) && seconds > 0;
       break;
+    }
+    case "reset": {
+      next.status = "NOT_STARTED";
+      next.period = 1;
+      next.clockSeconds =
+        payload.seconds === undefined
+          ? 720
+          : Math.max(0, Math.min(720, Number(payload.seconds)));
+      next.clockRunning = false;
+      next.teamScore = 0;
+      next.opponentScore = 0;
+      next.teamFouls = [0, 0, 0, 0];
+      next.opponentFouls = [0, 0, 0, 0];
+      next.timeouts = [6, 6];
+      next.lineup = [];
+      next.startedAt = null;
+      next.endedAt = null;
+      break;
+    }
     case "halftime":
       next.status = "HALFTIME";
       next.clockRunning = false;
@@ -109,6 +141,7 @@ export function LiveScorer() {
   const [events, setEvents] = useState<LiveGameEvent[]>([]);
   const [newOpponent, setNewOpponent] = useState("");
   const [newTipsAt, setNewTipsAt] = useState("");
+  const [clockInput, setClockInput] = useState("");
 
   useEffect(() => {
     void Promise.all([
@@ -229,6 +262,16 @@ export function LiveScorer() {
       });
   }
 
+  function setCustomClock() {
+    const seconds = parseClock(clockInput);
+    if (seconds === null) {
+      toast.error("Enter the time as m:ss, e.g. 7:43 (max 12:00)");
+      return;
+    }
+    action({ running: false, seconds, type: "clock" });
+    setClockInput("");
+  }
+
   function togglePlayer(id: string) {
     const next = selectedLineup.includes(id)
       ? selectedLineup.filter((playerId) => playerId !== id)
@@ -302,6 +345,55 @@ export function LiveScorer() {
               >
                 End game
               </Button>
+            </div>
+            <div className="bg-muted/40 grid gap-2 rounded-lg p-3 md:col-span-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold">Clock</span>
+                <Input
+                  aria-label="Custom clock time"
+                  className="w-24"
+                  inputMode="numeric"
+                  placeholder="7:43"
+                  value={clockInput}
+                  onChange={(event) => setClockInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") setCustomClock();
+                  }}
+                />
+                <Button variant="outline" onClick={setCustomClock}>
+                  Set time
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    void action({
+                      running: false,
+                      seconds: 720,
+                      type: "clock",
+                    })
+                  }
+                >
+                  Reset 12:00
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        "Reset the whole game? Score, fouls, timeouts, lineup and the clock are cleared.",
+                      )
+                    )
+                      void action({ type: "reset" });
+                  }}
+                >
+                  Reset game
+                </Button>
+              </div>
+              <p className="text-muted-foreground text-xs">
+                Set time pauses the clock at the entered time — press Start to
+                run it. Reset game wipes everything back to a fresh pre-tip
+                state.
+              </p>
             </div>
           </section>
           <section className="grid gap-4 md:grid-cols-2">

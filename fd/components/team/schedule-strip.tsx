@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { routes } from "@/config/routes";
@@ -52,50 +52,53 @@ function clock(value: number): string {
 function ScheduleCard({ game }: { game: GameRow }) {
   const [state, setState] = useState<LiveGameState | null>(null);
   const [displayClock, setDisplayClock] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
   const date = gameDate(game.tipsAt);
   const isFinal = game.status === "FINAL";
   const isCancelled = game.status === "CANCELLED";
   const opponent = game.opponentShort ?? game.opponent;
   const opponentName =
     opponent.toUpperCase() === "NUM FALCONS" ? "FALCONS" : opponent;
-  const hasStarted = currentTime >= new Date(game.tipsAt).getTime();
+  // The scorer's word wins over the schedule: a game the scorer has started
+  // shows live even before its listed tip-off (early start, wrong schedule
+  // time), and a scorer-final result shows even before the row is updated.
   const activeState =
-    hasStarted && state?.status !== "NOT_STARTED" ? state : null;
-  const isLive =
-    activeState?.status === "LIVE" || activeState?.status === "HALFTIME";
+    state?.status === "LIVE" || state?.status === "HALFTIME" ? state : null;
+  const scoredFinal = !isFinal && state?.status === "FINAL" ? state : null;
+  const isLive = activeState !== null;
 
-  useEffect(() => {
-    let active = true;
+  const refresh = useCallback(() => {
     void liveGamesService
       .get(game.id)
       .then(({ state: next }) => {
-        if (active && next) setState(next);
+        if (next) setState(next);
       })
       .catch(() => undefined);
-    const stream = new EventSource(
-      `${env.apiUrl}/api/v1/live-games/${game.id}/stream`,
-    );
-    const refresh = () =>
-      void liveGamesService
-        .get(game.id)
-        .then(({ state: next }) => {
-          if (active && next) setState(next);
-        })
-        .catch(() => undefined);
-    stream.addEventListener("state_changed", refresh);
-    return () => {
-      active = false;
-      stream.close();
-    };
   }, [game.id]);
 
   useEffect(() => {
-    const update = () => setCurrentTime(Date.now());
-    update();
-    const interval = window.setInterval(update, 1000);
+    refresh();
+    const stream = new EventSource(
+      `${env.apiUrl}/api/v1/live-games/${game.id}/stream`,
+    );
+    stream.addEventListener("state_changed", refresh);
+    return () => {
+      stream.close();
+    };
+  }, [game.id, refresh]);
+
+  // The stream can silently miss scorer actions on the serverless backend
+  // (connection cut or served by a different instance), so poll while a game
+  // could be in progress — at 30s this stays far under the API rate limit.
+  useEffect(() => {
+    const nearTipOff =
+      !isFinal &&
+      !isCancelled &&
+      Math.abs(Date.now() - new Date(game.tipsAt).getTime()) <
+        3 * 60 * 60 * 1000;
+    if (!isLive && !nearTipOff) return;
+    const interval = window.setInterval(refresh, 30_000);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [isLive, isFinal, isCancelled, game.tipsAt, refresh]);
 
   useEffect(() => {
     if (!state) return;
@@ -112,19 +115,23 @@ function ScheduleCard({ game }: { game: GameRow }) {
 
   const teamScore = activeState
     ? activeState.teamScore
-    : isFinal
-      ? game.teamScore
-      : null;
+    : scoredFinal
+      ? scoredFinal.teamScore
+      : isFinal
+        ? game.teamScore
+        : null;
   const opponentScore = activeState
     ? activeState.opponentScore
-    : isFinal
-      ? game.opponentScore
-      : null;
+    : scoredFinal
+      ? scoredFinal.opponentScore
+      : isFinal
+        ? game.opponentScore
+        : null;
 
   return (
     <Link
       href={routes.site.game(game.id)}
-      aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? "live" : isFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
+      aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? "live" : isFinal || scoredFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
       className="group/card focus-visible:outline-brand relative flex h-[112px] w-full shrink-0 snap-start flex-col justify-between overflow-hidden border-2 border-[#101827] bg-[#0d1f4a] p-3 text-white shadow-[0_3px_0_#101827] transition-[box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
     >
       <span
@@ -160,7 +167,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
           ) : (
             <>
               <span className="block text-[10px] font-semibold tracking-[0.1em] text-white/70 uppercase">
-                {isFinal
+                {isFinal || scoredFinal
                   ? "Final"
                   : isCancelled
                     ? "Цуцалсан"
@@ -169,7 +176,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
               <span className="font-display mt-2 block text-[18px] font-bold tracking-[0.06em] uppercase">
                 VS
               </span>
-              {!isFinal && !isCancelled && (
+              {!isFinal && !scoredFinal && !isCancelled && (
                 <span className="mt-2 block text-[10px] font-semibold tracking-[0.08em] text-white/70 uppercase">
                   {gameTime(game.tipsAt)} @ {game.venue}
                 </span>

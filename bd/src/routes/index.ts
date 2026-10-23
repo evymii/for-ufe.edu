@@ -39,6 +39,7 @@ const actionSchema = z
       'halftime',
       'start',
       'end',
+      'reset',
       'undo',
     ]),
   })

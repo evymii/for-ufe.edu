@@ -31,6 +31,7 @@ type Action =
   | { playerIds: string[]; type: 'lineup' }
   | { points: 1 | 2 | 3; side: 'opponent' | 'team'; type: 'score' }
   | { running: boolean; seconds?: number; type: 'clock' }
+  | { seconds?: number; type: 'reset' }
   | { type: 'end' }
   | { type: 'halftime' }
   | { type: 'start' }
@@ -149,8 +150,8 @@ async function applyActionInQueue(gameId: string, action: Action): Promise<LiveG
   let teamScore = state.teamScore;
   let opponentScore = state.opponentScore;
   let teamFouls = [...state.teamFouls];
-  const opponentFouls = [...state.opponentFouls];
-  const timeouts = [...state.timeouts];
+  let opponentFouls = [...state.opponentFouls];
+  let timeouts = [...state.timeouts];
   let lineup = [...state.lineup];
 
   if (action.type === 'score') {
@@ -190,6 +191,24 @@ async function applyActionInQueue(gameId: string, action: Action): Promise<LiveG
     status = 'FINAL';
     clockRunning = false;
     data.endedAt = new Date();
+  } else if (action.type === 'reset') {
+    // Full manual reset — the scorer's escape hatch for a game started (or
+    // scored) by mistake: everything returns to a clean pre-tip state.
+    status = 'NOT_STARTED';
+    period = 1;
+    clockSeconds =
+      typeof action.seconds === 'number'
+        ? Math.max(0, Math.min(PERIOD_SECONDS, action.seconds))
+        : PERIOD_SECONDS;
+    clockRunning = false;
+    teamScore = 0;
+    opponentScore = 0;
+    teamFouls = [0, 0, 0, 0];
+    opponentFouls = [0, 0, 0, 0];
+    timeouts = [6, 6];
+    lineup = [];
+    data.startedAt = null;
+    data.endedAt = null;
   }
 
   const updated = await prisma.$transaction(async (tx) => {
