@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { routes } from "@/config/routes";
+import { executiveHoverPhotos } from "@/config/site";
 import { trimmedCutout } from "@/lib/cutout";
 import type { Executive, ExecutiveGroup } from "@/types/content";
 import { cn } from "@/lib/utils";
@@ -106,6 +107,7 @@ export function FrontOfficeDirectory({ members }: { members: Executive[] }) {
 }
 
 function ExecutiveCard({ member }: { member: Executive }) {
+  const hoverPhoto = executiveHoverPhotos[member.slug];
   return (
     <article className="border-line bg-paper card-lift group relative border">
       <Link
@@ -128,7 +130,7 @@ function ExecutiveCard({ member }: { member: Executive }) {
               >
                 {initialsOf(member.name)}
               </span>
-              <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,transform] duration-300 group-hover:scale-[1.03] group-hover:grayscale-0">
+              <div className="absolute inset-0 z-[5] grayscale transition-[grayscale,opacity,transform] duration-300 group-hover:scale-[1.03] group-hover:opacity-0 group-hover:grayscale-0 group-hover:delay-200">
                 <Image
                   src={trimmedCutout(member.photo) ?? member.photo}
                   alt=""
@@ -137,6 +139,27 @@ function ExecutiveCard({ member }: { member: Executive }) {
                   className="object-contain object-bottom"
                 />
               </div>
+              {hoverPhoto ? (
+                <>
+                  {/* Alternate cutout — revealed left-to-right along the same
+                      diagonal the brand band rides, so the swap reads as one
+                      wipe instead of a crossfade of two cutouts. */}
+                  <div className="pointer-events-none absolute inset-0 z-[6] transition-[clip-path] duration-700 ease-in-out [-webkit-clip-path:polygon(-40%_0,-40%_0,-65%_100%,-65%_100%)] [clip-path:polygon(-40%_0,-40%_0,-65%_100%,-65%_100%)] group-hover:[-webkit-clip-path:polygon(-40%_0,140%_0,115%_100%,-65%_100%)] group-hover:[clip-path:polygon(-40%_0,140%_0,115%_100%,-65%_100%)]">
+                    <Image
+                      src={hoverPhoto}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                      className="object-contain object-bottom"
+                    />
+                  </div>
+                  {/* Brand-blue diagonal band sweeping corner to corner */}
+                  <span
+                    aria-hidden="true"
+                    className="bg-brand pointer-events-none absolute -inset-y-10 left-0 z-[7] w-1/3 -translate-x-[220%] -skew-x-12 transition-transform duration-700 ease-in-out group-hover:translate-x-[430%]"
+                  />
+                </>
+              ) : null}
             </>
           ) : (
             /* No photo yet — dark editorial monogram panel that mirrors the

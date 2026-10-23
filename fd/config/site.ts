@@ -28,6 +28,18 @@ export const siteConfig = {
   ],
 } as const;
 
+/**
+ * Alternate "pointing" cutout swapped in on hover for the directory cards,
+ * keyed by executive slug. Members without an entry keep the plain
+ * grayscale→color hover.
+ */
+export const executiveHoverPhotos: Record<string, string> = {
+  "b-purevdorj": "/images/executive/pointpurev.png",
+  "d-ambokh": "/images/executive/pointcoach.png",
+  "ts-ganbat": "/images/executive/pointass.png",
+  "g-anu": "/images/executive/pointdoc.png",
+};
+
 export const publicNav = [
   { href: "/", label: "Нүүр" },
   { href: "/history", label: "Түүх" },
