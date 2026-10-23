@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -7,6 +8,7 @@ import { LiveScoreCenter } from "@/components/team/live-score-display";
 import { PageHero } from "@/components/team/page-hero";
 import { routes } from "@/config/routes";
 import { getGames } from "@/lib/content";
+import { opponentLogoSrc, UFE_LOGO_SRC } from "@/lib/team-logos";
 import type { GameRow } from "@/types/content";
 
 export const revalidate = 60;
@@ -50,6 +52,7 @@ export default async function GameDetailsPage({
     game.teamScore !== null &&
     game.opponentScore !== null &&
     game.teamScore > game.opponentScore;
+  const opponentLogo = opponentLogoSrc(game.opponent);
 
   return (
     <>
@@ -75,10 +78,13 @@ export default async function GameDetailsPage({
               <p className="text-mute text-[10px] font-bold tracking-[0.12em] uppercase">
                 {game.isHome ? "HOME" : "AWAY"}
               </p>
-              <h2 className="font-display mt-2 text-2xl font-bold tracking-[0.02em] uppercase sm:text-3xl">
-                СЭЗИС
-              </h2>
-              <p className="text-mute mt-1 text-sm">UFE</p>
+              <Image
+                src={UFE_LOGO_SRC}
+                alt="UFE Broncos"
+                width={192}
+                height={192}
+                className="mx-auto mt-2 h-[clamp(64px,10vw,96px)] w-auto sm:mx-0 sm:ml-auto"
+              />
             </div>
 
             <LiveScoreCenter
@@ -96,9 +102,19 @@ export default async function GameDetailsPage({
               <p className="text-mute text-[10px] font-bold tracking-[0.12em] uppercase">
                 OPPONENT
               </p>
-              <h2 className="font-display mt-2 text-2xl font-bold tracking-[0.02em] uppercase sm:text-3xl">
-                {game.opponentShort ?? game.opponent}
-              </h2>
+              {opponentLogo ? (
+                <Image
+                  src={opponentLogo}
+                  alt={game.opponentShort ?? game.opponent}
+                  width={192}
+                  height={192}
+                  className="mx-auto mt-2 h-[clamp(64px,10vw,96px)] w-auto sm:mx-0"
+                />
+              ) : (
+                <h2 className="font-display mt-2 text-2xl font-bold tracking-[0.02em] uppercase sm:text-3xl">
+                  {game.opponentShort ?? game.opponent}
+                </h2>
+              )}
               <p className="text-mute mt-1 text-sm">{game.venue}</p>
             </div>
           </div>
