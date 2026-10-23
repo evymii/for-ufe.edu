@@ -22,7 +22,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PIN_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(5),
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),
-  RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(300),
+  // Generous: the live scorer fires 2-3 requests per click (action + event
+  // refresh + SSE-triggered refetch) and a busy game burns hundreds fast;
+  // credential and upload routes keep their own stricter limiters.
+  RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(2000),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().min(1_000).default(900_000),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(7),
   // Shared password of the three named staff accounts (manager / editor /

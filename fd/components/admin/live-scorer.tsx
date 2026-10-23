@@ -20,6 +20,86 @@ function clock(value: number): string {
     .padStart(2, "0")}:${(value % 60).toString().padStart(2, "0")}`;
 }
 
+/**
+ * Instant local projection of a scorer action so the controls react on
+ * click, before the server confirms. Server state always wins when the
+ * POST resolves; undo (which depends on server history) skips the
+ * projection and simply awaits.
+ */
+function projectAction(
+  current: LiveGameState,
+  payload: Record<string, unknown>,
+): LiveGameState {
+  const next: LiveGameState = {
+    ...current,
+    updatedAt: new Date().toISOString(),
+  };
+  const foulKey = (side: string) =>
+    side === "team" ? "teamFouls" : "opponentFouls";
+  const timeoutIndex = (side: string) => (side === "team" ? 0 : 1);
+
+  switch (payload.type) {
+    case "start":
+      next.status = "LIVE";
+      next.clockRunning = true;
+      break;
+    case "clock":
+      next.clockRunning = Boolean(payload.running);
+      break;
+    case "halftime":
+      next.status = "HALFTIME";
+      next.clockRunning = false;
+      break;
+    case "end":
+      next.status = "FINAL";
+      next.clockRunning = false;
+      break;
+    case "period":
+      next.period = Number(payload.period ?? next.period);
+      break;
+    case "score": {
+      const points = Number(payload.points ?? 0);
+      if (payload.side === "team") next.teamScore += points;
+      else next.opponentScore += points;
+      break;
+    }
+    case "adjust_score": {
+      const amount = Number(payload.amount ?? 0);
+      if (payload.side === "team")
+        next.teamScore = Math.max(0, next.teamScore + amount);
+      else next.opponentScore = Math.max(0, next.opponentScore + amount);
+      break;
+    }
+    case "foul": {
+      const key = foulKey(String(payload.side));
+      const period = Number(payload.period ?? next.period) - 1;
+      const fouls = [...next[key]];
+      fouls[period] = Math.max(
+        0,
+        (fouls[period] ?? 0) + Number(payload.amount ?? 0),
+      );
+      next[key] = fouls;
+      break;
+    }
+    case "timeout": {
+      const index = timeoutIndex(String(payload.side));
+      const timeouts = [...next.timeouts];
+      timeouts[index] = Math.max(
+        0,
+        (timeouts[index] ?? 0) + Number(payload.amount ?? 0),
+      );
+      next.timeouts = timeouts;
+      break;
+    }
+    case "lineup":
+      next.lineup = (payload.playerIds as string[]) ?? next.lineup;
+      break;
+    default:
+      return current;
+  }
+  return next;
+}
+
 export function LiveScorer() {
   const [games, setGames] = useState<GameRow[]>([]);
   const [players, setPlayers] = useState<PlayerRow[]>([]);
@@ -121,16 +201,32 @@ export function LiveScorer() {
     }
   }
 
-  async function action(payload: Record<string, unknown>) {
+  function action(payload: Record<string, unknown>) {
     if (!gameId) return;
-    try {
-      const result = await liveGamesService.action(gameId, payload);
-      setState(result.state);
-      const nextEvents = await liveGamesService.events(gameId);
-      setEvents(nextEvents.events);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Action failed");
-    }
+    // Reflect the action locally first so every control reacts instantly;
+    // the server's authoritative state replaces it when the POST lands,
+    // and the event list refreshes in the background without blocking.
+    setState((current) =>
+      current ? projectAction(current, payload) : current,
+    );
+    liveGamesService
+      .action(gameId, payload)
+      .then(({ state: next }) => {
+        setState(next);
+        return liveGamesService.events(gameId);
+      })
+      .then(({ events: next }) => setEvents(next))
+      .catch((error) => {
+        toast.error(error instanceof Error ? error.message : "Action failed");
+        // Resync with the server so a failed action rolls the projection
+        // back to reality instead of leaving a phantom local change.
+        void liveGamesService
+          .get(gameId)
+          .then(({ state: fresh }) => {
+            if (fresh) setState(fresh);
+          })
+          .catch(() => undefined);
+      });
   }
 
   function togglePlayer(id: string) {
