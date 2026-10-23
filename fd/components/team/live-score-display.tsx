@@ -14,12 +14,26 @@ function clock(value: number): string {
     .padStart(2, "0")}:${(value % 60).toString().padStart(2, "0")}`;
 }
 
-export function LiveScoreDisplay({
+/**
+ * Center column of the box-score header. Until the scorer puts the game
+ * live it renders the schedule's static values (status, final score,
+ * date); once live, the label, score and clock follow the scorer in real
+ * time inside the same card — no separate live panel below it.
+ */
+export function LiveScoreCenter({
+  dateLabel,
   gameId,
-  opponent,
+  rowIsFinal,
+  rowLabel,
+  rowOpponentScore,
+  rowTeamScore,
 }: {
+  dateLabel: string;
   gameId: string;
-  opponent: string;
+  rowIsFinal: boolean;
+  rowLabel: string;
+  rowOpponentScore: number | null;
+  rowTeamScore: number | null;
 }) {
   const [state, setState] = useState<LiveGameState | null>(null);
   const [displayClock, setDisplayClock] = useState(0);
@@ -56,27 +70,68 @@ export function LiveScoreDisplay({
     return () => window.clearInterval(interval);
   }, [state]);
 
-  if (!state || state.status === "NOT_STARTED") return null;
+  // The scorer's word wins over the schedule row: an in-progress game
+  // shows live, and a scorer-final result shows before the row is updated.
+  const isActive = state?.status === "LIVE" || state?.status === "HALFTIME";
+  const scoredFinal = !rowIsFinal && state?.status === "FINAL" ? state : null;
+
+  const bigScore = (team: number, opponent: number) => (
+    <p className="font-display my-2 text-[clamp(36px,8vw,56px)] leading-none font-bold tabular-nums">
+      {team}
+      <span className="text-mute mx-2 text-[0.7em]">–</span>
+      {opponent}
+    </p>
+  );
+
+  if (isActive && state) {
+    return (
+      <div aria-live="polite" className="text-center">
+        <p className="text-mute flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-[0.14em] uppercase">
+          <span
+            aria-hidden="true"
+            className="size-1.5 animate-pulse rounded-full bg-red-500"
+          />
+          <span className="text-red-600">
+            {state.status === "HALFTIME" ? "HALFTIME" : "LIVE"} · Q
+            {state.period}
+          </span>
+        </p>
+        {bigScore(state.teamScore, state.opponentScore)}
+        <p className="text-xs">
+          <strong className="text-ink tabular-nums">
+            {clock(displayClock)}
+          </strong>
+          <span className="text-mute"> · {dateLabel}</span>
+        </p>
+      </div>
+    );
+  }
+
+  if (scoredFinal) {
+    return (
+      <div className="text-center">
+        <p className="text-mute text-[10px] font-bold tracking-[0.14em] uppercase">
+          {scoredFinal.teamScore > scoredFinal.opponentScore
+            ? "FINAL · WIN"
+            : "FINAL · LOSS"}
+        </p>
+        {bigScore(scoredFinal.teamScore, scoredFinal.opponentScore)}
+        <p className="text-mute text-xs">{dateLabel}</p>
+      </div>
+    );
+  }
 
   return (
-    <section
-      className="border-line bg-ink mt-6 border p-5 text-white"
-      aria-live="polite"
-    >
-      <div className="flex items-center justify-between text-xs font-semibold tracking-[0.12em] uppercase">
-        <span className="text-white/70">Live now · Q{state.period}</span>
-        <span>{clock(displayClock)}</span>
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-4 text-center">
-        <div>
-          <p className="text-xs text-white/70">UFE</p>
-          <p className="font-display text-5xl">{state.teamScore}</p>
-        </div>
-        <div>
-          <p className="text-xs text-white/70">{opponent}</p>
-          <p className="font-display text-5xl">{state.opponentScore}</p>
-        </div>
-      </div>
-    </section>
+    <div className="text-center">
+      <p className="text-mute text-[10px] font-bold tracking-[0.14em] uppercase">
+        {rowLabel}
+      </p>
+      <p className="font-display my-2 text-[clamp(36px,8vw,56px)] leading-none font-bold tabular-nums">
+        {rowIsFinal && rowTeamScore !== null ? rowTeamScore : "—"}
+        <span className="text-mute mx-2 text-[0.7em]">–</span>
+        {rowIsFinal && rowOpponentScore !== null ? rowOpponentScore : "—"}
+      </p>
+      <p className="text-mute text-xs">{dateLabel}</p>
+    </div>
   );
 }

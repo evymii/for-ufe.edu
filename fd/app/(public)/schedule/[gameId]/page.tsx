@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { GameBoxScore } from "@/components/team/schedule-board";
-import { LiveScoreDisplay } from "@/components/team/live-score-display";
+import { LiveScoreCenter } from "@/components/team/live-score-display";
 import { PageHero } from "@/components/team/page-hero";
 import { routes } from "@/config/routes";
 import { getGames } from "@/lib/content";
@@ -81,19 +81,16 @@ export default async function GameDetailsPage({
               <p className="text-mute mt-1 text-sm">UFE</p>
             </div>
 
-            <div className="text-center">
-              <p className="text-mute text-[10px] font-bold tracking-[0.14em] uppercase">
-                {isFinal ? (won ? "FINAL · WIN" : "FINAL · LOSS") : game.status}
-              </p>
-              <p className="font-display my-2 text-[clamp(36px,8vw,56px)] leading-none font-bold tabular-nums">
-                {isFinal && game.teamScore !== null ? game.teamScore : "—"}
-                <span className="text-mute mx-2 text-[0.7em]">–</span>
-                {isFinal && game.opponentScore !== null
-                  ? game.opponentScore
-                  : "—"}
-              </p>
-              <p className="text-mute text-xs">{gameDate(game.tipsAt)}</p>
-            </div>
+            <LiveScoreCenter
+              dateLabel={gameDate(game.tipsAt)}
+              gameId={game.id}
+              rowIsFinal={isFinal}
+              rowLabel={
+                isFinal ? (won ? "FINAL · WIN" : "FINAL · LOSS") : game.status
+              }
+              rowOpponentScore={game.opponentScore}
+              rowTeamScore={game.teamScore}
+            />
 
             <div className="text-center sm:text-left">
               <p className="text-mute text-[10px] font-bold tracking-[0.12em] uppercase">
@@ -119,11 +116,6 @@ export default async function GameDetailsPage({
             ) : null}
           </div>
         </section>
-
-        <LiveScoreDisplay
-          gameId={game.id}
-          opponent={game.opponentShort ?? game.opponent}
-        />
 
         <div className="mt-8">
           <GameBoxScore game={game} />

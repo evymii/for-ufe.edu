@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { routes } from "@/config/routes";
@@ -52,12 +53,13 @@ function clock(value: number): string {
 function ScheduleCard({ game }: { game: GameRow }) {
   const [state, setState] = useState<LiveGameState | null>(null);
   const [displayClock, setDisplayClock] = useState(0);
+  const [nowMs, setNowMs] = useState(0);
   const date = gameDate(game.tipsAt);
   const isFinal = game.status === "FINAL";
   const isCancelled = game.status === "CANCELLED";
   const opponent = game.opponentShort ?? game.opponent;
-  const opponentName =
-    opponent.toUpperCase() === "NUM FALCONS" ? "FALCONS" : opponent;
+  const isFalcons = opponent.toUpperCase() === "NUM FALCONS";
+  const opponentName = isFalcons ? "FALCONS" : opponent;
   // The scorer's word wins over the schedule: a game the scorer has started
   // shows live even before its listed tip-off (early start, wrong schedule
   // time), and a scorer-final result shows even before the row is updated.
@@ -66,6 +68,22 @@ function ScheduleCard({ game }: { game: GameRow }) {
   const scoredFinal = !isFinal && state?.status === "FINAL" ? state : null;
   const isLive = activeState !== null;
 
+  // Flip to "Pre game" on an open tab when the 10-minute window arrives.
+  useEffect(() => {
+    if (isLive || isFinal || isCancelled || scoredFinal) return;
+    const update = () => setNowMs(Date.now());
+    update();
+    const interval = window.setInterval(update, 15_000);
+    return () => window.clearInterval(interval);
+  }, [isLive, isFinal, isCancelled, scoredFinal]);
+
+  const isPreGame =
+    !isLive &&
+    !isFinal &&
+    !isCancelled &&
+    !scoredFinal &&
+    nowMs > 0 &&
+    nowMs >= new Date(game.tipsAt).getTime() - 10 * 60 * 1000;
   const refresh = useCallback(() => {
     void liveGamesService
       .get(game.id)
@@ -119,29 +137,42 @@ function ScheduleCard({ game }: { game: GameRow }) {
       ? scoredFinal.teamScore
       : isFinal
         ? game.teamScore
-        : null;
+        : isPreGame
+          ? 0
+          : null;
   const opponentScore = activeState
     ? activeState.opponentScore
     : scoredFinal
       ? scoredFinal.opponentScore
       : isFinal
         ? game.opponentScore
-        : null;
+        : isPreGame
+          ? 0
+          : null;
 
   return (
     <Link
       href={routes.site.game(game.id)}
-      aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? "live" : isFinal || scoredFinal ? "final" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
+      aria-label={`${date.month} ${date.day}, ${game.opponent}, ${isLive ? (activeState?.status === "HALFTIME" ? "halftime" : "live") : isPreGame ? "pre-game" : isFinal || scoredFinal ? "finished" : isCancelled ? "cancelled" : gameTime(game.tipsAt)}`}
       className="group/card focus-visible:outline-brand relative flex h-[112px] w-full shrink-0 snap-start flex-col justify-between overflow-hidden border-2 border-[#101827] bg-[#0d1f4a] p-3 text-white shadow-[0_3px_0_#101827] transition-[box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[#174a45] [clip-path:polygon(52%_0,100%_0,100%_100%,48%_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[#b3121a] [clip-path:polygon(52%_0,100%_0,100%_100%,48%_100%)]"
       />
       <div className="relative z-10 grid flex-1 grid-cols-[1fr_auto_1fr] items-center gap-4">
         <div className="min-w-0 text-center">
-          <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-            UFE BRONCOS
+          <span className="flex min-w-0 items-center justify-center gap-2">
+            <Image
+              src="/ufe-logo.png"
+              alt=""
+              width={80}
+              height={80}
+              className="size-[clamp(28px,4vw,40px)] shrink-0"
+            />
+            <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
+              UFE BRONCOS
+            </span>
           </span>
           {teamScore !== null && (
             <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
@@ -151,24 +182,30 @@ function ScheduleCard({ game }: { game: GameRow }) {
         </div>
 
         <div className="text-center">
-          {isLive ? (
+          {isLive || isPreGame ? (
             <>
-              <span className="flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-[0.1em] uppercase">
+              <span className="flex items-center justify-center gap-1.5 text-[13px] font-bold tracking-[0.1em] uppercase">
                 <span
                   aria-hidden="true"
                   className="size-1.5 animate-pulse rounded-full bg-red-500"
                 />
-                Live
+                {activeState?.status === "HALFTIME"
+                  ? "Halftime"
+                  : activeState
+                    ? "Live"
+                    : "Pre game"}
               </span>
-              <span className="mt-1 block text-[10px] font-semibold tracking-[0.08em] uppercase">
-                Q{activeState?.period ?? 1} · {clock(displayClock)}
-              </span>
+              {activeState?.status === "LIVE" && (
+                <span className="mt-1 block text-[10px] font-semibold tracking-[0.08em] uppercase">
+                  Q{activeState.period} · {clock(displayClock)}
+                </span>
+              )}
             </>
           ) : (
             <>
               <span className="block text-[10px] font-semibold tracking-[0.1em] text-white/70 uppercase">
                 {isFinal || scoredFinal
-                  ? "Final"
+                  ? "Finished"
                   : isCancelled
                     ? "Цуцалсан"
                     : `${date.weekday} · ${date.month} ${date.day}`}
@@ -186,8 +223,21 @@ function ScheduleCard({ game }: { game: GameRow }) {
         </div>
 
         <div className="min-w-0 text-center">
-          <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-            NUM {opponentName}
+          <span className="flex min-w-0 items-center justify-center gap-2">
+            {isFalcons && (
+              <span className="flex size-[clamp(28px,4vw,40px)] shrink-0 items-center justify-center rounded-full bg-white p-[2px]">
+                <Image
+                  src="/images/team/falcons.png"
+                  alt=""
+                  width={80}
+                  height={80}
+                  className="size-full object-contain"
+                />
+              </span>
+            )}
+            <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
+              NUM {opponentName}
+            </span>
           </span>
           {opponentScore !== null && (
             <span className="font-display mt-1 block text-[clamp(24px,4vw,38px)] leading-none font-bold tabular-nums">
