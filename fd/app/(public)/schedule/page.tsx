@@ -25,7 +25,12 @@ export default async function SchedulePage() {
 
   return (
     <>
-      <PageHero breadcrumb="Хуваарь" subtitle={intro} title="Хуваарь" />
+      <PageHero
+        breadcrumb="Хуваарь"
+        subtitle={intro}
+        title="Хуваарь"
+        mark="/images/horse-mark.png"
+      />
       <Reveal delay={60}>
         <ScheduleBoard games={games} />
       </Reveal>

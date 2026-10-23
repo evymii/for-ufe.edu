@@ -11,6 +11,7 @@ export function PageHero({
   title,
   subtitle,
   controls,
+  mark,
   className,
 }: {
   breadcrumb: string;
@@ -18,11 +19,27 @@ export function PageHero({
   subtitle?: string;
   /** Right-aligned control cluster rendered at the band's baseline. */
   controls?: React.ReactNode;
+  /** Decorative mark bleeding off the band's right edge (half visible). */
+  mark?: string;
   className?: string;
 }) {
   return (
-    <section className={cn("border-line bg-paper-soft border-b", className)}>
-      <div className="team-shell flex min-h-[160px] flex-wrap items-end justify-between gap-6 py-10 md:min-h-[200px]">
+    <section
+      className={cn(
+        "border-line bg-paper-soft relative overflow-hidden border-b",
+        className,
+      )}
+    >
+      {mark ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={mark}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-0 z-0 h-[120%] max-w-none origin-center translate-x-[40%] -translate-y-1/2 object-contain select-none"
+        />
+      ) : null}
+      <div className="team-shell relative z-10 flex min-h-[160px] flex-wrap items-end justify-between gap-6 py-10 md:min-h-[200px]">
         <div>
           <nav
             aria-label="Breadcrumb"

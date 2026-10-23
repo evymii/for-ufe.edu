@@ -64,17 +64,7 @@ export default async function RosterPage() {
         breadcrumb="Roster"
         subtitle={meta.subtitle}
         title={meta.title}
-        controls={
-          <div
-            aria-label="Улирал"
-            className="border-brand text-brand flex h-11 items-center gap-6 border px-4 text-sm font-semibold"
-          >
-            2026–2027
-            <span aria-hidden="true" className="text-mute">
-              ▾
-            </span>
-          </div>
-        }
+        mark="/images/horse-mark.png"
       />
 
       <RosterBrowser players={roster} />
