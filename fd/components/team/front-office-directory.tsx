@@ -151,10 +151,11 @@ function ExecutiveCard({ member }: { member: Executive }) {
               </div>
               {hoverPhoto ? (
                 <>
-                  {/* Alternate cutout — revealed along a "/" diagonal that
-                      travels from the bottom-left corner to the top-right,
-                      synced to the brand band below. */}
-                  <div className="pointer-events-none absolute inset-0 z-[6] transition-[clip-path] duration-700 ease-in-out [-webkit-clip-path:polygon(-90%_140%,-210%_140%,-110%_-40%,10%_-40%)] [clip-path:polygon(-90%_140%,-210%_140%,-110%_-40%,10%_-40%)] group-hover:[-webkit-clip-path:polygon(110%_140%,-210%_140%,-110%_-40%,210%_-40%)] group-hover:[clip-path:polygon(110%_140%,-210%_140%,-110%_-40%,210%_-40%)]">
+                  {/* Alternate cutout — revealed behind a diagonal edge that
+                      starts at the bottom-left corner and exits at the
+                      top-right. The trailing side of the polygon stays parked
+                      off the bottom-left; only the leading corners move. */}
+                  <div className="pointer-events-none absolute inset-0 z-[6] transition-[clip-path] duration-700 ease-in-out [-webkit-clip-path:polygon(10%_140%,-300%_140%,-380%_-40%,-70%_-40%)] [clip-path:polygon(10%_140%,-300%_140%,-380%_-40%,-70%_-40%)] group-hover:[-webkit-clip-path:polygon(170%_140%,-300%_140%,-380%_-40%,90%_-40%)] group-hover:[clip-path:polygon(170%_140%,-300%_140%,-380%_-40%,90%_-40%)]">
                     <Image
                       src={hoverPhoto}
                       alt=""
@@ -162,12 +163,16 @@ function ExecutiveCard({ member }: { member: Executive }) {
                       sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                       className="object-contain object-bottom"
                     />
+                    {/* Slim brand-blue band parked on the reveal edge itself:
+                        living inside the clipped wrapper, only its revealed
+                        half ever shows, so it rides the edge in perfect sync.
+                        The hover translate matches the edge's bottom-corner
+                        travel (10%,140%) → (170%,-40%) converted to pixels. */}
+                    <span
+                      aria-hidden="true"
+                      className="bg-brand absolute top-[140%] left-[10%] z-[1] mt-[-416px] ml-[-16px] h-[260%] w-8 [translate:0_0] rotate-[31deg] transition-[translate] duration-700 ease-in-out group-hover:[translate:688px_-576px]"
+                    />
                   </div>
-                  {/* Slim brand-blue band riding the same diagonal */}
-                  <span
-                    aria-hidden="true"
-                    className="bg-brand pointer-events-none absolute top-1/2 left-1/2 z-[7] h-[260%] w-8 -translate-x-1/2 -translate-y-1/2 [translate:-315px_260px] rotate-[35deg] transition-[translate] duration-700 ease-in-out group-hover:[translate:315px_-260px]"
-                  />
                 </>
               ) : null}
             </>
