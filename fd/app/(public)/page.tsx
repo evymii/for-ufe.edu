@@ -151,14 +151,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Numbers rail — big condensed stats on hairlines */}
+      {/* Numbers rail — big condensed stats, centered with breathing room */}
       <section aria-label="Тоонууд" className="border-brand bg-brand border-y">
-        <div className="team-shell team-shell-wide grid grid-cols-2 gap-y-10 py-14 md:grid-cols-4 md:py-16">
+        <div className="team-shell team-shell-wide grid grid-cols-2 gap-x-12 gap-y-10 py-14 md:grid-cols-4 md:gap-x-16 md:py-16">
           {numbers.map((stat, index) => (
             <Reveal
               key={stat.label}
               delay={index * 60}
-              className="md:border-line md:pl-8 md:first:border-0 md:first:pl-0"
+              className="flex flex-col items-center text-center"
             >
               <p className="font-display text-[clamp(40px,5vw,56px)] leading-none font-bold tracking-[0.02em] text-white">
                 {stat.value}

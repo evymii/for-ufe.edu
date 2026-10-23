@@ -348,7 +348,9 @@ export function HistoryExperience({
         className="bg-brand sticky top-0 z-30 h-14 border-b border-white/20"
       >
         <div className="team-shell flex h-full items-center">
-          <ul className="no-scrollbar flex items-center gap-1 overflow-x-auto">
+          {/* mx-auto centers the years when they fit; auto margins collapse
+              to zero on narrower viewports, where the rail scrolls instead. */}
+          <ul className="no-scrollbar mx-auto flex h-full items-center gap-4 overflow-x-auto md:gap-8">
             {eras.map((era) => {
               const active = era.id === activeId;
               return (
@@ -361,7 +363,7 @@ export function HistoryExperience({
                       jumpTo(era);
                     }}
                     className={cn(
-                      "font-display team-focus flex h-14 shrink-0 border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
+                      "font-display team-focus flex h-14 shrink-0 items-center border-b-2 px-4 text-[15px] font-semibold tracking-[0.1em] uppercase transition-colors",
                       active
                         ? "border-white text-white"
                         : "border-transparent text-white/70 hover:text-white",
