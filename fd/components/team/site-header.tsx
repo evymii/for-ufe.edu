@@ -75,7 +75,7 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <header className="bg-brand relative z-40 min-h-[72px] border-b border-white/20 text-white">
+      <header className="bg-brand sticky top-0 z-40 min-h-[72px] border-b border-white/20 text-white">
         {/* Main nav — constant 72px with no scroll-driven animation. */}
         <div className="flex items-center">
           <div className="team-shell relative flex h-[72px] min-h-[72px] w-full items-center justify-between gap-3 sm:gap-6">

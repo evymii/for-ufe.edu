@@ -206,7 +206,9 @@ function GameRowItem({
     <li
       ref={innerRef}
       className={cn(
-        "border-line grid min-h-[88px] grid-cols-[96px_56px_1fr] items-center gap-x-4 border-b px-4 transition-colors md:grid-cols-[96px_56px_1fr_120px_220px]",
+        // Mobile drops the (hidden) opponent-mark column so the matchup gets
+        // the space; sm restores it, md adds the time/ticket columns.
+        "border-line grid min-h-[88px] grid-cols-[72px_1fr] items-center gap-x-4 border-b px-4 transition-colors sm:grid-cols-[96px_56px_1fr] md:grid-cols-[96px_56px_1fr_120px_220px]",
         isNext && "border-l-ink bg-paper-soft border-l-4",
       )}
     >
@@ -228,12 +230,12 @@ function GameRowItem({
         {opponent.slice(0, 3).toUpperCase()}
       </span>
 
-      {/* Matchup */}
+      {/* Matchup — wraps to two lines on narrow phones instead of clipping */}
       <div className="min-w-0 py-3">
-        <p className="font-display text-ink truncate text-lg font-semibold tracking-[0.02em] uppercase">
+        <p className="font-display text-ink text-lg font-semibold tracking-[0.02em] uppercase">
           {game.isHome ? "vs" : "@"} {opponent}
         </p>
-        <p className="text-mute mt-0.5 truncate text-[13px]">
+        <p className="text-mute mt-0.5 text-[13px]">
           {game.round ? `${game.round} · ` : ""}
           {game.venue}
         </p>
@@ -245,7 +247,7 @@ function GameRowItem({
       </span>
 
       {/* Score or tickets */}
-      <div className="col-span-3 flex items-center justify-between gap-3 md:col-span-1 md:justify-end">
+      <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-3 md:col-span-1 md:justify-end">
         {isFinal ? (
           <Link
             href={routes.site.game(game.id)}

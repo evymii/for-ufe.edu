@@ -290,11 +290,11 @@ function PlayerTable({
       <div className="border-line border">
         <div className="overflow-x-auto">
           <div className="min-w-[820px]">
-            {/* Sticky header row */}
+            {/* Sticky header row — docks below the pinned site header */}
             <div
               className={cn(
                 ROW_GRID,
-                "border-line bg-paper sticky top-0 z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
+                "border-line bg-paper sticky top-[72px] z-10 border-b text-[11px] font-semibold tracking-[0.12em] uppercase",
               )}
             >
               {COLUMNS.map((column) => (

@@ -341,11 +341,10 @@ export function HistoryExperience({
   return (
     <>
       {/* Sticky year rail — scroll-spy + reading progress, in the nav blue.
-          Pins flush to the viewport top once the (non-sticky) page header
-          has scrolled away. */}
+          Docks directly below the pinned 72px site header. */}
       <nav
         aria-label="Он цэс"
-        className="bg-brand sticky top-0 z-30 h-14 border-b border-white/20"
+        className="bg-brand sticky top-[72px] z-30 h-14 border-b border-white/20"
       >
         <div className="team-shell flex h-full items-center">
           {/* mx-auto centers the years when they fit; auto margins collapse

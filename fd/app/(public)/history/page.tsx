@@ -128,7 +128,7 @@ export default async function HistoryPage() {
             35
           </span>
 
-          <h1 className="font-display mt-4 text-[clamp(36px,6vw,56px)] leading-none font-bold tracking-[0.02em] uppercase">
+          <h1 className="font-display mt-4 text-[clamp(36px,6vw,56px)] leading-[1.18] font-bold tracking-[0.02em] uppercase">
             {copy.title}
           </h1>
           <p className="mt-5 max-w-[560px] text-[16px] leading-[1.55] text-white/70 md:text-[18px]">
