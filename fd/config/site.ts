@@ -36,7 +36,8 @@ export const publicNav = [
   { href: "/players", label: "Roster" },
   { href: "/schedule", label: "Хуваарь" },
   { href: "/media", label: "Медиа" },
-  { href: "/fan-club", label: "Мерч" },
-  { href: "/front-office", label: "Удирдлага" },
-  { href: "/sponsors", label: "Sponsors" },
+  // Pages not finished yet — hidden from navigation, uncomment to restore:
+  // { href: "/fan-club", label: "Мерч" },
+  // { href: "/front-office", label: "Удирдлага" },
+  // { href: "/sponsors", label: "Sponsors" },
 ] as const;

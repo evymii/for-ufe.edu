@@ -219,12 +219,14 @@ export default async function ExecutivePage({
           ) : null}
 
           <div className="pt-2">
+            {/* /front-office is hidden until finished — exit to home.
+                Restore: href="/front-office", label "Бүх удирдлага". */}
             <Link
-              href="/front-office"
+              href="/"
               className="text-mute hover:text-ink team-focus inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
-              Бүх удирдлага
+              Нүүр
             </Link>
           </div>
         </div>

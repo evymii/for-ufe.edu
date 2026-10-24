@@ -488,7 +488,8 @@ export function HistoryExperience({
         <div className="team-shell grid gap-4 py-16 sm:grid-cols-2 md:py-20">
           {[
             { href: routes.site.roster, label: "Тоглогчид" },
-            { href: routes.site.management, label: "Удирдлага" },
+            // Hidden until the page is finished — uncomment to restore:
+            // { href: routes.site.management, label: "Удирдлага" },
           ].map(({ href, label }) => (
             <Link
               key={href}
