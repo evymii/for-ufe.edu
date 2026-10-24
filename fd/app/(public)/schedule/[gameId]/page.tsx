@@ -13,6 +13,9 @@ import type { GameRow } from "@/types/content";
 
 export const revalidate = 60;
 
+// Box score hidden until we have real data; flip to true to bring it back.
+const SHOW_BOX_SCORE = false;
+
 function gameTitle(game: GameRow): string {
   return `${game.isHome ? "vs" : "@"} ${game.opponentShort ?? game.opponent}`;
 }
@@ -126,9 +129,11 @@ export default async function GameDetailsPage({
           </div>
         </section>
 
-        <div className="mt-8">
-          <GameBoxScore game={game} />
-        </div>
+        {SHOW_BOX_SCORE ? (
+          <div className="mt-8">
+            <GameBoxScore game={game} />
+          </div>
+        ) : null}
       </div>
     </>
   );

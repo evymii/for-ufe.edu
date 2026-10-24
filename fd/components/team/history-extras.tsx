@@ -38,8 +38,8 @@ const HONORS = [
 /**
  * History-page extras below the side-scrolling timeline: the honour roll
  * (dark cards with giant count watermarks), the archive moments gallery
- * (masonry + full-screen lightbox with keyboard nav, counter, download and
- * share), and the closing ink CTA band.
+ * (chronological grid + full-screen lightbox with keyboard nav, counter,
+ * download and share), and the closing ink CTA band.
  */
 export function HistoryExtras({
   aubl,
@@ -84,7 +84,7 @@ export function HistoryExtras({
         </div>
       </section>
 
-      {/* Moments gallery — masonry + lightbox */}
+      {/* Moments gallery — chronological grid + lightbox */}
       <section aria-label="Дурсамжийн зургууд" className="border-line border-t">
         <div className="team-shell py-16 md:py-24">
           <Reveal>
@@ -177,14 +177,14 @@ function MomentsGallery({ moments }: { moments: Moment[] }) {
 
   return (
     <>
-      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+      <div className="moments-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {moments.map((moment, index) => (
           <button
             key={moment.src}
             type="button"
             onClick={() => setOpenIndex(index)}
             aria-label={`${moment.label} оны зургийг томруулах`}
-            className="team-focus group mb-6 block w-full break-inside-avoid text-left"
+            className="team-focus group block w-full text-left"
           >
             <div className="border-line relative overflow-hidden border">
               <div className="relative aspect-[3/2] w-full">
