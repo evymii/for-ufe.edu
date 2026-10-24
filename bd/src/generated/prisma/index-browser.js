@@ -267,6 +267,17 @@ exports.Prisma.MediaAlbumScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.HistoryPhotoScalarFieldEnum = {
+  id: 'id',
+  folder: 'folder',
+  url: 'url',
+  publicId: 'publicId',
+  caption: 'caption',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ExecutiveScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -398,6 +409,7 @@ exports.Prisma.ModelName = {
   StandingRow: 'StandingRow',
   Partner: 'Partner',
   MediaAlbum: 'MediaAlbum',
+  HistoryPhoto: 'HistoryPhoto',
   Executive: 'Executive',
   Video: 'Video',
   ShopProduct: 'ShopProduct',

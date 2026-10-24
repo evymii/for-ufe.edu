@@ -5,6 +5,7 @@ import { Router } from 'express';
 import * as collections from '../../controllers/content/collections.controller.js';
 import * as executives from '../../controllers/content/executives.controller.js';
 import * as games from '../../controllers/content/games.controller.js';
+import * as historyPhotos from '../../controllers/content/history-photos.controller.js';
 import * as news from '../../controllers/content/news.controller.js';
 import * as players from '../../controllers/content/players.controller.js';
 import * as shop from '../../controllers/content/shop.controller.js';
@@ -20,6 +21,7 @@ import {
   createAlbumSchema,
   createExecutiveSchema,
   createGameSchema,
+  createHistoryPhotoSchema,
   createNewsSchema,
   createPartnerSchema,
   createPlayerSchema,
@@ -41,6 +43,7 @@ import {
   updateAlbumSchema,
   updateExecutiveSchema,
   updateGameSchema,
+  updateHistoryPhotoSchema,
   updateNewsSchema,
   updatePartnerSchema,
   updatePlayerSchema,
@@ -223,6 +226,27 @@ contentRouter.delete(
   ...adminWrite,
   validate({ params: idParamSchema }),
   asyncHandler(collections.deleteAlbum),
+);
+
+// ── History photos (/history era archive) ────────────────────────────────────
+contentRouter.get('/history-photos', asyncHandler(historyPhotos.listHistoryPhotos));
+contentRouter.post(
+  '/history-photos',
+  ...adminWrite,
+  validate({ body: createHistoryPhotoSchema }),
+  asyncHandler(historyPhotos.createHistoryPhoto),
+);
+contentRouter.patch(
+  '/history-photos/:id',
+  ...adminWrite,
+  validate({ body: updateHistoryPhotoSchema, params: idParamSchema }),
+  asyncHandler(historyPhotos.updateHistoryPhoto),
+);
+contentRouter.delete(
+  '/history-photos/:id',
+  ...adminWrite,
+  validate({ params: idParamSchema }),
+  asyncHandler(historyPhotos.deleteHistoryPhoto),
 );
 
 // ── Executives (front office) ────────────────────────────────────────────────

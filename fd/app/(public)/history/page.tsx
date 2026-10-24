@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import fs from "node:fs";
 import Link from "next/link";
-import path from "node:path";
 import { ChevronDown } from "lucide-react";
 
 import { ParallaxLayer } from "@/components/team/parallax";
 import { WaveField } from "@/components/team/wave-field";
 import { TeamButton } from "@/components/team/button";
 import { HistoryExperience } from "@/components/team/history-experience";
-import type { TuuhPhotos } from "@/components/team/history-experience";
 import { HistoryExtras } from "@/components/team/history-extras";
 import { routes } from "@/config/routes";
 import { hero, history, type TimelineEntry } from "@/content/site";
 import { mergeCopy } from "@/lib/copy";
-import { getPageCopy } from "@/lib/content";
+import { getHistoryPhotos, getPageCopy } from "@/lib/content";
 import type { PageCopy } from "@/types/content";
 
 export const metadata: Metadata = {
@@ -23,33 +20,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
-
-/**
- * Photos discovered in public/images/tuuh/<folder>/ at render time — dropping
- * an image into a folder is all it takes for it to appear on that era's panel
- * and in the moments gallery (no code change), same as player/staff cutouts.
- */
-function tuuhPhotos(): TuuhPhotos {
-  const root = path.join(process.cwd(), "public", "images", "tuuh");
-  const byFolder: TuuhPhotos = {};
-  try {
-    for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
-      if (!entry.isDirectory()) continue;
-      const files = fs
-        .readdirSync(path.join(root, entry.name))
-        .filter((file) => /\.(png|jpe?g|webp|avif)$/i.test(file))
-        .sort();
-      if (files.length > 0) {
-        byFolder[entry.name] = files.map(
-          (file) => `/images/tuuh/${entry.name}/${file}`,
-        );
-      }
-    }
-  } catch {
-    // Missing archive folder — every era falls back to its text-only layout.
-  }
-  return byFolder;
-}
 
 /** Sanitizes the CMS-edited timeline array from the history/page blob. */
 function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
@@ -80,12 +50,15 @@ function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
  * numeral over a parallax texture layer, then the sticky year rail +
  * side-scrolling era track (HistoryExperience) and the honour roll /
  * moments gallery / CTA band (HistoryExtras). Copy and timeline entries
- * come from the site-content history/page blob over static defaults.
+ * come from the site-content history/page blob over static defaults; photos
+ * come from the Cloudinary-backed history-photos content API, managed in
+ * /admin → Хуудасны текст → Түүх.
  */
 export default async function HistoryPage() {
-  const [pageCopy, heroCopy] = await Promise.all([
+  const [pageCopy, heroCopy, photos] = await Promise.all([
     getPageCopy("history", "page"),
     getPageCopy("home", "hero"),
+    getHistoryPhotos(),
   ]);
 
   const copy = mergeCopy(
@@ -100,7 +73,6 @@ export default async function HistoryPage() {
       : null;
   const aubl = mergeCopy({ ...hero.aubl }, aublCopy);
   const entries = timelineEntries(pageCopy);
-  const photos = tuuhPhotos();
 
   return (
     <>

@@ -41,6 +41,22 @@ export interface MediaAlbumRow {
   sortOrder: number;
 }
 
+/**
+ * One /history archive photo. `folder` is the year group ("1996",
+ * "1997-2000", "2026") the era track and moments gallery key off; `url` is
+ * the Cloudinary asset.
+ */
+export interface HistoryPhotoRow {
+  id: string;
+  folder: string;
+  url: string;
+  publicId: string;
+  caption: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type VideoCategory =
   "HIGHLIGHTS" | "INTERVIEWS" | "BEHIND_THE_SCENES" | "PRESS";
 

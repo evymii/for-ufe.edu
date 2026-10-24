@@ -1,5 +1,6 @@
 import type { ApiErrorBody, AuthPayload } from "@/types/api";
 import { env } from "@/lib/env";
+import { clearSessionHint } from "@/lib/session-cookie";
 
 /**
  * Typed fetch wrapper for the bd/ API. Every request goes through here —
@@ -48,6 +49,42 @@ interface RawOutcome<T> {
 }
 
 const REFRESH_PATH = "/api/v1/user/auth/refresh";
+
+/** Their 401 means "wrong credentials", not "dead session" — the login and
+ *  register forms surface that error inline; bouncing to /login would eat
+ *  it and loop. */
+const CREDENTIAL_PATHS = new Set([
+  "/api/v1/user/auth/login",
+  "/api/v1/user/auth/register",
+]);
+
+/** Set once per dead session — a dashboard's queries fail together and each
+ *  would otherwise trigger another navigation to /login. A successful
+ *  refresh (fresh token) re-arms it. */
+let expiredSessionHandled = false;
+
+/**
+ * The request 401'd AND the refresh exchange could not recover — the session
+ * is dead on this device (expired everywhere else, or the browser refuses to
+ * store the cross-site refresh cookie, as mobile Safari/Chrome do). Clear
+ * the routing-hint cookie so middleware lets the user back to /login, and
+ * hard-navigate there with a `next` return path. No-op during SSR and on
+ * the auth pages themselves.
+ */
+function handleExpiredSession(): void {
+  if (expiredSessionHandled || typeof window === "undefined") return;
+  const { pathname, search } = window.location;
+  if (pathname === "/login" || pathname === "/register") return;
+  expiredSessionHandled = true;
+  clearSessionHint();
+  // Deliberately a hard navigation, not router.push: the session is dead,
+  // so every in-memory bit (react-query cache, half-rendered admin panels)
+  // must be torn down with a full document reload.
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+  window.location.assign(
+    `/login?next=${encodeURIComponent(pathname + search)}`,
+  );
+}
 
 async function rawRequest<T>(
   path: string,
@@ -120,6 +157,12 @@ async function request<T>(
     );
   }
 
+  // Beyond recovery: the request 401'd and the refresh exchange above either
+  // failed or produced a token the replay still rejected.
+  if (body?.error?.code === "UNAUTHORIZED" && !CREDENTIAL_PATHS.has(path)) {
+    handleExpiredSession();
+  }
+
   throw new ApiClientError(
     status,
     body?.error?.code ?? "HTTP_ERROR",
@@ -170,6 +213,7 @@ export async function refreshSession(): Promise<AuthPayload> {
       throw new ApiClientError(401, "UNAUTHORIZED", "Session expired");
     }
     accessToken = body.data.accessToken;
+    expiredSessionHandled = false;
     return body.data;
   })().finally(() => {
     refreshInFlight = null;

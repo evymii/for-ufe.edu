@@ -207,6 +207,24 @@ model MediaAlbum {
   @@index([category, isPublished])
 }
 
+// /history archive photos, one row per image, grouped by year folder
+// ("1996", "1997-2000", "2026"… — the same keys the frontend's era track
+// maps onto panels). Assets live in Cloudinary; url/publicId come from the
+// media library so a row can never point at an unverified URL, and deleting
+// a row destroys the stored asset.
+model HistoryPhoto {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folder    String
+  url       String
+  publicId  String   @unique @map("public_id")
+  caption   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([folder, sortOrder])
+}
+
 // Front office — executive profiles grouped by tab (ownership / basketball
 // operations / business / coaches). The STAFF group powers the /staff page's
 // team-staff cards (coaches, captain) with richer bio sections.

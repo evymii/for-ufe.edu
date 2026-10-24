@@ -51,6 +51,9 @@ export function LiveScoreCenter({
         if (active && next) setState(next);
       });
     stream.addEventListener("state_changed", refresh);
+    // Reconnects (proxy timeout, phone sleep/wake) replay nothing the client
+    // missed while disconnected — resync on every (re)open.
+    stream.onopen = refresh;
     return () => {
       active = false;
       stream.close();

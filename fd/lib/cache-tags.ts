@@ -26,6 +26,7 @@ export const ALLOWED_TAGS = [
   "players",
   "executives",
   "albums",
+  "history-photos",
   "videos",
   "shop",
   "standings",
@@ -47,6 +48,7 @@ export function tagForEndpoint(endpoint: string): AllowedTag | null {
   const map: Record<string, AllowedTag> = {
     "/content/executives": "executives",
     "/content/games": "games",
+    "/content/history-photos": "history-photos",
     "/content/media": "albums",
     "/content/news": "news",
     "/content/players": "players",

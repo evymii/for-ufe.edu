@@ -11,8 +11,8 @@ import {
 } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { setAccessToken } from "@/lib/api-client";
-import { refreshSession } from "@/lib/api-client";
+import { refreshSession, setAccessToken } from "@/lib/api-client";
+import { clearSessionHint, setSessionHint } from "@/lib/session-cookie";
 import { authService } from "@/services/user/auth.service";
 import type { User } from "@/types/api";
 
@@ -32,23 +32,6 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState | null>(null);
-
-const SESSION_COOKIE = "uf_session";
-
-function setSessionHint(user: User): void {
-  const value = encodeURIComponent(
-    JSON.stringify({ id: user.id, role: user.role }),
-  );
-  document.cookie = `${SESSION_COOKIE}=${value}; Path=/; SameSite=Lax${
-    window.location.protocol === "https:" ? "; Secure" : ""
-  }`;
-}
-
-function clearSessionHint(): void {
-  document.cookie = `${SESSION_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax${
-    window.location.protocol === "https:" ? "; Secure" : ""
-  }`;
-}
 
 /**
  * Holds the authenticated user in memory, bootstrapped from the httpOnly
@@ -85,6 +68,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (identifier: string, password: string) => {
     const payload = await authService.login({ identifier, password });
+    // Must reach the api client before navigation — the first post-login
+    // request (admin stats, profile, …) already needs the Bearer header.
+    setAccessToken(payload.accessToken);
     setSessionHint(payload.user);
     setUserState(payload.user);
     setStatus("authenticated");
@@ -94,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (input: { name: string; email: string; password: string }) => {
       const payload = await authService.register(input);
+      setAccessToken(payload.accessToken);
       setSessionHint(payload.user);
       setUserState(payload.user);
       setStatus("authenticated");

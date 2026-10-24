@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { HistoryPhotosManager } from "@/components/admin/history-photos-manager";
 import { PageContentEditor } from "@/components/admin/content/site-content/site-content-editor";
 import { PageHeader } from "@/components/shared/page-header";
 import { ADMIN_TEXT_PAGES, findTextPage } from "@/config/admin-text-pages";
@@ -34,6 +35,9 @@ export default async function AdminTextPage({
         description={entry.description}
       />
       <PageContentEditor pageKey={entry.slug} />
+      {/* The history page pairs its copy with a Cloudinary-backed per-year
+          photo archive — same admin route, below the text editor. */}
+      {entry.slug === "history" ? <HistoryPhotosManager /> : null}
     </div>
   );
 }

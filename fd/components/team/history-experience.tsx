@@ -44,9 +44,9 @@ interface Era {
 }
 
 /**
- * Photos found in public/images/tuuh/<folder>/, keyed by folder name and
- * discovered on the server — dropping an image into a folder is all it takes
- * for it to appear (same auto-detection as player/staff cutouts).
+ * Photos for each era's panels, keyed by year folder. Sourced from the
+ * Cloudinary-backed history-photos content API (managed in /admin →
+ * Хуудасны текст → Түүх) — an empty folder just renders that era text-only.
  */
 export type TuuhPhotos = Record<string, string[]>;
 
@@ -72,9 +72,9 @@ function makeLookup(
 }
 
 /**
- * Which archive folders each era draws its photos from (folders may be empty
- * on disk — the era then renders text-only until photos are uploaded). An era
- * shows at most two photos; everything also lands in the moments gallery.
+ * Which archive folders each era draws its photos from (a folder with no
+ * uploaded photos leaves the era text-only). An era shows at most two
+ * photos; everything also lands in the moments gallery.
  */
 const ERA_FOLDERS: Record<string, string[]> = {
   "1992": [],
@@ -90,6 +90,14 @@ const ERA_FOLDERS: Record<string, string[]> = {
   "2025-2026": ["2025"],
   "2026-2027": ["2026"],
 };
+
+/**
+ * Every year folder an era can draw from, oldest first — the folder picker
+ * in the admin history-photos manager offers exactly this set.
+ */
+export const HISTORY_PHOTO_FOLDERS: readonly string[] = [
+  ...new Set(Object.values(ERA_FOLDERS).flat()),
+].sort((a, b) => Number(a.slice(0, 4)) - Number(b.slice(0, 4)));
 
 const photosFor = (photos: TuuhPhotos, eraId: string): string[] =>
   (ERA_FOLDERS[eraId] ?? [])

@@ -70,6 +70,19 @@ export const MEDIA_ALT_MAX_LENGTH = 200;
 
 export const MEDIA_LIST_MAX_LIMIT = 100;
 
+// ─── History photos (/history era archive) ───────────────────────────────────
+
+/**
+ * Year folders the /history page groups photos by: a plain year or a year
+ * range ("1996", "1997-2000", "2026") — the keys the frontend era track
+ * maps onto its panels.
+ */
+export const HISTORY_PHOTO_FOLDER_PATTERN = /^\d{4}(-\d{4})?$/;
+
+export const HISTORY_PHOTO_CAPTION_MAX_LENGTH = 200;
+
+export const HISTORY_PHOTO_SORT_MAX = 999;
+
 // ─── SSE live updates ────────────────────────────────────────────────────────
 
 export const SSE_HEARTBEAT_INTERVAL_MS = 25_000;

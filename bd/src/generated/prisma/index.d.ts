@@ -64,6 +64,11 @@ export type Partner = $Result.DefaultSelection<Prisma.$PartnerPayload>
  */
 export type MediaAlbum = $Result.DefaultSelection<Prisma.$MediaAlbumPayload>
 /**
+ * Model HistoryPhoto
+ * 
+ */
+export type HistoryPhoto = $Result.DefaultSelection<Prisma.$HistoryPhotoPayload>
+/**
  * Model Executive
  * 
  */
@@ -288,6 +293,16 @@ export class PrismaClient<
     * ```
     */
   get mediaAlbum(): Prisma.MediaAlbumDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.historyPhoto`: Exposes CRUD operations for the **HistoryPhoto** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HistoryPhotos
+    * const historyPhotos = await prisma.historyPhoto.findMany()
+    * ```
+    */
+  get historyPhoto(): Prisma.HistoryPhotoDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.executive`: Exposes CRUD operations for the **Executive** model.
@@ -819,6 +834,7 @@ export namespace Prisma {
     StandingRow: 'StandingRow',
     Partner: 'Partner',
     MediaAlbum: 'MediaAlbum',
+    HistoryPhoto: 'HistoryPhoto',
     Executive: 'Executive',
     Video: 'Video',
     ShopProduct: 'ShopProduct',
@@ -845,7 +861,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "refreshToken" | "newsPost" | "player" | "game" | "liveGame" | "liveGameEvent" | "standingRow" | "partner" | "mediaAlbum" | "executive" | "video" | "shopProduct" | "order" | "siteContent" | "contentBlock" | "media" | "contentHistory"
+      modelProps: "user" | "refreshToken" | "newsPost" | "player" | "game" | "liveGame" | "liveGameEvent" | "standingRow" | "partner" | "mediaAlbum" | "historyPhoto" | "executive" | "video" | "shopProduct" | "order" | "siteContent" | "contentBlock" | "media" | "contentHistory"
       txIsolationLevel: never
     }
     model: {
@@ -1589,6 +1605,80 @@ export namespace Prisma {
           }
         }
       }
+      HistoryPhoto: {
+        payload: Prisma.$HistoryPhotoPayload<ExtArgs>
+        fields: Prisma.HistoryPhotoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HistoryPhotoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HistoryPhotoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          findFirst: {
+            args: Prisma.HistoryPhotoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HistoryPhotoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          findMany: {
+            args: Prisma.HistoryPhotoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>[]
+          }
+          create: {
+            args: Prisma.HistoryPhotoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          createMany: {
+            args: Prisma.HistoryPhotoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.HistoryPhotoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          update: {
+            args: Prisma.HistoryPhotoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          deleteMany: {
+            args: Prisma.HistoryPhotoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HistoryPhotoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.HistoryPhotoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoryPhotoPayload>
+          }
+          aggregate: {
+            args: Prisma.HistoryPhotoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHistoryPhoto>
+          }
+          groupBy: {
+            args: Prisma.HistoryPhotoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HistoryPhotoGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.HistoryPhotoFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.HistoryPhotoAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.HistoryPhotoCountArgs<ExtArgs>
+            result: $Utils.Optional<HistoryPhotoCountAggregateOutputType> | number
+          }
+        }
+      }
       Executive: {
         payload: Prisma.$ExecutivePayload<ExtArgs>
         fields: Prisma.ExecutiveFieldRefs
@@ -2270,6 +2360,7 @@ export namespace Prisma {
     standingRow?: StandingRowOmit
     partner?: PartnerOmit
     mediaAlbum?: MediaAlbumOmit
+    historyPhoto?: HistoryPhotoOmit
     executive?: ExecutiveOmit
     video?: VideoOmit
     shopProduct?: ShopProductOmit
@@ -13056,6 +13147,1005 @@ export namespace Prisma {
 
 
   /**
+   * Model HistoryPhoto
+   */
+
+  export type AggregateHistoryPhoto = {
+    _count: HistoryPhotoCountAggregateOutputType | null
+    _avg: HistoryPhotoAvgAggregateOutputType | null
+    _sum: HistoryPhotoSumAggregateOutputType | null
+    _min: HistoryPhotoMinAggregateOutputType | null
+    _max: HistoryPhotoMaxAggregateOutputType | null
+  }
+
+  export type HistoryPhotoAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type HistoryPhotoSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type HistoryPhotoMinAggregateOutputType = {
+    id: string | null
+    folder: string | null
+    url: string | null
+    publicId: string | null
+    caption: string | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HistoryPhotoMaxAggregateOutputType = {
+    id: string | null
+    folder: string | null
+    url: string | null
+    publicId: string | null
+    caption: string | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HistoryPhotoCountAggregateOutputType = {
+    id: number
+    folder: number
+    url: number
+    publicId: number
+    caption: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type HistoryPhotoAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type HistoryPhotoSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type HistoryPhotoMinAggregateInputType = {
+    id?: true
+    folder?: true
+    url?: true
+    publicId?: true
+    caption?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HistoryPhotoMaxAggregateInputType = {
+    id?: true
+    folder?: true
+    url?: true
+    publicId?: true
+    caption?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HistoryPhotoCountAggregateInputType = {
+    id?: true
+    folder?: true
+    url?: true
+    publicId?: true
+    caption?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type HistoryPhotoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HistoryPhoto to aggregate.
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoryPhotos to fetch.
+     */
+    orderBy?: HistoryPhotoOrderByWithRelationInput | HistoryPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HistoryPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoryPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoryPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HistoryPhotos
+    **/
+    _count?: true | HistoryPhotoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: HistoryPhotoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: HistoryPhotoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HistoryPhotoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HistoryPhotoMaxAggregateInputType
+  }
+
+  export type GetHistoryPhotoAggregateType<T extends HistoryPhotoAggregateArgs> = {
+        [P in keyof T & keyof AggregateHistoryPhoto]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHistoryPhoto[P]>
+      : GetScalarType<T[P], AggregateHistoryPhoto[P]>
+  }
+
+
+
+
+  export type HistoryPhotoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HistoryPhotoWhereInput
+    orderBy?: HistoryPhotoOrderByWithAggregationInput | HistoryPhotoOrderByWithAggregationInput[]
+    by: HistoryPhotoScalarFieldEnum[] | HistoryPhotoScalarFieldEnum
+    having?: HistoryPhotoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HistoryPhotoCountAggregateInputType | true
+    _avg?: HistoryPhotoAvgAggregateInputType
+    _sum?: HistoryPhotoSumAggregateInputType
+    _min?: HistoryPhotoMinAggregateInputType
+    _max?: HistoryPhotoMaxAggregateInputType
+  }
+
+  export type HistoryPhotoGroupByOutputType = {
+    id: string
+    folder: string
+    url: string
+    publicId: string
+    caption: string | null
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: HistoryPhotoCountAggregateOutputType | null
+    _avg: HistoryPhotoAvgAggregateOutputType | null
+    _sum: HistoryPhotoSumAggregateOutputType | null
+    _min: HistoryPhotoMinAggregateOutputType | null
+    _max: HistoryPhotoMaxAggregateOutputType | null
+  }
+
+  type GetHistoryPhotoGroupByPayload<T extends HistoryPhotoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HistoryPhotoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HistoryPhotoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HistoryPhotoGroupByOutputType[P]>
+            : GetScalarType<T[P], HistoryPhotoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HistoryPhotoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    folder?: boolean
+    url?: boolean
+    publicId?: boolean
+    caption?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["historyPhoto"]>
+
+
+
+  export type HistoryPhotoSelectScalar = {
+    id?: boolean
+    folder?: boolean
+    url?: boolean
+    publicId?: boolean
+    caption?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type HistoryPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "folder" | "url" | "publicId" | "caption" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["historyPhoto"]>
+
+  export type $HistoryPhotoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HistoryPhoto"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      folder: string
+      url: string
+      publicId: string
+      caption: string | null
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["historyPhoto"]>
+    composites: {}
+  }
+
+  type HistoryPhotoGetPayload<S extends boolean | null | undefined | HistoryPhotoDefaultArgs> = $Result.GetResult<Prisma.$HistoryPhotoPayload, S>
+
+  type HistoryPhotoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HistoryPhotoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HistoryPhotoCountAggregateInputType | true
+    }
+
+  export interface HistoryPhotoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HistoryPhoto'], meta: { name: 'HistoryPhoto' } }
+    /**
+     * Find zero or one HistoryPhoto that matches the filter.
+     * @param {HistoryPhotoFindUniqueArgs} args - Arguments to find a HistoryPhoto
+     * @example
+     * // Get one HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HistoryPhotoFindUniqueArgs>(args: SelectSubset<T, HistoryPhotoFindUniqueArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one HistoryPhoto that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HistoryPhotoFindUniqueOrThrowArgs} args - Arguments to find a HistoryPhoto
+     * @example
+     * // Get one HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HistoryPhotoFindUniqueOrThrowArgs>(args: SelectSubset<T, HistoryPhotoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HistoryPhoto that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoFindFirstArgs} args - Arguments to find a HistoryPhoto
+     * @example
+     * // Get one HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HistoryPhotoFindFirstArgs>(args?: SelectSubset<T, HistoryPhotoFindFirstArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HistoryPhoto that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoFindFirstOrThrowArgs} args - Arguments to find a HistoryPhoto
+     * @example
+     * // Get one HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HistoryPhotoFindFirstOrThrowArgs>(args?: SelectSubset<T, HistoryPhotoFindFirstOrThrowArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HistoryPhotos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HistoryPhotos
+     * const historyPhotos = await prisma.historyPhoto.findMany()
+     * 
+     * // Get first 10 HistoryPhotos
+     * const historyPhotos = await prisma.historyPhoto.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const historyPhotoWithIdOnly = await prisma.historyPhoto.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HistoryPhotoFindManyArgs>(args?: SelectSubset<T, HistoryPhotoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a HistoryPhoto.
+     * @param {HistoryPhotoCreateArgs} args - Arguments to create a HistoryPhoto.
+     * @example
+     * // Create one HistoryPhoto
+     * const HistoryPhoto = await prisma.historyPhoto.create({
+     *   data: {
+     *     // ... data to create a HistoryPhoto
+     *   }
+     * })
+     * 
+     */
+    create<T extends HistoryPhotoCreateArgs>(args: SelectSubset<T, HistoryPhotoCreateArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many HistoryPhotos.
+     * @param {HistoryPhotoCreateManyArgs} args - Arguments to create many HistoryPhotos.
+     * @example
+     * // Create many HistoryPhotos
+     * const historyPhoto = await prisma.historyPhoto.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HistoryPhotoCreateManyArgs>(args?: SelectSubset<T, HistoryPhotoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a HistoryPhoto.
+     * @param {HistoryPhotoDeleteArgs} args - Arguments to delete one HistoryPhoto.
+     * @example
+     * // Delete one HistoryPhoto
+     * const HistoryPhoto = await prisma.historyPhoto.delete({
+     *   where: {
+     *     // ... filter to delete one HistoryPhoto
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HistoryPhotoDeleteArgs>(args: SelectSubset<T, HistoryPhotoDeleteArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one HistoryPhoto.
+     * @param {HistoryPhotoUpdateArgs} args - Arguments to update one HistoryPhoto.
+     * @example
+     * // Update one HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HistoryPhotoUpdateArgs>(args: SelectSubset<T, HistoryPhotoUpdateArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more HistoryPhotos.
+     * @param {HistoryPhotoDeleteManyArgs} args - Arguments to filter HistoryPhotos to delete.
+     * @example
+     * // Delete a few HistoryPhotos
+     * const { count } = await prisma.historyPhoto.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HistoryPhotoDeleteManyArgs>(args?: SelectSubset<T, HistoryPhotoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HistoryPhotos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HistoryPhotos
+     * const historyPhoto = await prisma.historyPhoto.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HistoryPhotoUpdateManyArgs>(args: SelectSubset<T, HistoryPhotoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one HistoryPhoto.
+     * @param {HistoryPhotoUpsertArgs} args - Arguments to update or create a HistoryPhoto.
+     * @example
+     * // Update or create a HistoryPhoto
+     * const historyPhoto = await prisma.historyPhoto.upsert({
+     *   create: {
+     *     // ... data to create a HistoryPhoto
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HistoryPhoto we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HistoryPhotoUpsertArgs>(args: SelectSubset<T, HistoryPhotoUpsertArgs<ExtArgs>>): Prisma__HistoryPhotoClient<$Result.GetResult<Prisma.$HistoryPhotoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HistoryPhotos that matches the filter.
+     * @param {HistoryPhotoFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const historyPhoto = await prisma.historyPhoto.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: HistoryPhotoFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a HistoryPhoto.
+     * @param {HistoryPhotoAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const historyPhoto = await prisma.historyPhoto.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: HistoryPhotoAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of HistoryPhotos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoCountArgs} args - Arguments to filter HistoryPhotos to count.
+     * @example
+     * // Count the number of HistoryPhotos
+     * const count = await prisma.historyPhoto.count({
+     *   where: {
+     *     // ... the filter for the HistoryPhotos we want to count
+     *   }
+     * })
+    **/
+    count<T extends HistoryPhotoCountArgs>(
+      args?: Subset<T, HistoryPhotoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HistoryPhotoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HistoryPhoto.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HistoryPhotoAggregateArgs>(args: Subset<T, HistoryPhotoAggregateArgs>): Prisma.PrismaPromise<GetHistoryPhotoAggregateType<T>>
+
+    /**
+     * Group by HistoryPhoto.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoryPhotoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HistoryPhotoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HistoryPhotoGroupByArgs['orderBy'] }
+        : { orderBy?: HistoryPhotoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HistoryPhotoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHistoryPhotoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HistoryPhoto model
+   */
+  readonly fields: HistoryPhotoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HistoryPhoto.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HistoryPhotoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HistoryPhoto model
+   */
+  interface HistoryPhotoFieldRefs {
+    readonly id: FieldRef<"HistoryPhoto", 'String'>
+    readonly folder: FieldRef<"HistoryPhoto", 'String'>
+    readonly url: FieldRef<"HistoryPhoto", 'String'>
+    readonly publicId: FieldRef<"HistoryPhoto", 'String'>
+    readonly caption: FieldRef<"HistoryPhoto", 'String'>
+    readonly sortOrder: FieldRef<"HistoryPhoto", 'Int'>
+    readonly createdAt: FieldRef<"HistoryPhoto", 'DateTime'>
+    readonly updatedAt: FieldRef<"HistoryPhoto", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HistoryPhoto findUnique
+   */
+  export type HistoryPhotoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter, which HistoryPhoto to fetch.
+     */
+    where: HistoryPhotoWhereUniqueInput
+  }
+
+  /**
+   * HistoryPhoto findUniqueOrThrow
+   */
+  export type HistoryPhotoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter, which HistoryPhoto to fetch.
+     */
+    where: HistoryPhotoWhereUniqueInput
+  }
+
+  /**
+   * HistoryPhoto findFirst
+   */
+  export type HistoryPhotoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter, which HistoryPhoto to fetch.
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoryPhotos to fetch.
+     */
+    orderBy?: HistoryPhotoOrderByWithRelationInput | HistoryPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HistoryPhotos.
+     */
+    cursor?: HistoryPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoryPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoryPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HistoryPhotos.
+     */
+    distinct?: HistoryPhotoScalarFieldEnum | HistoryPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * HistoryPhoto findFirstOrThrow
+   */
+  export type HistoryPhotoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter, which HistoryPhoto to fetch.
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoryPhotos to fetch.
+     */
+    orderBy?: HistoryPhotoOrderByWithRelationInput | HistoryPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HistoryPhotos.
+     */
+    cursor?: HistoryPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoryPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoryPhotos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HistoryPhotos.
+     */
+    distinct?: HistoryPhotoScalarFieldEnum | HistoryPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * HistoryPhoto findMany
+   */
+  export type HistoryPhotoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter, which HistoryPhotos to fetch.
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoryPhotos to fetch.
+     */
+    orderBy?: HistoryPhotoOrderByWithRelationInput | HistoryPhotoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HistoryPhotos.
+     */
+    cursor?: HistoryPhotoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoryPhotos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoryPhotos.
+     */
+    skip?: number
+    distinct?: HistoryPhotoScalarFieldEnum | HistoryPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * HistoryPhoto create
+   */
+  export type HistoryPhotoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * The data needed to create a HistoryPhoto.
+     */
+    data: XOR<HistoryPhotoCreateInput, HistoryPhotoUncheckedCreateInput>
+  }
+
+  /**
+   * HistoryPhoto createMany
+   */
+  export type HistoryPhotoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HistoryPhotos.
+     */
+    data: HistoryPhotoCreateManyInput | HistoryPhotoCreateManyInput[]
+  }
+
+  /**
+   * HistoryPhoto update
+   */
+  export type HistoryPhotoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * The data needed to update a HistoryPhoto.
+     */
+    data: XOR<HistoryPhotoUpdateInput, HistoryPhotoUncheckedUpdateInput>
+    /**
+     * Choose, which HistoryPhoto to update.
+     */
+    where: HistoryPhotoWhereUniqueInput
+  }
+
+  /**
+   * HistoryPhoto updateMany
+   */
+  export type HistoryPhotoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HistoryPhotos.
+     */
+    data: XOR<HistoryPhotoUpdateManyMutationInput, HistoryPhotoUncheckedUpdateManyInput>
+    /**
+     * Filter which HistoryPhotos to update
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * Limit how many HistoryPhotos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HistoryPhoto upsert
+   */
+  export type HistoryPhotoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * The filter to search for the HistoryPhoto to update in case it exists.
+     */
+    where: HistoryPhotoWhereUniqueInput
+    /**
+     * In case the HistoryPhoto found by the `where` argument doesn't exist, create a new HistoryPhoto with this data.
+     */
+    create: XOR<HistoryPhotoCreateInput, HistoryPhotoUncheckedCreateInput>
+    /**
+     * In case the HistoryPhoto was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HistoryPhotoUpdateInput, HistoryPhotoUncheckedUpdateInput>
+  }
+
+  /**
+   * HistoryPhoto delete
+   */
+  export type HistoryPhotoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+    /**
+     * Filter which HistoryPhoto to delete.
+     */
+    where: HistoryPhotoWhereUniqueInput
+  }
+
+  /**
+   * HistoryPhoto deleteMany
+   */
+  export type HistoryPhotoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HistoryPhotos to delete
+     */
+    where?: HistoryPhotoWhereInput
+    /**
+     * Limit how many HistoryPhotos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * HistoryPhoto findRaw
+   */
+  export type HistoryPhotoFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * HistoryPhoto aggregateRaw
+   */
+  export type HistoryPhotoAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * HistoryPhoto without action
+   */
+  export type HistoryPhotoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoryPhoto
+     */
+    select?: HistoryPhotoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoryPhoto
+     */
+    omit?: HistoryPhotoOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Executive
    */
 
@@ -21595,6 +22685,20 @@ export namespace Prisma {
   export type MediaAlbumScalarFieldEnum = (typeof MediaAlbumScalarFieldEnum)[keyof typeof MediaAlbumScalarFieldEnum]
 
 
+  export const HistoryPhotoScalarFieldEnum: {
+    id: 'id',
+    folder: 'folder',
+    url: 'url',
+    publicId: 'publicId',
+    caption: 'caption',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type HistoryPhotoScalarFieldEnum = (typeof HistoryPhotoScalarFieldEnum)[keyof typeof HistoryPhotoScalarFieldEnum]
+
+
   export const ExecutiveScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -22734,6 +23838,75 @@ export namespace Prisma {
     isPublished?: BoolWithAggregatesFilter<"MediaAlbum"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"MediaAlbum"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MediaAlbum"> | Date | string
+  }
+
+  export type HistoryPhotoWhereInput = {
+    AND?: HistoryPhotoWhereInput | HistoryPhotoWhereInput[]
+    OR?: HistoryPhotoWhereInput[]
+    NOT?: HistoryPhotoWhereInput | HistoryPhotoWhereInput[]
+    id?: StringFilter<"HistoryPhoto"> | string
+    folder?: StringFilter<"HistoryPhoto"> | string
+    url?: StringFilter<"HistoryPhoto"> | string
+    publicId?: StringFilter<"HistoryPhoto"> | string
+    caption?: StringNullableFilter<"HistoryPhoto"> | string | null
+    sortOrder?: IntFilter<"HistoryPhoto"> | number
+    createdAt?: DateTimeFilter<"HistoryPhoto"> | Date | string
+    updatedAt?: DateTimeFilter<"HistoryPhoto"> | Date | string
+  }
+
+  export type HistoryPhotoOrderByWithRelationInput = {
+    id?: SortOrder
+    folder?: SortOrder
+    url?: SortOrder
+    publicId?: SortOrder
+    caption?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HistoryPhotoWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    publicId?: string
+    AND?: HistoryPhotoWhereInput | HistoryPhotoWhereInput[]
+    OR?: HistoryPhotoWhereInput[]
+    NOT?: HistoryPhotoWhereInput | HistoryPhotoWhereInput[]
+    folder?: StringFilter<"HistoryPhoto"> | string
+    url?: StringFilter<"HistoryPhoto"> | string
+    caption?: StringNullableFilter<"HistoryPhoto"> | string | null
+    sortOrder?: IntFilter<"HistoryPhoto"> | number
+    createdAt?: DateTimeFilter<"HistoryPhoto"> | Date | string
+    updatedAt?: DateTimeFilter<"HistoryPhoto"> | Date | string
+  }, "id" | "publicId">
+
+  export type HistoryPhotoOrderByWithAggregationInput = {
+    id?: SortOrder
+    folder?: SortOrder
+    url?: SortOrder
+    publicId?: SortOrder
+    caption?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: HistoryPhotoCountOrderByAggregateInput
+    _avg?: HistoryPhotoAvgOrderByAggregateInput
+    _max?: HistoryPhotoMaxOrderByAggregateInput
+    _min?: HistoryPhotoMinOrderByAggregateInput
+    _sum?: HistoryPhotoSumOrderByAggregateInput
+  }
+
+  export type HistoryPhotoScalarWhereWithAggregatesInput = {
+    AND?: HistoryPhotoScalarWhereWithAggregatesInput | HistoryPhotoScalarWhereWithAggregatesInput[]
+    OR?: HistoryPhotoScalarWhereWithAggregatesInput[]
+    NOT?: HistoryPhotoScalarWhereWithAggregatesInput | HistoryPhotoScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"HistoryPhoto"> | string
+    folder?: StringWithAggregatesFilter<"HistoryPhoto"> | string
+    url?: StringWithAggregatesFilter<"HistoryPhoto"> | string
+    publicId?: StringWithAggregatesFilter<"HistoryPhoto"> | string
+    caption?: StringNullableWithAggregatesFilter<"HistoryPhoto"> | string | null
+    sortOrder?: IntWithAggregatesFilter<"HistoryPhoto"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"HistoryPhoto"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"HistoryPhoto"> | Date | string
   }
 
   export type ExecutiveWhereInput = {
@@ -24450,6 +25623,79 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HistoryPhotoCreateInput = {
+    id?: string
+    folder: string
+    url: string
+    publicId: string
+    caption?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HistoryPhotoUncheckedCreateInput = {
+    id?: string
+    folder: string
+    url: string
+    publicId: string
+    caption?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HistoryPhotoUpdateInput = {
+    folder?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoryPhotoUncheckedUpdateInput = {
+    folder?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoryPhotoCreateManyInput = {
+    id?: string
+    folder: string
+    url: string
+    publicId: string
+    caption?: string | null
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HistoryPhotoUpdateManyMutationInput = {
+    folder?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoryPhotoUncheckedUpdateManyInput = {
+    folder?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    publicId?: StringFieldUpdateOperationsInput | string
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ExecutiveCreateInput = {
     id?: string
     name: string
@@ -26046,6 +27292,47 @@ export namespace Prisma {
   }
 
   export type MediaAlbumSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type HistoryPhotoCountOrderByAggregateInput = {
+    id?: SortOrder
+    folder?: SortOrder
+    url?: SortOrder
+    publicId?: SortOrder
+    caption?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HistoryPhotoAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type HistoryPhotoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    folder?: SortOrder
+    url?: SortOrder
+    publicId?: SortOrder
+    caption?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HistoryPhotoMinOrderByAggregateInput = {
+    id?: SortOrder
+    folder?: SortOrder
+    url?: SortOrder
+    publicId?: SortOrder
+    caption?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HistoryPhotoSumOrderByAggregateInput = {
     sortOrder?: SortOrder
   }
 

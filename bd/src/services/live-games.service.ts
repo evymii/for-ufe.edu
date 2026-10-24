@@ -178,7 +178,11 @@ async function applyActionInQueue(gameId: string, action: Action): Promise<LiveG
       index === period - 1 ? (teamFouls[index] ?? 0) : (teamFouls[index] ?? 0),
     );
   } else if (action.type === 'lineup') {
-    if (action.playerIds.length !== 5) throw ApiError.badRequest('Select exactly five players');
+    // Any size up to five is legal: the scorer builds the floor tap-by-tap
+    // (1st..5th player each send an interim lineup) and an empty list
+    // clears it — demanding exactly five would reject every step but the last.
+    if (action.playerIds.length > 5)
+      throw ApiError.badRequest('At most five players can be on the floor');
     lineup = action.playerIds;
   } else if (action.type === 'halftime') {
     status = 'HALFTIME';

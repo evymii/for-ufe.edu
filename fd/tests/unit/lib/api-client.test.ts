@@ -168,6 +168,10 @@ describe("api client", () => {
   });
 
   it("does not recurse when the refresh call itself fails", async () => {
+    // A dead session also bounces to /login — stub the location so jsdom
+    // doesn't attempt a real navigation.
+    const assign = vi.fn();
+    vi.stubGlobal("location", { pathname: "/profile", search: "", assign });
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce(
@@ -196,5 +200,81 @@ describe("api client", () => {
     expect((error as InstanceType<typeof ApiClientError>).message).toBe(
       "expired",
     );
+    expect(assign).toHaveBeenCalledWith("/login?next=%2Fprofile");
+  });
+
+  it("bounces to /login with the current path and clears the session hint when the session is dead beyond recovery", async () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", { pathname: "/admin", search: "", assign });
+    document.cookie = `uf_session=${encodeURIComponent(
+      JSON.stringify({ id: "u1", role: "ADMIN" }),
+    )}; Path=/`;
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse(401, {
+          success: false,
+          error: { code: "UNAUTHORIZED", message: "expired" },
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse(401, {
+          success: false,
+          error: { code: "UNAUTHORIZED", message: "no session" },
+        }),
+      );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { api } = await importFreshClient();
+    await api.get("/api/v1/admin/stats").catch(() => null);
+
+    expect(assign).toHaveBeenCalledTimes(1);
+    expect(assign).toHaveBeenCalledWith("/login?next=%2Fadmin");
+    // The routing-hint cookie must go too — otherwise middleware would bounce
+    // the user straight off /login back to /admin.
+    expect(document.cookie).not.toContain("uf_session");
+  });
+
+  it("navigates only once when several requests fail on the same dead session", async () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", { pathname: "/admin", search: "", assign });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse(401, {
+          success: false,
+          error: { code: "UNAUTHORIZED", message: "expired" },
+        }),
+      ),
+    );
+
+    const { api } = await importFreshClient();
+    await Promise.allSettled([
+      api.get("/api/v1/admin/stats"),
+      api.get("/api/v1/admin/users"),
+    ]);
+
+    expect(assign).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not bounce on a wrong-password login (the form shows the error inline)", async () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", { pathname: "/login", search: "", assign });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse(401, {
+          success: false,
+          error: { code: "UNAUTHORIZED", message: "Invalid credentials" },
+        }),
+      ),
+    );
+
+    const { api } = await importFreshClient();
+    await api
+      .post("/api/v1/user/auth/login", { identifier: "x", password: "y" })
+      .catch(() => null);
+
+    expect(assign).not.toHaveBeenCalled();
   });
 });

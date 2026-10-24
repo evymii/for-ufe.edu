@@ -23,6 +23,12 @@ interface CloudinaryUploadResponse {
   public_id?: string;
 }
 
+/** A registered media-library asset — enough to reference it later. */
+export interface UploadedAdminImage {
+  publicId: string;
+  url: string;
+}
+
 /** "File size too large. Got 11936151. Maximum is 10485760." → MB, readable. */
 function providerSizeMessage(message: string): string | null {
   if (!/file size too large/i.test(message)) return null;
@@ -33,16 +39,17 @@ function providerSizeMessage(message: string): string | null {
     : "Image is above the storage plan's per-image size limit — resize it before uploading.";
 }
 
-/** Uploads an image and returns its persisted media URL. */
-export async function uploadAdminImage(
+/** Uploads an image and returns its persisted media-library row. */
+export async function uploadAdminImageDetailed(
   file: File,
   alt: string,
-): Promise<string> {
+  subfolder = "uploads",
+): Promise<UploadedAdminImage> {
   file = await compressForUpload(file);
 
   const { params } = await api.post<{ params: DirectUploadParams }>(
     "/api/v1/admin/media/direct-params",
-    {},
+    { folder: subfolder },
   );
 
   // Only these five fields: every extra unsigned param would break the
@@ -72,9 +79,18 @@ export async function uploadAdminImage(
     );
   }
 
-  const { media } = await api.post<{ media: { url: string } }>(
+  const { media } = await api.post<{ media: UploadedAdminImage }>(
     "/api/v1/admin/media/register",
     { alt, publicId: body.public_id },
   );
-  return media.url;
+  return { publicId: media.publicId, url: media.url };
+}
+
+/** Uploads an image and returns its persisted media URL. */
+export async function uploadAdminImage(
+  file: File,
+  alt: string,
+): Promise<string> {
+  const { url } = await uploadAdminImageDetailed(file, alt);
+  return url;
 }

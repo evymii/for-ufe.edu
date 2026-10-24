@@ -7,10 +7,12 @@ import {
   shopFallback,
   videosFallback,
 } from "@/content/pages";
+import type { TuuhPhotos } from "@/components/team/history-experience";
 import type {
   ContactInfo,
   Executive,
   GameRow,
+  HistoryPhotoRow,
   MediaAlbumRow,
   NewsPostRow,
   PageCopy,
@@ -93,6 +95,30 @@ export async function getAlbums(): Promise<MediaAlbumRow[]> {
     ...album,
     images: albumImages(album.images),
   }));
+}
+
+/**
+ * /history archive photos grouped into the year folders the era track and
+ * moments gallery key off. The API already returns folders in chronological
+ * order and photos in sortOrder order, so grouping preserves both. An empty
+ * or unreachable backend leaves every era text-only.
+ */
+export async function getHistoryPhotos(): Promise<TuuhPhotos> {
+  const data = await getJson<{ items: HistoryPhotoRow[] }>(
+    "/history-photos",
+    "history-photos",
+  );
+  return groupHistoryPhotos(data?.items ?? []);
+}
+
+/** HistoryPhotoRow[] → { folder: [url, …] } in API order. */
+export function groupHistoryPhotos(items: HistoryPhotoRow[]): TuuhPhotos {
+  const byFolder: TuuhPhotos = {};
+  for (const photo of items) {
+    if (typeof photo?.url !== "string" || photo.url === "") continue;
+    (byFolder[photo.folder] ??= []).push(photo.url);
+  }
+  return byFolder;
 }
 
 export async function getVideos(): Promise<VideoRow[]> {

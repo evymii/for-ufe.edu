@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+import {
+  HISTORY_PHOTO_CAPTION_MAX_LENGTH,
+  HISTORY_PHOTO_FOLDER_PATTERN,
+  HISTORY_PHOTO_SORT_MAX,
+} from '../../config/constants.js';
 import { idParamSchema } from '../shared.js';
 
 // ── Shared field builders ────────────────────────────────────────────────────
@@ -214,6 +219,27 @@ export const listAlbumsQuerySchema = z.object({
   category: albumCategoryEnum.optional(),
   includeHidden: boolFlag.optional(), // ADMIN-only
 });
+
+// ── History photos (/history era archive) ────────────────────────────────────
+
+const historyPhotoFields = {
+  caption: optionalText(HISTORY_PHOTO_CAPTION_MAX_LENGTH),
+  folder: z.string().trim().regex(HISTORY_PHOTO_FOLDER_PATTERN, {
+    message: 'folder must be a year or year range (e.g. "1996", "1997-2000")',
+  }),
+  /** A publicId already registered in the media library — url is read from
+   *  that row, so a photo row can never carry a fabricated URL. */
+  publicId: z.string().trim().min(1).max(300),
+  sortOrder: optionalInt(0, HISTORY_PHOTO_SORT_MAX),
+};
+
+export const createHistoryPhotoSchema = z.object(historyPhotoFields);
+
+export const updateHistoryPhotoSchema = createHistoryPhotoSchema.partial();
+
+export type CreateHistoryPhotoInput = z.infer<typeof createHistoryPhotoSchema>;
+
+export type UpdateHistoryPhotoInput = z.infer<typeof updateHistoryPhotoSchema>;
 
 // ── Executives (front office tabs + /staff team-staff cards) ─────────────────
 export const executiveGroupEnum = z.enum([

@@ -15,7 +15,7 @@ interface Moment {
   src: string;
 }
 
-/** Archive photos discovered in public/images/tuuh/<folder>/, oldest first. */
+/** Archive photos from the history-photos content API, oldest first. */
 function buildMoments(photosByFolder: TuuhPhotos): Moment[] {
   return Object.keys(photosByFolder)
     .sort()

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -169,6 +169,22 @@ export function LiveScorer() {
   const [newTipsAt, setNewTipsAt] = useState("");
   const [clockInput, setClockInput] = useState("");
 
+  // Burst guard: the operator taps faster than the server answers. Only the
+  // most recently issued action may land its authoritative state — an older
+  // response resolving late (basket, then and-one, on a slow connection)
+  // would otherwise revert the score the operator already saw.
+  const lastActionSeq = useRef(0);
+  const actionsInFlight = useRef(0);
+  const gameIdRef = useRef("");
+
+  /** Server state fetched by GETs (ensure, SSE refresh, error resync) may
+   *  only land when no action is in flight: a pending action's projection
+   *  is newer than anything a GET can return. */
+  const applyServerState = useCallback((next: LiveGameState | null): void => {
+    if (!next || actionsInFlight.current > 0) return;
+    setState(next);
+  }, []);
+
   useEffect(() => {
     void Promise.all([
       api.get<{ items: GameRow[] }>("/api/v1/content/games?limit=100"),
@@ -189,10 +205,11 @@ export function LiveScorer() {
   useEffect(() => {
     if (!gameId) return;
     let active = true;
+    gameIdRef.current = gameId;
     void liveGamesService
       .ensure(gameId)
       .then(({ state: next }) => {
-        if (active) setState(next);
+        if (active) applyServerState(next);
       })
       .catch((error) =>
         toast.error(
@@ -208,16 +225,27 @@ export function LiveScorer() {
     const stream = new EventSource(
       `${env.apiUrl}/api/v1/live-games/${gameId}/stream`,
     );
+    // Reconnects (proxy timeout, phone sleep/wake) replay nothing the client
+    // missed: resync on every (re)open instead of sitting stale until the
+    // next scorer tap.
+    stream.onopen = () => {
+      void liveGamesService
+        .get(gameId)
+        .then(({ state: next }) => {
+          if (active) applyServerState(next);
+        })
+        .catch(() => undefined);
+    };
     stream.addEventListener("state_changed", () => {
       void liveGamesService.get(gameId).then(({ state: next }) => {
-        if (active && next) setState(next);
+        if (active) applyServerState(next);
       });
     });
     return () => {
       active = false;
       stream.close();
     };
-  }, [gameId]);
+  }, [gameId, applyServerState]);
 
   const selectedGame = useMemo(
     () => games.find((game) => game.id === gameId),
@@ -265,27 +293,43 @@ export function LiveScorer() {
   function action(payload: Record<string, unknown>) {
     if (!gameId) return;
     // Reflect the action locally first so every control reacts instantly;
-    // the server's authoritative state replaces it when the POST lands,
-    // and the event list refreshes in the background without blocking.
+    // the last action's response replaces the projections when it lands.
+    const seq = ++lastActionSeq.current;
     setState((current) =>
       current ? projectAction(current, payload) : current,
     );
+    actionsInFlight.current += 1;
+    let failed = false;
     liveGamesService
       .action(gameId, payload)
       .then(({ state: next }) => {
-        setState(next);
-        return liveGamesService.events(gameId);
+        // The server serialises actions per game, so the NEWEST response
+        // carries every queued effect. Anything older — or belonging to a
+        // game the operator already switched away from — is dropped rather
+        // than reverting the score on screen.
+        if (seq === lastActionSeq.current && gameIdRef.current === gameId) {
+          setState(next);
+        }
       })
-      .then(({ events: next }) => setEvents(next))
       .catch((error) => {
+        failed = true;
         toast.error(error instanceof Error ? error.message : "Action failed");
-        // Resync with the server so a failed action rolls the projection
-        // back to reality instead of leaving a phantom local change.
+      })
+      .finally(() => {
+        actionsInFlight.current = Math.max(0, actionsInFlight.current - 1);
+        if (failed) {
+          // Resync so a failed action rolls the projection back to reality
+          // instead of leaving a phantom local change.
+          void liveGamesService
+            .get(gameId)
+            .then(({ state: fresh }) => {
+              if (gameIdRef.current === gameId) applyServerState(fresh);
+            })
+            .catch(() => undefined);
+        }
         void liveGamesService
-          .get(gameId)
-          .then(({ state: fresh }) => {
-            if (fresh) setState(fresh);
-          })
+          .events(gameId)
+          .then(({ events: next }) => setEvents(next))
           .catch(() => undefined);
       });
   }
