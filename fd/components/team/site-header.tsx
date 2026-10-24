@@ -136,64 +136,74 @@ export function SiteHeader() {
             </div>
           </div>
         </div>
-
-        {/* Mobile drawer — full-screen panel sliding in from the right */}
-        <div
-          className={cn(
-            "bg-ink fixed inset-0 z-50 flex flex-col transition-transform duration-[280ms] ease-out lg:hidden",
-            menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
-          )}
-          aria-hidden={!menuOpen}
-        >
-          <div className="team-shell flex h-14 items-center justify-between border-b border-white/20">
-            <span className="font-display text-lg font-bold tracking-[0.04em] text-white uppercase">
-              СЭЗИС
-            </span>
-            <button
-              type="button"
-              onClick={() => setMenuOpen(false)}
-              aria-label="Цэс хаах"
-              tabIndex={menuOpen ? 0 : -1}
-              className="team-focus flex size-11 items-center justify-center text-white transition-opacity hover:opacity-70"
-            >
-              <X className="size-6" />
-            </button>
-          </div>
-          <nav
-            aria-label="Мобайл цэс"
-            className="team-shell flex flex-1 flex-col gap-1 overflow-y-auto py-8"
-          >
-            {publicNav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                tabIndex={menuOpen ? 0 : -1}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className={cn(
-                  "font-display border-line flex min-h-14 items-center border-b text-[28px] font-semibold tracking-[0.02em] uppercase transition-colors",
-                  isActive(item.href)
-                    ? "text-white"
-                    : "text-mute hover:text-white",
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="team-shell border-line flex flex-col gap-3 border-t py-6">
-            <a
-              href="https://ufe.edu.mn"
-              target="_blank"
-              rel="noreferrer"
-              tabIndex={menuOpen ? 0 : -1}
-              className="text-mute flex min-h-11 items-center text-[12px] tracking-[0.12em] uppercase"
-            >
-              {siteConfig.university}
-            </a>
-          </div>
-        </div>
       </header>
+
+      {/* Mobile drawer — half-screen panel sliding in from the right.
+          Rendered as a sibling of the sticky header (not inside it) so no
+          ancestor stacking/containing-block quirk can shrink or clip it. */}
+      <div
+        aria-hidden="true"
+        onClick={() => setMenuOpen(false)}
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 w-1/2 lg:hidden",
+          menuOpen ? undefined : "pointer-events-none",
+        )}
+      />
+      <div
+        className={cn(
+          "bg-ink fixed inset-y-0 right-0 z-50 flex w-1/2 flex-col transition-transform duration-[280ms] ease-out lg:hidden",
+          menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full",
+        )}
+        aria-hidden={!menuOpen}
+      >
+        <div className="team-shell flex h-14 items-center justify-between border-b border-white/20">
+          <span className="font-display text-lg font-bold tracking-[0.04em] text-white uppercase">
+            СЭЗИС
+          </span>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Цэс хаах"
+            tabIndex={menuOpen ? 0 : -1}
+            className="team-focus flex size-11 items-center justify-center text-white transition-opacity hover:opacity-70"
+          >
+            <X className="size-6" />
+          </button>
+        </div>
+        <nav
+          aria-label="Мобайл цэс"
+          className="team-shell flex flex-1 flex-col gap-1 overflow-y-auto py-8"
+        >
+          {publicNav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              tabIndex={menuOpen ? 0 : -1}
+              aria-current={isActive(item.href) ? "page" : undefined}
+              className={cn(
+                "font-display border-line flex min-h-14 items-center border-b text-[28px] font-semibold tracking-[0.02em] uppercase transition-colors",
+                isActive(item.href)
+                  ? "text-white"
+                  : "text-mute hover:text-white",
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="team-shell border-line flex flex-col gap-3 border-t py-6">
+          <a
+            href="https://ufe.edu.mn"
+            target="_blank"
+            rel="noreferrer"
+            tabIndex={menuOpen ? 0 : -1}
+            className="text-mute flex min-h-11 items-center text-[12px] tracking-[0.12em] uppercase"
+          >
+            {siteConfig.university}
+          </a>
+        </div>
+      </div>
     </>
   );
 }
