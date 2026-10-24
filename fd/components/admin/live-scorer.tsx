@@ -28,18 +28,44 @@ function parseClock(value: string): number | null {
   return seconds <= 720 ? seconds : null;
 }
 
+/** All scorer times are shown in Ulaanbaatar time, never the browser's. */
+const ubTime = new Intl.DateTimeFormat("en-US", {
+  hour: "2-digit",
+  hourCycle: "h23",
+  minute: "2-digit",
+  timeZone: "Asia/Ulaanbaatar",
+});
+const ubDay = new Intl.DateTimeFormat("en-US", {
+  day: "2-digit",
+  month: "short",
+  timeZone: "Asia/Ulaanbaatar",
+});
+function ubStamp(iso: string): string {
+  return `${ubDay.format(new Date(iso))} · ${ubTime.format(new Date(iso))}`;
+}
+
 /**
  * Instant local projection of a scorer action so the controls react on
  * click, before the server confirms. Server state always wins when the
  * POST resolves; undo (which depends on server history) skips the
- * projection and simply awaits.
+ * projection and simply awaits. Exported for unit tests.
  */
-function projectAction(
+export function projectAction(
   current: LiveGameState,
   payload: Record<string, unknown>,
 ): LiveGameState {
+  // Freeze what the user currently sees before projecting: burn the
+  // elapsed seconds into clockSeconds so resetting updatedAt never makes
+  // the displayed clock jump back up mid-run.
+  const elapsed = current.clockRunning
+    ? Math.max(
+        0,
+        Math.floor((Date.now() - new Date(current.updatedAt).getTime()) / 1000),
+      )
+    : 0;
   const next: LiveGameState = {
     ...current,
+    clockSeconds: Math.max(0, current.clockSeconds - elapsed),
     updatedAt: new Date().toISOString(),
   };
   const foulKey = (side: string) =>
@@ -219,7 +245,9 @@ export function LiveScorer() {
         "/api/v1/content/games",
         {
           opponent: newOpponent.trim(),
-          tipsAt: new Date(newTipsAt).toISOString(),
+          // The picker's value is Ulaanbaatar wall time — anchor it to
+          // +08:00 instead of the admin's machine timezone.
+          tipsAt: new Date(`${newTipsAt}:00+08:00`).toISOString(),
         },
       );
       setGames((current) => [...current, result.game]);
@@ -295,7 +323,7 @@ export function LiveScorer() {
         <option value="">Select a game</option>
         {games.map((game) => (
           <option key={game.id} value={game.id}>
-            {game.opponent} · {new Date(game.tipsAt).toLocaleString()}
+            {game.opponent} · {ubStamp(game.tipsAt)}
           </option>
         ))}
       </select>
@@ -585,8 +613,7 @@ export function LiveScorer() {
                   key={event.id}
                   className="text-muted-foreground border-b py-1"
                 >
-                  {event.type} ·{" "}
-                  {new Date(event.createdAt).toLocaleTimeString()}
+                  {event.type} · {ubTime.format(new Date(event.createdAt))}
                 </div>
               ))}
             </div>
