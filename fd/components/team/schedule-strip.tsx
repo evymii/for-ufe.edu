@@ -171,7 +171,7 @@ function ScheduleCard({ game }: { game: GameRow }) {
               className="size-[clamp(28px,4vw,40px)] shrink-0"
             />
             <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-              UFE BRONCOS
+              <span className="hidden sm:inline">UFE </span>BRONCOS
             </span>
           </span>
           {teamScore !== null && (
@@ -236,7 +236,8 @@ function ScheduleCard({ game }: { game: GameRow }) {
               </span>
             )}
             <span className="font-display block truncate text-[clamp(18px,3vw,28px)] font-bold tracking-[0.04em] uppercase">
-              NUM {opponentName}
+              <span className="hidden sm:inline">NUM </span>
+              {opponentName}
             </span>
           </span>
           {opponentScore !== null && (

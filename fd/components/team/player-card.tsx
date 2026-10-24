@@ -108,15 +108,20 @@ function MeasureCell({ label, value }: { label: string; value: string }) {
  * Editorial roster card: mist portrait panel with the 132px jersey numeral
  * watermark, position chip beside the stacked name (kept OFF the photo so it
  * never covers the player), 3-up measurement strip (height / age / weight)
- * behind hairline rules, and a footer link to the player's detail page.
- * Hover lifts the card and grows a 4px ink top border.
+ * behind hairline rules. The WHOLE card is the link to the player's detail
+ * page — the footer row is just the visual affordance. Hover lifts the card
+ * and grows a 4px ink top border.
  */
 export function PlayerCard({ player }: { player: RosterPlayer }) {
   const [firstName, lastName] = splitName(player.name);
   const age = playerAge(player.birthYear);
 
   return (
-    <article className="border-line bg-paper group relative flex flex-col border transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]">
+    <Link
+      href={playerHref(player)}
+      aria-label={`${player.name} — дэлгэрэнгүй`}
+      className="border-line bg-paper team-focus group relative flex flex-col border transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.14)]"
+    >
       {/* Ink top border that grows in on hover */}
       <span
         aria-hidden="true"
@@ -155,10 +160,10 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
         <span className="border-ink text-ink mb-2 inline-block border px-2 py-0.5 text-[11px] font-bold tracking-[0.1em] uppercase">
           {basePosition(player.position)}
         </span>
-        <p className="font-display text-mute text-[15px] leading-none font-semibold tracking-[0.06em] uppercase">
+        <p className="font-display text-mute text-[13px] leading-none font-semibold tracking-[0.06em] break-words uppercase sm:text-[15px]">
           {firstName}
         </p>
-        <h3 className="font-display text-ink mt-1 text-[30px] leading-[1.02] font-bold tracking-[0.02em] uppercase">
+        <h3 className="font-display text-ink mt-1 text-[21px] leading-[1.05] font-bold tracking-[0.02em] break-words uppercase sm:text-[30px] sm:leading-[1.02]">
           {lastName || firstName}
         </h3>
       </div>
@@ -173,19 +178,19 @@ export function PlayerCard({ player }: { player: RosterPlayer }) {
         />
       </div>
 
-      {/* Footer link to the full player page */}
+      {/* Footer affordance — the whole card is the link */}
       <div className="mt-auto pt-3">
-        <Link
-          href={playerHref(player)}
-          className="text-mute hover:text-ink team-focus flex w-full items-center justify-between gap-2 border-t px-5 py-3.5 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors"
-        >
+        <span className="text-mute group-hover:text-ink flex w-full items-center justify-between gap-2 border-t px-5 py-3.5 text-[12px] font-semibold tracking-[0.12em] uppercase transition-colors">
           <span className="flex items-center gap-2">
             <Trophy className="size-4" aria-hidden="true" />
             Дэлгэрэнгүй
           </span>
-          <ArrowRight className="size-4" aria-hidden="true" />
-        </Link>
+          <ArrowRight
+            className="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }

@@ -77,8 +77,8 @@ export function RosterBrowser({ players }: { players: RosterPlayer[] }) {
               {filtered.length} тоглогч
             </span>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-3">
-            <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-[180px] items-center gap-2 border px-3">
+          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:justify-end">
+            <label className="border-line text-mute focus-within:border-ink flex h-9 min-w-0 flex-1 items-center gap-2 border px-3 sm:min-w-[180px] sm:flex-none">
               <Search className="size-4 shrink-0" aria-hidden="true" />
               <input
                 type="search"

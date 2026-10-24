@@ -172,7 +172,9 @@ export function SiteHeader() {
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={cn(
                   "font-display border-line flex min-h-14 items-center border-b text-[28px] font-semibold tracking-[0.02em] uppercase transition-colors",
-                  isActive(item.href) ? "text-ink" : "text-mute hover:text-ink",
+                  isActive(item.href)
+                    ? "text-white"
+                    : "text-mute hover:text-white",
                 )}
               >
                 {item.label}
