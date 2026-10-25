@@ -102,7 +102,16 @@ function bigScore(container: HTMLElement): string {
 
 async function mountScorer(): Promise<HTMLElement> {
   const { container } = render(<LiveScorer />);
-  await screen.findByRole("heading", { name: "Score controls" });
+  // The mount chain (games fetch → selection → state fetch) can exceed the
+  // 1s default when the whole suite loads the runner — a timeout here also
+  // cascades into a post-test EventSource ReferenceError.
+  await screen.findByRole(
+    "heading",
+    { name: "Score controls" },
+    {
+      timeout: 5000,
+    },
+  );
   return container;
 }
 
