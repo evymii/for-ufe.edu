@@ -77,7 +77,9 @@ export default async function GameDetailsPage({
           className="mt-4 border-2 border-[#101827] bg-[#1e1e23] shadow-[0_3px_0_#101827]"
         >
           <div className="grid items-center gap-10 px-6 py-8 sm:grid-cols-[1fr_auto_1fr] sm:px-14 md:py-10">
-            <div>
+            {/* Side logos are desktop-only; on mobile LiveScoreCenter renders
+                one logo+score row per team instead. */}
+            <div className="hidden sm:block">
               <Image
                 src={UFE_LOGO_SRC}
                 alt="UFE Broncos"
@@ -90,6 +92,8 @@ export default async function GameDetailsPage({
             <LiveScoreCenter
               dateLabel={gameDate(game.tipsAt)}
               gameId={game.id}
+              opponentLogoSrc={opponentLogo}
+              opponentName={game.opponentShort ?? game.opponent}
               rowIsFinal={isFinal}
               rowLabel={
                 isFinal ? (won ? "FINAL · WIN" : "FINAL · LOSS") : game.status
@@ -98,7 +102,7 @@ export default async function GameDetailsPage({
               rowTeamScore={game.teamScore}
             />
 
-            <div>
+            <div className="hidden sm:block">
               {opponentLogo ? (
                 <Image
                   src={opponentLogo}
