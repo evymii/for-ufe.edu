@@ -54,8 +54,17 @@ export interface GroupFieldDef extends BaseFieldDef {
   fields: CopyFieldDef[];
 }
 
+/**
+ * Image URL field — the shared admin upload widget (Cloudinary direct
+ * upload, drag-drop, or a pasted URL). Empty string means "no image" and
+ * the public section renders its image-free fallback.
+ */
+export interface ImageFieldDef extends BaseFieldDef {
+  kind: "image";
+}
+
 export type CopyFieldDef =
-  StringFieldDef | ListFieldDef | CardsFieldDef | GroupFieldDef;
+  StringFieldDef | ListFieldDef | CardsFieldDef | GroupFieldDef | ImageFieldDef;
 
 // ── Section / page definitions ───────────────────────────────────────────────
 
@@ -89,6 +98,7 @@ export const CONSUMED_SECTION_PAIRS: Array<[string, string]> = [
   ["home", "stats"],
   ["home", "thanks"],
   ["history", "page"],
+  ["history", "honors"],
   ["players", "page"],
   ["fan-club", "page"],
   ["contact", "info"],
@@ -108,6 +118,12 @@ const area = (
   label: string,
   extra: Partial<StringFieldDef> = {},
 ): StringFieldDef => ({ kind: "textarea", key, label, rows: 3, ...extra });
+
+const image = (key: string, label: string): ImageFieldDef => ({
+  kind: "image",
+  key,
+  label,
+});
 
 export const SITE_CONTENT_PAGES: SitePageDef[] = [
   {
@@ -244,6 +260,34 @@ export const SITE_CONTENT_PAGES: SitePageDef[] = [
                 allowEmpty: true,
                 newItem: () => "",
               },
+            ],
+          },
+        ],
+      },
+      {
+        page: "history",
+        section: "honors",
+        title: "Амжилтууд",
+        description:
+          "Түүхийн хуудасны «Амжилтууд» хүндэтгэлийн картууд — тоо, нэр, он, зураг.",
+        fields: [
+          {
+            kind: "cards",
+            key: "honors",
+            label: "Амжилтын картууд",
+            titleKey: "title",
+            itemLabel: "Амжилт",
+            min: 1,
+            max: 8,
+            newItem: () => ({ count: "1×", title: "", years: "", image: "" }),
+            fields: [
+              text("count", "Тоо", {
+                placeholder: "2×",
+                help: "Картын баруун дээд буланд усан хээгээр гарч том тоо.",
+              }),
+              text("title", "Нэр", { placeholder: "Аварга" }),
+              text("years", "Онууд", { placeholder: "1992 · 2025–2026" }),
+              image("image", "Зураг"),
             ],
           },
         ],

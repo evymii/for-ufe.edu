@@ -122,6 +122,37 @@ describe("site-content registry", () => {
     expect(timeline[0].bullets).toEqual([]);
   });
 
+  it("prefills the honours cards from the public defaults", () => {
+    const def = findSection("history/honors")!;
+    const data = normalizeSectionData(def, null);
+    const honors = data.honors as Array<Record<string, unknown>>;
+    expect(honors).toHaveLength(4);
+    expect(honors[0]).toMatchObject({
+      count: "2×",
+      title: "Аварга",
+      years: "1992 · 2025–2026",
+    });
+    // no default images — cards start as solid ink until an admin uploads
+    expect(honors.map((honour) => honour.image)).toEqual(["", "", "", ""]);
+  });
+
+  it("keeps an uploaded honours image on normalize", () => {
+    const def = findSection("history/honors")!;
+    const data = normalizeSectionData(def, {
+      honors: [
+        {
+          count: "9×",
+          title: "Шинэ амжилт",
+          years: "2026",
+          image: "https://res.cloudinary.com/x/y.jpg",
+        },
+      ],
+    });
+    const honors = data.honors as Array<Record<string, unknown>>;
+    expect(honors).toHaveLength(1);
+    expect(honors[0].image).toBe("https://res.cloudinary.com/x/y.jpg");
+  });
+
   it("normalizes non-string junk in lists out of the editor", () => {
     const def = findSection("contact/info")!;
     const data = normalizeSectionData(def, {

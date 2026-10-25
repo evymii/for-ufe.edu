@@ -9,6 +9,7 @@ import {
   featuredNews,
   hero,
   history,
+  honors,
   players,
   stats,
   thanks,
@@ -38,6 +39,9 @@ export function siteContentDefault(
     },
     "fan-club/page": fanClubFallback as unknown as Record<string, unknown>,
     "front-office/hero": { ...frontOfficeHeroFallback },
+    "history/honors": {
+      honors: honors.map((honour) => ({ ...honour })),
+    },
     "history/page": {
       intro: history.intro,
       timeline,

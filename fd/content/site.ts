@@ -67,6 +67,21 @@ export const history = {
     "1992 оноос эхтэй түүхтэй СЭЗИС-ийн Сагсан бөмбөгийн шигшээ баг өнөөдрийг хүртэл олон үеийн тамирчид, дасгалжуулагчдын хөдөлмөрөөр өсч бойжиж, их сургуулийнхаа нэрийг спортын талбарт өндөрт өргөж ирлээ.",
 } as const;
 
+/** Амжилтууд honour-roll cards — admin-editable via the history/honors blob. */
+export interface HonourEntry {
+  count: string;
+  title: string;
+  years: string;
+  image?: string;
+}
+
+export const honors: HonourEntry[] = [
+  { count: "2×", title: "Аварга", years: "1992 · 2025–2026" },
+  { count: "5×", title: "Мөнгөн медаль", years: "1999–2018" },
+  { count: "3×", title: "Elite 8", years: "2017–2020" },
+  { count: "2×", title: "Final 4", years: "2021–2023" },
+];
+
 export interface TimelineEntry {
   period: string;
   text?: string;

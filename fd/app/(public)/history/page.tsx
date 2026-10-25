@@ -8,7 +8,12 @@ import { TeamButton } from "@/components/team/button";
 import { HistoryExperience } from "@/components/team/history-experience";
 import { HistoryExtras } from "@/components/team/history-extras";
 import { routes } from "@/config/routes";
-import { hero, history, type TimelineEntry } from "@/content/site";
+import {
+  hero,
+  history,
+  type HonourEntry,
+  type TimelineEntry,
+} from "@/content/site";
 import { mergeCopy } from "@/lib/copy";
 import { getHistoryPhotos, getPageCopy } from "@/lib/content";
 import type { PageCopy } from "@/types/content";
@@ -45,6 +50,28 @@ function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
   return entries;
 }
 
+/** Sanitizes the CMS-edited honours array from the history/honors blob. */
+function honorsEntries(copy: PageCopy | null): HonourEntry[] {
+  const raw = copy?.honors;
+  if (!Array.isArray(raw)) return [];
+  const entries: HonourEntry[] = [];
+  for (const item of raw) {
+    if (typeof item !== "object" || item === null) continue;
+    const entry = item as Record<string, unknown>;
+    if (typeof entry.title !== "string" || entry.title === "") continue;
+    entries.push({
+      count: typeof entry.count === "string" ? entry.count : "",
+      title: entry.title,
+      years: typeof entry.years === "string" ? entry.years : "",
+      image:
+        typeof entry.image === "string" && entry.image !== ""
+          ? entry.image
+          : undefined,
+    });
+  }
+  return entries.slice(0, 8);
+}
+
 /**
  * Season-celebration history page: 720px ink hero with the outlined season
  * numeral over a parallax texture layer, then the sticky year rail +
@@ -55,10 +82,11 @@ function timelineEntries(copy: PageCopy | null): TimelineEntry[] {
  * /admin → Хуудасны текст → Түүх.
  */
 export default async function HistoryPage() {
-  const [pageCopy, heroCopy, photos] = await Promise.all([
+  const [pageCopy, heroCopy, photos, honorsCopy] = await Promise.all([
     getPageCopy("history", "page"),
     getPageCopy("home", "hero"),
     getHistoryPhotos(),
+    getPageCopy("history", "honors"),
   ]);
 
   const copy = mergeCopy(
@@ -73,6 +101,7 @@ export default async function HistoryPage() {
       : null;
   const aubl = mergeCopy({ ...hero.aubl }, aublCopy);
   const entries = timelineEntries(pageCopy);
+  const honours = honorsEntries(honorsCopy);
 
   return (
     <>
@@ -132,7 +161,7 @@ export default async function HistoryPage() {
       <div id="timeline" className="scroll-mt-32" aria-hidden="true" />
 
       <HistoryExperience entries={entries} photosByFolder={photos} />
-      <HistoryExtras aubl={aubl} photosByFolder={photos} />
+      <HistoryExtras aubl={aubl} photosByFolder={photos} honors={honours} />
     </>
   );
 }

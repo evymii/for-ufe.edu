@@ -23,7 +23,7 @@ export const SITE_CONTENT_PAGES = {
   footer: ['social'],
   'front-office': ['hero'],
   general: ['brand', 'contact'],
-  history: ['page'],
+  history: ['page', 'honors'],
   home: ['fanmail', 'hero', 'news', 'stats', 'thanks'],
   photos: ['hero'],
   players: ['page'],

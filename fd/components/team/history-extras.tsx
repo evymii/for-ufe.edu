@@ -8,6 +8,7 @@ import { TeamButton } from "@/components/team/button";
 import { Reveal } from "@/components/team/reveal";
 import type { TuuhPhotos } from "@/components/team/history-experience";
 import { routes } from "@/config/routes";
+import { honors as defaultHonors, type HonourEntry } from "@/content/site";
 
 interface Moment {
   /** Display label — the archive folder name (single year or year range). */
@@ -27,31 +28,31 @@ function buildMoments(photosByFolder: TuuhPhotos): Moment[] {
     );
 }
 
-/** Honour roll derived from the timeline: count + title + year span. */
-const HONORS = [
-  { count: "2×", title: "Аварга", years: "1992 · 2025–2026" },
-  { count: "5×", title: "Мөнгөн медаль", years: "1999–2018" },
-  { count: "3×", title: "Elite 8", years: "2017–2020" },
-  { count: "2×", title: "Final 4", years: "2021–2023" },
-] as const;
-
 /**
  * History-page extras below the side-scrolling timeline: the honour roll
- * (dark cards with giant count watermarks), the archive moments gallery
- * (chronological grid + full-screen lightbox with keyboard nav, counter,
- * download and share), and the closing ink CTA band.
+ * (dark cards with giant count watermarks, each optionally carrying an
+ * admin-uploaded photo behind a readable ink gradient), the archive moments
+ * gallery (chronological grid + full-screen lightbox with keyboard nav,
+ * counter, download and share), and the closing ink CTA band.
  */
 export function HistoryExtras({
   aubl,
   photosByFolder,
+  honors,
 }: {
   aubl: { title: string; text: string };
   photosByFolder: TuuhPhotos;
+  /** CMS-edited honour cards from the history/honors blob; falls back to
+   *  the static defaults when the section has never been saved. */
+  honors?: HonourEntry[];
 }) {
+  // An empty saved array still means "nothing authored yet" — the public
+  // page never renders an empty honour roll.
+  const honourCards = honors && honors.length > 0 ? honors : defaultHonors;
   const moments = buildMoments(photosByFolder);
   return (
     <>
-      {/* Honour roll — dark cards, 140px count watermark */}
+      {/* Honour roll — dark cards, 140px count watermark, optional photo */}
       <section aria-label="Багийн хүндэтгэл" className="bg-paper">
         <div className="team-shell py-16 md:py-24">
           <Reveal>
@@ -60,9 +61,26 @@ export function HistoryExtras({
             </h2>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {HONORS.map((honor, index) => (
-              <Reveal key={honor.title} delay={index * 60}>
+            {honourCards.map((honor, index) => (
+              <Reveal key={`${honor.title}-${index}`} delay={index * 60}>
                 <article className="bg-ink relative h-[300px] overflow-hidden text-white md:h-[360px]">
+                  {honor.image ? (
+                    <>
+                      <Image
+                        src={honor.image}
+                        alt={honor.title}
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                        className="object-cover"
+                      />
+                      {/* Ink gradient keeps the watermark + caption readable
+                          over the photo. */}
+                      <span
+                        aria-hidden="true"
+                        className="from-ink via-ink/55 to-ink/15 absolute inset-0 bg-gradient-to-t"
+                      />
+                    </>
+                  ) : null}
                   <span
                     aria-hidden="true"
                     className="font-display pointer-events-none absolute -top-2 right-3 text-[140px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:2px_rgba(255,255,255,0.14)]"

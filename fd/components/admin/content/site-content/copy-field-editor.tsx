@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import type { CopyFieldDef } from "@/components/admin/content/site-content/sections";
 
 /**
@@ -94,7 +95,8 @@ export function CopyFields({
         const wide =
           field.kind === "textarea" ||
           field.kind === "list" ||
-          field.kind === "cards";
+          field.kind === "cards" ||
+          field.kind === "image";
         return (
           <div
             key={field.key}
@@ -132,6 +134,21 @@ export function CopyFields({
                 items={toObjectArray(value[field.key])}
                 onChange={(next) => onChange(field.key, next)}
               />
+            ) : field.kind === "image" ? (
+              <>
+                <FieldLabel htmlFor={id}>{field.label}</FieldLabel>
+                <ImageUploadField
+                  id={id}
+                  value={
+                    typeof value[field.key] === "string"
+                      ? String(value[field.key])
+                      : ""
+                  }
+                  onChange={(next) => onChange(field.key, next)}
+                  placeholder="https://res.cloudinary.com/…"
+                />
+                {field.help ? <FieldHelp>{field.help}</FieldHelp> : null}
+              </>
             ) : (
               <>
                 <FieldLabel htmlFor={id}>{field.label}</FieldLabel>
