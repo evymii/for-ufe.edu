@@ -8,7 +8,12 @@ import {
   getHomeSpotlight,
 } from "@/components/team/home-spotlight";
 import { HomeTimeline } from "@/components/team/home-timeline";
-import { NewsGrid, type NewsItem } from "@/components/team/news-grid";
+import { NewsCarousel } from "@/components/team/news-carousel";
+import {
+  FeaturedGameCard,
+  NewsStack,
+  type NewsItem,
+} from "@/components/team/news-grid";
 import { Reveal } from "@/components/team/reveal";
 import { ScheduleStrip } from "@/components/team/schedule-strip";
 import { ThanksSection } from "@/components/team/thanks-section";
@@ -139,10 +144,15 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <Reveal delay={60}>
-            <NewsGrid
-              items={newsItems}
+            <NewsCarousel
               label={newsMeta.label}
-              latestGame={latestGame}
+              featured={
+                <FeaturedGameCard
+                  label={newsMeta.label}
+                  latestGame={latestGame}
+                />
+              }
+              stack={<NewsStack items={newsItems} latestGame={latestGame} />}
             />
           </Reveal>
         </div>

@@ -27,16 +27,13 @@ function formatGameDate(value: string) {
  * from the NewsPost collection fills the remaining 4 columns (static
  * fallback when the API is empty/unreachable).
  */
-export function NewsGrid({
+export function FeaturedGameCard({
   label,
-  items,
   latestGame,
 }: {
   label: string;
-  items: NewsItem[];
   latestGame: GameRow | null;
 }) {
-  const [, ...rest] = items;
   const opponent = latestGame?.opponentShort ?? latestGame?.opponent;
   const result =
     latestGame &&
@@ -50,9 +47,9 @@ export function NewsGrid({
       : null;
 
   return (
-    <div className="grid gap-6 md:grid-cols-12">
+    <>
       {latestGame ? (
-        <article className="bg-ink card-lift relative flex min-h-[420px] flex-col justify-end overflow-hidden p-8 text-white md:col-span-8 md:min-h-[480px]">
+        <article className="bg-ink card-lift relative flex h-full min-h-[420px] flex-col justify-end overflow-hidden p-8 text-white md:col-span-8 md:min-h-[480px]">
           <Image
             src="/season-welcome.png"
             alt="СЭЗИС Broncos багийн нийт зураг"
@@ -95,7 +92,7 @@ export function NewsGrid({
           </div>
         </article>
       ) : (
-        <article className="bg-ink relative flex min-h-[280px] flex-col justify-end overflow-hidden p-8 text-white md:col-span-8">
+        <article className="bg-ink relative flex h-full min-h-[280px] flex-col justify-end overflow-hidden p-8 text-white md:col-span-8">
           <Image
             src="/season-welcome.png"
             alt="СЭЗИС Broncos багийн нийт зураг"
@@ -113,60 +110,93 @@ export function NewsGrid({
           </div>
         </article>
       )}
+    </>
+  );
+}
 
-      <div className="flex flex-col gap-6 md:col-span-4">
-        {rest.map((item, index) => (
-          <div key={item.title} className="group relative">
-            <span
-              aria-hidden="true"
-              className="bg-brand pointer-events-none absolute inset-0 translate-x-2 translate-y-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            />
-            <article className="border-line card-lift relative z-10 flex gap-4 border bg-white p-5">
-              <span
-                aria-hidden="true"
-                className="font-display pointer-events-none w-14 shrink-0 text-[64px] leading-none font-bold text-[#05070b]/20 select-none"
-              >
-                {String(index + 2).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <p className="eyebrow text-[#05070b]/65">{item.kicker}</p>
-                <h3 className="font-display mt-1.5 text-[22px] leading-[1.1] font-semibold tracking-[0.02em] text-[#05070b] uppercase">
-                  {item.title}
-                </h3>
-                <p className="mt-2 line-clamp-3 text-[13px] leading-[1.6] text-[#05070b]/65">
-                  {item.body}
-                </p>
-              </div>
-            </article>
-          </div>
-        ))}
-
-        {/* Schedule link completes the news stack */}
-        <div className="group relative">
+/** Compact story cards + the schedule link — the news section's right rail;
+ *  stays visible on every carousel slide. */
+export function NewsStack({
+  items,
+  latestGame,
+}: {
+  items: NewsItem[];
+  latestGame: GameRow | null;
+}) {
+  const [, ...rest] = items;
+  return (
+    <div className="flex flex-col gap-6 md:col-span-4 md:h-[520px]">
+      {rest.map((item, index) => (
+        <div key={item.title} className="group relative flex-1">
           <span
             aria-hidden="true"
             className="bg-brand pointer-events-none absolute inset-0 translate-x-2 translate-y-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
-          <Link
-            href={routes.site.schedule}
-            className="border-line relative z-10 flex min-h-24 flex-col justify-center gap-1 border bg-white p-5"
-          >
-            <p className="eyebrow text-[#05070b]/65">Тоглолтууд</p>
-            <p className="font-display flex items-center gap-2 text-[22px] leading-none font-semibold tracking-[0.02em] text-[#05070b] uppercase">
-              Хуваарь харах
-              <ArrowRight
-                className="size-5 transition-transform group-hover:translate-x-1"
-                aria-hidden="true"
-              />
-            </p>
-            <p className="text-[13px] text-[#05070b]/65">
-              {latestGame
-                ? `Сүүлийн тоглолт · ${formatGameDate(latestGame.tipsAt)}`
-                : "Шинэ тоглолтууд"}
-            </p>
-          </Link>
+          <article className="border-line card-lift relative z-10 flex h-full gap-4 border bg-white p-5">
+            <span
+              aria-hidden="true"
+              className="font-display pointer-events-none w-14 shrink-0 text-[64px] leading-none font-bold text-[#05070b]/20 select-none"
+            >
+              {String(index + 2).padStart(2, "0")}
+            </span>
+            <div className="min-w-0">
+              <p className="eyebrow text-[#05070b]/65">{item.kicker}</p>
+              <h3 className="font-display mt-1.5 text-[22px] leading-[1.1] font-semibold tracking-[0.02em] text-[#05070b] uppercase">
+                {item.title}
+              </h3>
+              <p className="mt-2 line-clamp-3 text-[13px] leading-[1.6] text-[#05070b]/65">
+                {item.body}
+              </p>
+            </div>
+          </article>
         </div>
+      ))}
+
+      {/* Schedule link completes the news stack */}
+      <div className="group relative">
+        <span
+          aria-hidden="true"
+          className="bg-brand pointer-events-none absolute inset-0 translate-x-2 translate-y-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+        <Link
+          href={routes.site.schedule}
+          className="border-line relative z-10 flex min-h-24 flex-col justify-center gap-1 border bg-white p-5"
+        >
+          <p className="eyebrow text-[#05070b]/65">Тоглолтууд</p>
+          <p className="font-display flex items-center gap-2 text-[22px] leading-none font-semibold tracking-[0.02em] text-[#05070b] uppercase">
+            Хуваарь харах
+            <ArrowRight
+              className="size-5 transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </p>
+          <p className="text-[13px] text-[#05070b]/65">
+            {latestGame
+              ? `Сүүлийн тоглолт · ${formatGameDate(latestGame.tipsAt)}`
+              : "Шинэ тоглолтууд"}
+          </p>
+        </Link>
       </div>
+    </div>
+  );
+}
+
+/** The pre-carousel layout: featured card + stack side by side. */
+export function NewsGrid({
+  label,
+  items,
+  latestGame,
+}: {
+  label: string;
+  items: NewsItem[];
+  latestGame: GameRow | null;
+}) {
+  return (
+    <div className="grid gap-6 md:grid-cols-12">
+      <div className="md:col-span-8">
+        <FeaturedGameCard label={label} latestGame={latestGame} />
+      </div>
+      <NewsStack items={items} latestGame={latestGame} />
     </div>
   );
 }
