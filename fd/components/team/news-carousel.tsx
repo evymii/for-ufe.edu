@@ -199,7 +199,7 @@ export function NewsCarousel({
         if (event.key === "ArrowLeft") go(index - 1);
       }}
     >
-      <div className="relative h-[420px] touch-pan-y overflow-hidden md:col-span-8 md:h-[520px]">
+      <div className="relative h-[420px] touch-pan-y overflow-hidden md:col-span-8 md:h-auto md:min-h-[520px]">
         <div
           ref={trackRef}
           className="flex h-full items-stretch transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)]"

@@ -125,7 +125,7 @@ export function NewsStack({
 }) {
   const [, ...rest] = items;
   return (
-    <div className="flex flex-col gap-6 md:col-span-4 md:h-[520px]">
+    <div className="flex flex-col gap-6 md:col-span-4 md:min-h-[520px]">
       {rest.map((item, index) => (
         <div key={item.title} className="group relative flex-1">
           <span
