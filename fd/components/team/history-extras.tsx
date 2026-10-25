@@ -29,6 +29,67 @@ function buildMoments(photosByFolder: TuuhPhotos): Moment[] {
 }
 
 /**
+ * Амжилтууд honour roll — dark cards with the giant count watermark, each
+ * optionally carrying an admin-uploaded photo behind a readable ink
+ * gradient. Standalone so the admin live-preview can render it with
+ * in-progress values. An empty/missing list falls back to the static
+ * defaults — the public page never shows an empty honour roll.
+ */
+export function HonourRoll({ honors }: { honors?: HonourEntry[] }) {
+  const honourCards = honors && honors.length > 0 ? honors : defaultHonors;
+  return (
+    <section aria-label="Багийн хүндэтгэл" className="bg-paper">
+      <div className="team-shell py-16 md:py-24">
+        <Reveal>
+          <h2 className="font-display text-ink text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] uppercase">
+            Амжилтууд
+          </h2>
+        </Reveal>
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {honourCards.map((honor, index) => (
+            <Reveal key={`${honor.title}-${index}`} delay={index * 60}>
+              <article className="bg-ink relative h-[300px] overflow-hidden text-white md:h-[360px]">
+                {honor.image ? (
+                  <>
+                    <Image
+                      src={honor.image}
+                      alt={honor.title}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
+                      className="object-cover"
+                    />
+                    {/* Ink gradient keeps the watermark + caption readable
+                        over the photo. */}
+                    <span
+                      aria-hidden="true"
+                      className="from-ink via-ink/55 to-ink/15 absolute inset-0 bg-gradient-to-t"
+                    />
+                  </>
+                ) : null}
+                <span
+                  aria-hidden="true"
+                  className="font-display pointer-events-none absolute -top-2 right-3 text-[140px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:2px_rgba(255,255,255,0.14)]"
+                >
+                  {honor.count}
+                </span>
+                <div className="absolute right-4 bottom-4 left-4">
+                  <p className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase">
+                    {honor.years}
+                  </p>
+                  <h3 className="font-display mt-1 text-[30px] leading-none font-bold tracking-[0.02em] uppercase">
+                    {honor.title}
+                  </h3>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
  * History-page extras below the side-scrolling timeline: the honour roll
  * (dark cards with giant count watermarks, each optionally carrying an
  * admin-uploaded photo behind a readable ink gradient), the archive moments
@@ -46,61 +107,11 @@ export function HistoryExtras({
    *  the static defaults when the section has never been saved. */
   honors?: HonourEntry[];
 }) {
-  // An empty saved array still means "nothing authored yet" — the public
-  // page never renders an empty honour roll.
-  const honourCards = honors && honors.length > 0 ? honors : defaultHonors;
   const moments = buildMoments(photosByFolder);
   return (
     <>
       {/* Honour roll — dark cards, 140px count watermark, optional photo */}
-      <section aria-label="Багийн хүндэтгэл" className="bg-paper">
-        <div className="team-shell py-16 md:py-24">
-          <Reveal>
-            <h2 className="font-display text-ink text-[clamp(30px,4vw,40px)] leading-none font-bold tracking-[0.02em] uppercase">
-              Амжилтууд
-            </h2>
-          </Reveal>
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {honourCards.map((honor, index) => (
-              <Reveal key={`${honor.title}-${index}`} delay={index * 60}>
-                <article className="bg-ink relative h-[300px] overflow-hidden text-white md:h-[360px]">
-                  {honor.image ? (
-                    <>
-                      <Image
-                        src={honor.image}
-                        alt={honor.title}
-                        fill
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw"
-                        className="object-cover"
-                      />
-                      {/* Ink gradient keeps the watermark + caption readable
-                          over the photo. */}
-                      <span
-                        aria-hidden="true"
-                        className="from-ink via-ink/55 to-ink/15 absolute inset-0 bg-gradient-to-t"
-                      />
-                    </>
-                  ) : null}
-                  <span
-                    aria-hidden="true"
-                    className="font-display pointer-events-none absolute -top-2 right-3 text-[140px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:2px_rgba(255,255,255,0.14)]"
-                  >
-                    {honor.count}
-                  </span>
-                  <div className="absolute right-4 bottom-4 left-4">
-                    <p className="text-[12px] font-semibold tracking-[0.12em] text-white/50 uppercase">
-                      {honor.years}
-                    </p>
-                    <h3 className="font-display mt-1 text-[30px] leading-none font-bold tracking-[0.02em] uppercase">
-                      {honor.title}
-                    </h3>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HonourRoll honors={honors} />
 
       {/* Moments gallery — chronological grid + lightbox */}
       <section aria-label="Дурсамжийн зургууд" className="border-line border-t">

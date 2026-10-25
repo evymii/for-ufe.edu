@@ -1,12 +1,11 @@
 "use client";
 
-import { Eye } from "lucide-react";
-
 import { FanClubShop } from "@/components/team/fan-club-shop";
 import type { FanClubContent } from "@/components/team/fan-club-shop";
 import { Hero } from "@/components/team/hero";
 import type { HeroCopy } from "@/components/team/hero";
 import { HistoryExperience } from "@/components/team/history-experience";
+import { HonourRoll } from "@/components/team/history-extras";
 import { NewsGrid } from "@/components/team/news-grid";
 import type { NewsItem } from "@/components/team/news-grid";
 import { PageHero } from "@/components/team/page-hero";
@@ -22,7 +21,8 @@ import type { SiteSectionDef } from "@/components/admin/content/site-content/sec
  * Live previews for the page-copy editor. Each one mounts the actual
  * public-site component with the in-progress values (over the static
  * fallback, exactly like the public page resolves copy), so the preview
- * is the real render, not a mockup.
+ * is the real render, not a mockup. Sections without a preview case
+ * render no frame at all — never an empty box.
  */
 
 export interface PreviewSupport {
@@ -43,30 +43,24 @@ export function SectionPreview({
   data: Record<string, unknown>;
   support: PreviewSupport;
 }) {
+  const body = renderPreviewBody(def, data, support);
+  if (!body) return null;
   return (
     // Editorial preview frame: hairline border + the hero card's offset
     // shadow, so the "live site artifact" reads like the public site.
     <div className="border-line bg-paper border shadow-[8px_8px_0_#E6E6E3]">
-      <div className="border-line bg-paper-soft text-mute flex items-center gap-1.5 border-b px-3 py-2 text-[11px] font-semibold tracking-[0.12em] uppercase">
-        <Eye className="size-3.5" aria-hidden="true" />
-        Шууд харагдац
-      </div>
       <div className="bg-paper text-ink max-h-[720px] overflow-x-clip overflow-y-auto">
-        <PreviewBody def={def} data={data} support={support} />
+        {body}
       </div>
     </div>
   );
 }
 
-function PreviewBody({
-  def,
-  data,
-  support,
-}: {
-  def: SiteSectionDef;
-  data: Record<string, unknown>;
-  support: PreviewSupport;
-}) {
+function renderPreviewBody(
+  def: SiteSectionDef,
+  data: Record<string, unknown>,
+  support: PreviewSupport,
+) {
   switch (`${def.page}/${def.section}`) {
     case "home/hero": {
       const copy = mergeCopy(
@@ -181,6 +175,20 @@ function PreviewBody({
           <HistoryExperience entries={entries} photosByFolder={{}} />
         </>
       );
+    }
+    case "history/honors": {
+      const honors = toArray(data.honors)
+        .map((honour) => ({
+          count: str(honour.count, ""),
+          title: str(honour.title, ""),
+          years: str(honour.years, ""),
+          image:
+            typeof honour.image === "string" && honour.image
+              ? honour.image
+              : undefined,
+        }))
+        .filter((honour) => honour.title.length > 0);
+      return <HonourRoll honors={honors} />;
     }
     case "players/page":
       return (
